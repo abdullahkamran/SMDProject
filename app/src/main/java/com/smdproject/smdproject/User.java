@@ -5,4 +5,9 @@ package com.smdproject.smdproject;
  */
 
 public class User {
+
+    int userid;
+    String name;
+
+
 }
