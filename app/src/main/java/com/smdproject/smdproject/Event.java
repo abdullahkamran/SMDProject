@@ -14,4 +14,5 @@ public class Event {
     Timestamp stamp;
     Location location;
 
+
 }
