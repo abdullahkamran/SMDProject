@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class Group {
 
     ArrayList<User> members; o dalla
-    String name;
+    String name; o dallay
     ArrayList<Post> posts;
     ArrayList<Event> events;
     ArrayList<Message> messages;
