@@ -13,7 +13,7 @@ public class Group {
     String name;
     ArrayList<Post> posts;
     ArrayList<Event> events;
-    //ArrayList<Message> messages;
+    ArrayList<Message> messages;
     HashMap<Integer,String> nicknames;
 
 }
