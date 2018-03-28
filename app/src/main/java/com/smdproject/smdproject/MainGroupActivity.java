@@ -32,11 +32,6 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Group st=new Group();
-        st.setName("Murree");
-        st.setGrouppic(R.drawable.a);
-        data.add(st);
-
         c=this;
         rv = findViewById(R.id.recyclerView);
         rv.setHasFixedSize(true);
