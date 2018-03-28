@@ -16,7 +16,7 @@ import android.view.View;
 import java.util.ArrayList;
 import database.Group;
 
-public class MainGroup extends AppCompatActivity implements RecyclerView.OnItemTouchListener{
+public class MainGroupActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener{
 
     private GestureDetector gestureDetector;
     private Context c;

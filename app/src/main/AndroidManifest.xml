@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainGroup"
+            android:name=".MainGroupActivity"
             android:label="@string/title_activity_main_group"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
