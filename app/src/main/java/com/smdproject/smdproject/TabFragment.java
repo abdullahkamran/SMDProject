@@ -3,7 +3,9 @@ package com.smdproject.smdproject;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +30,9 @@ public class TabFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     public TabFragment() {
         // Required empty public constructor
@@ -64,7 +69,14 @@ public class TabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tab, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_tab, container, false);
+        tabLayout = (TabLayout)view.findViewById(R.id.tabs);
+        viewPager = (ViewPager)view.findViewById(R.id.view_pager);
+        tabLayout.setupWithViewPager(viewPager);
+
+        return view;
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
