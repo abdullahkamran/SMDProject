@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Created by Ahmad on 28-Mar-18.
  */
 
-@Entity(tableName = "post")
+//@Entity(tableName = "post")
 public class Post {
     Group group;
     User postman;
