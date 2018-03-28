@@ -1,4 +1,4 @@
-package com.smdproject.smdproject;
+package com.smdproject.smdproject.classes;
 
 import java.util.ArrayList;
 import java.util.HashMap;

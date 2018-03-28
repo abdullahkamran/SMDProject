@@ -1,4 +1,4 @@
-package com.smdproject.smdproject;
+package com.smdproject.smdproject.classes;
 
 
 import java.security.Timestamp;
@@ -13,8 +13,8 @@ public class Post {
     Group group;
     User postman;
     String text;
-    ArrayList<Image> images;
-    ArrayList<Video> videos;
+    //ArrayList<Image> images;
+    //ArrayList<Video> videos;
     Timestamp stamp;
     ArrayList<Comment> comments;
 

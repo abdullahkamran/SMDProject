@@ -1,4 +1,4 @@
-package com.smdproject.smdproject;
+package com.smdproject.smdproject.classes;
 
 /**
  * Created by Abdullah on 3/21/2018.

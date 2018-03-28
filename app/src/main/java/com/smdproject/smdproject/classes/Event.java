@@ -1,4 +1,4 @@
-package com.smdproject.smdproject;
+package com.smdproject.smdproject.classes;
 
 import android.location.Location;
 
