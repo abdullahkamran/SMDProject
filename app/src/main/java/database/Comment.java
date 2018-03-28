@@ -1,5 +1,6 @@
 package database;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
@@ -14,7 +15,7 @@ public class Comment {
     @PrimaryKey(autoGenerate = true)
     private int cid;
 
-
+    @ColumnInfo(name = "text")
     String text;
     User commentator;
     Timestamp stamp;
