@@ -32,9 +32,8 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        c=this;
         rv = findViewById(R.id.recyclerView);
-        rv.setHasFixedSize(true);
+        c=this;
         lm = new LinearLayoutManager(this);
         rv.setLayoutManager(lm);
         rv.addOnItemTouchListener(this);
@@ -42,7 +41,6 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
 
         adapter = new GroupRecyclerViewAdapter(data, R.layout.group_layout,c);
         rv.setAdapter(adapter);
-
 
         gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
