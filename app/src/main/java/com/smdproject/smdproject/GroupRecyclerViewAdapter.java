@@ -61,6 +61,7 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupViewHold
             });
         }
     }
+
     @Override
     public int getItemCount(){
         if(items != null)
