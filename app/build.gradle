@@ -32,8 +32,12 @@ dependencies {
     implementation files('libs/mail.jar')
     implementation files('libs/additionnal.jar')
     implementation files('libs/activation.jar')
-    implementation 'com.google.android.gms:play-services-auth:9.8.0'
+    implementation 'com.google.android.gms:play-services-auth:12.0.1'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.google.firebase:firebase-core:12.0.1'
+    implementation 'com.google.firebase:firebase-auth:12.0.1'
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "12823540270",
-    "project_id": "smdproject-1522766248986"
+    "firebase_url": "https://smdproject-1522766248986.firebaseio.com",
+    "project_id": "smdproject-1522766248986",
+    "storage_bucket": "smdproject-1522766248986.appspot.com"
   },
   "client": [
     {
@@ -12,6 +14,10 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "12823540270-6oriajfio5rgvctivlk5rkpohc1mtidc.apps.googleusercontent.com",
+          "client_type": 3
+        },
         {
           "client_id": "12823540270-dcudtu40a0p2b0gjc1ivn3kdbj3ahsai.apps.googleusercontent.com",
           "client_type": 3
@@ -35,11 +41,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12823540270-6oriajfio5rgvctivlk5rkpohc1mtidc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

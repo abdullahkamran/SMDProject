@@ -15,13 +15,13 @@
     <string name="title_activity_group">Group</string>
     <string name="title_activity_main_group">MainGroup</string>
 
-    <string name="facebook_app_id">[APP_ID]</string>
-    <string name="fb_login_protocol_scheme">fb[APP_ID]</string>
     <string name="title_activity_login">LoginActivity</string>
 
     <string name="google_sign_in">Sign in with google</string>
     <string name="mobile_sign_in">Sign in with mobile</string>
     <string name="facebook_sign_in">Sign in with facebook</string>
+    <string name="facebook_app_id">1709773045756567</string>
+    <string name="fb_login_protocol_scheme">fb1709773045756567</string>
 
 
 

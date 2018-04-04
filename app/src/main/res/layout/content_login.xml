@@ -25,11 +25,10 @@
             android:layout_height="wrap_content"
             android:text="@string/google_sign_in" />
 
-        <Button
-            android:id="@+id/button3"
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/button_facebook_login"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/facebook_sign_in" />
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/button4"
