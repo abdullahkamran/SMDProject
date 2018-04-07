@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.button3).setOnClickListener(this);
+
         findViewById(R.id.button4).setOnClickListener(this);
 
         //google sign in
@@ -75,22 +75,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // ...
             }
         });
-
-
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser!=null){
-            //  updateUI(currentUser);
-            //make intent
-            //start activity
-            //finish();
-        }
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        // Check if user is signed in (non-null) and update UI accordingly.
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if(currentUser!=null){
+//            //  updateUI(currentUser);
+//            //make intent
+//            //start activity
+//            //finish();
+//        }
+//    }
 
     public  void onClick(View v){
         switch (v.getId()) {
@@ -100,24 +98,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivityForResult(i,9001);
                 break;
             case R.id.button4:
-                Toast.makeText(this, "Mobile Sign in button clicked", Toast.LENGTH_LONG).show();
+                Intent ii=new Intent(this,MobileAuth.class);
+                startActivity(ii);
+                finish();
                 break;
         }
     }
-
-//    private void signOut() {
-//        // Firebase sign out
-//        mAuth.signOut();
-//
-//        // Google sign out
-//        mGoogleSignInClient.signOut().addOnCompleteListener(this,
-//                new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        updateUI(null);
-//                    }
-//                });
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent){
@@ -148,68 +134,55 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("GoogleSignIn", "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("GoogleSignIn", "signInWithCredential:failure", task.getException());
-                            //Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-                            //updateUI(null);
-                        }
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d("GoogleSignIn", "signInWithCredential:success");
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    Intent googleIntent=new Intent(LoginActivity.this,MainActivity.class);
+                    startActivity(googleIntent);
+                    finish();
+                }
+                else {
+                    // If sign in fails, display a message to the user.
+                    Log.w("GoogleSignIn", "signInWithCredential:failure", task.getException());
+                    //Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                }
 
-                        // [START_EXCLUDE]
-                        //hideProgressDialog();
+                // [START_EXCLUDE]
+                //hideProgressDialog();
                         // [END_EXCLUDE]
-                    }
-                });
+                }
+            });
     }
     // [END auth_with_google]
-
-    private void signOut() {
-        // Firebase sign out
-        mAuth.signOut();
-        //loginmanager.logout();//sighn out ou facebook
-
-        // Google sign out
-        mGoogleSignInClient.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        //updateUI(null);
-                    }
-                });
-    }
 
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d("FacebookSignIn", "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("FacebookSignIn", "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("FacebookSignIn", "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-                        }
-
+            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d("FacebookSignIn", "signInWithCredential:success");
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    Intent googleIntent=new Intent(LoginActivity.this,MainActivity.class);
+                    startActivity(googleIntent);
+                    finish();
+                }
+                else {
+                    // If sign in fails, display a message to the user.
+                    Log.w("FacebookSignIn", "signInWithCredential:failure", task.getException());
+                    Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    //updateUI(null);
+                }
                         // ...
-                    }
-                });
+                }
+            });
     }
-
 }
