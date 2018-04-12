@@ -42,9 +42,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mAuth = FirebaseAuth.getInstance();//firebase
 
         setContentView(R.layout.activity_login);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.sign_in_button).setOnClickListener(this);//google sign in button
 
         findViewById(R.id.button4).setOnClickListener(this);
 
@@ -54,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
-        LoginButton loginButton = findViewById(R.id.button_facebook_login);
+        LoginButton loginButton = findViewById(R.id.login_button);//facebook login button
         loginButton.setReadPermissions("email", "public_profile");
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
