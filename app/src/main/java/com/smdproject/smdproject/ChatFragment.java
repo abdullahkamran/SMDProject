@@ -7,18 +7,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FeedFragment.OnFragmentInteractionListener} interface
+ * {@link ChatFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link FeedFragment#newInstance} factory method to
+ * Use the {@link ChatFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FeedFragment extends Fragment {
+public class ChatFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,15 +27,16 @@ public class FeedFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+
     private OnFragmentInteractionListener mListener;
 
-    public FeedFragment() {
+    public ChatFragment() {
         // Required empty public constructor
     }
 
     private Context context;
 
-    public FeedFragment(Context c) {
+    public ChatFragment(Context c) {
         context=c;
     }
 
@@ -46,11 +46,11 @@ public class FeedFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FeedFragment.
+     * @return A new instance of fragment ChatFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FeedFragment newInstance(String param1, String param2) {
-        FeedFragment fragment = new FeedFragment();
+    public static ChatFragment newInstance(String param1, String param2) {
+        ChatFragment fragment = new ChatFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -71,7 +71,7 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_feed, container, false);
+        return inflater.inflate(R.layout.fragment_chat, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -91,8 +91,6 @@ public class FeedFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
-
-
 
     @Override
     public void onDetach() {
@@ -114,12 +112,4 @@ public class FeedFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-    public void postStatus(View v){
-        EditText statusText=(EditText)findViewById(R.id.postEditText);
-
-        //Post post=new Post(currentGroup,currentUser,statusText,null, new Timestamp());
-
-    }
-
 }

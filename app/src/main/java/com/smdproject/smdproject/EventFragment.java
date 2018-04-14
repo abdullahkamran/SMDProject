@@ -33,6 +33,12 @@ public class EventFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private Context context;
+
+    public EventFragment(Context c) {
+        context=c;
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
