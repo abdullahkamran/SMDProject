@@ -18,21 +18,63 @@ public class Group {
     private ArrayList<Event> events;
     private ArrayList<Message> messages;
     private HashMap<Integer,String> nicknames;
-    private int grouppic;
+    private int groupPic;
 
-    public void setName(String name) {
-        this.name = name;
+
+    public ArrayList<User> getMembers() {
+        return members;
     }
 
-    public void setGrouppic(int grouppic) {
-        this.grouppic = grouppic;
+    public void setMembers(ArrayList<User> members) {
+        this.members = members;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getGrouppic() {
-        return grouppic;
+    public void setName(String name) {
+        this.name = name;
     }
+
+    public ArrayList<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(ArrayList<Post> posts) {
+        this.posts = posts;
+    }
+
+    public ArrayList<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(ArrayList<Event> events) {
+        this.events = events;
+    }
+
+    public ArrayList<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(ArrayList<Message> messages) {
+        this.messages = messages;
+    }
+
+    public HashMap<Integer, String> getNicknames() {
+        return nicknames;
+    }
+
+    public void setNicknames(HashMap<Integer, String> nicknames) {
+        this.nicknames = nicknames;
+    }
+
+    public int getGroupPic() {
+        return groupPic;
+    }
+
+    public void setGroupPic(int groupPic) {
+        this.groupPic = groupPic;
+    }
+
 }

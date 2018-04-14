@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 
 /**
@@ -85,6 +86,8 @@ public class FeedFragment extends Fragment {
         }
     }
 
+
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -105,4 +108,12 @@ public class FeedFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    public void postStatus(View v){
+        EditText statusText=(EditText)findViewById(R.id.postEditText);
+
+        //Post post=new Post(currentGroup,currentUser,statusText,null, new Timestamp());
+
+    }
+
 }

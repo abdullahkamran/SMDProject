@@ -1,5 +1,6 @@
 package com.smdproject.smdproject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -39,8 +40,10 @@ public class MainActivity extends AppCompatActivity
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
 
-    private FirebaseAuth mAuth;
     private static int TAB_COUNT=4;
+
+
+    private FirebaseAuth mAuth;
 
     private Group current;
 
@@ -195,15 +198,15 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private String tabNames[]=new String[]{"Squad Feed","Squad Events","Squad Map","Squad Chat"};
+        private Context context;
+
+        public SectionsPagerAdapter(FragmentManager fm, Context context) {
             super(fm);
+            this.context=context;
         }
 
         @Override
@@ -212,6 +215,10 @@ public class MainActivity extends AppCompatActivity
             // Return a PlaceholderFragment (defined as a static inner class below).
             return PlaceholderFragment.newInstance(position + 1);
 
+        }
+        @Override
+        public CharSequence getPageTitle(int position){
+            return tabNames[position];
         }
 
         @Override
