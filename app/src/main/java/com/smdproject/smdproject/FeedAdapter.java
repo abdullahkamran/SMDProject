@@ -14,7 +14,6 @@ import database.Post;
  */
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
-
     private List<Post> items;
     private int itemLayout;
 
@@ -25,31 +24,25 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
     @Override
     public FeedViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-
         View v= LayoutInflater.from(parent.getContext()).inflate(itemLayout,parent,false);
         return new FeedViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(FeedViewHolder holder,int position){
-
         if(items!=null && holder!=null){
             holder.dp.setImageURI(items.get(position).getPostman().dp);
             holder.name.setText(items.get(position).getPostman().getName());
             holder.nickname.setText("@"+items.get(position).getGroup().getNicknames().get(items.get(position).getPostman().getUid()));
             holder.timestamp.setText(items.get(position).getStamp().getTimestamp().toString());
             holder.text.setText(items.get(position).getText());
-
         }
-
     }
 
     @Override
     public int getItemCount(){
-
         if(items!=null)
             return items.size();
         else return 0;
     }
-
 }

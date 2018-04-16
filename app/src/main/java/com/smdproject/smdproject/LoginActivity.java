@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -38,15 +37,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mAuth = FirebaseAuth.getInstance();//firebase
-
         setContentView(R.layout.activity_login);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         findViewById(R.id.sign_in_button).setOnClickListener(this);//google sign in button
-
         findViewById(R.id.button4).setOnClickListener(this);
 
         //google sign in
@@ -149,12 +144,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 else {
                     // If sign in fails, display a message to the user.
                     Log.w("GoogleSignIn", "signInWithCredential:failure", task.getException());
-                    //Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                 }
-
-                // [START_EXCLUDE]
-                //hideProgressDialog();
-                        // [END_EXCLUDE]
                 }
             });
     }
@@ -162,7 +153,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d("FacebookSignIn", "handleFacebookAccessToken:" + token);
-
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
             .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -180,7 +170,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     // If sign in fails, display a message to the user.
                     Log.w("FacebookSignIn", "signInWithCredential:failure", task.getException());
                     Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                    //updateUI(null);
                 }
                         // ...
                 }

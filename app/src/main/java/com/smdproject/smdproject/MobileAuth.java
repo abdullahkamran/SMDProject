@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -21,11 +20,9 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
-
 import java.util.concurrent.TimeUnit;
 
 public class MobileAuth extends AppCompatActivity implements View.OnClickListener{
-
     private EditText mPhoneNumberField;
     private EditText mVerificationField;
     private String mVerificationId;
@@ -37,14 +34,11 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
     private boolean mVerificationInProgress = false;
     private FirebaseAuth mAuth;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mobile_auth);
-
         mAuth = FirebaseAuth.getInstance();
-
         mPhoneNumberField = findViewById(R.id.field_phone_number);
         mVerificationField = findViewById(R.id.field_verification_code);
         mStartButton = findViewById(R.id.button_start_verification);
@@ -67,7 +61,6 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
                 // [START_EXCLUDE silent]
                 mVerificationInProgress = false;
                 // [END_EXCLUDE]
-
                 // [START_EXCLUDE silent]
                 // Update the UI and attempt sign in with the phone credential
                 //updateUI(STATE_VERIFY_SUCCESS, credential);
@@ -83,13 +76,13 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
                 // [START_EXCLUDE silent]
                 mVerificationInProgress = false;
                 // [END_EXCLUDE]
-
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     // Invalid request
                     // [START_EXCLUDE]
                     mPhoneNumberField.setError("Invalid phone number.");
                     // [END_EXCLUDE]
-                } else if (e instanceof FirebaseTooManyRequestsException) {
+                }
+                else if (e instanceof FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
                     // [START_EXCLUDE]
                     Snackbar.make(findViewById(android.R.id.content), "Quota exceeded.",
@@ -103,17 +96,14 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
             }
 
             @Override
-            public void onCodeSent(String verificationId,
-                                   PhoneAuthProvider.ForceResendingToken token) {
+            public void onCodeSent(String verificationId,PhoneAuthProvider.ForceResendingToken token) {
                 // The SMS verification code has been sent to the provided phone number, we
                 // now need to ask the user to enter the code and then construct a credential
                 // by combining the code with a verification ID.
                 Log.d("PhoneAuth", "onCodeSent:" + verificationId);
-
                 // Save verification ID and resending token so we can use them later
                 mVerificationId = verificationId;
                 mResendToken = token;
-
                 // [START_EXCLUDE]
                 // Update UI
                 //updateUI(STATE_CODE_SENT);
@@ -147,29 +137,29 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
             .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d("PhoneAuth", "signInWithCredential:success");
-                        FirebaseUser user = task.getResult().getUser();
-                        Intent mainActivity=new Intent(MobileAuth.this,MainActivity.class);
-                        startActivity(mainActivity);
-                        finish();
-                    }
-                    else {
-                        // Sign in failed, display a message and update the UI
-                        Log.w("PhoneAuth", "signInWithCredential:failure", task.getException());
-                        //show error via toast or show on screen
-                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                            // The verification code entered was invalid
-                            // [START_EXCLUDE silent]
-                            mVerificationField.setError("Invalid code.");
-                            // [END_EXCLUDE]
-                        }
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d("PhoneAuth", "signInWithCredential:success");
+                    FirebaseUser user = task.getResult().getUser();
+                    Intent mainActivity=new Intent(MobileAuth.this,MainActivity.class);
+                    startActivity(mainActivity);
+                    finish();
+                }
+                else {
+                    // Sign in failed, display a message and update the UI
+                    Log.w("PhoneAuth", "signInWithCredential:failure", task.getException());
+                    //show error via toast or show on screen
+                    if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                        // The verification code entered was invalid
                         // [START_EXCLUDE silent]
-                        // Update UI
-                        //updateUI(STATE_SIGNIN_FAILED);
+                        mVerificationField.setError("Invalid code.");
                         // [END_EXCLUDE]
                     }
+                    // [START_EXCLUDE silent]
+                    // Update UI
+                    //updateUI(STATE_SIGNIN_FAILED);
+                    // [END_EXCLUDE]
+                }
                 }
             });
     }
