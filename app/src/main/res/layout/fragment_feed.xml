@@ -35,8 +35,8 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="0dp"
 
+                android:onClick="postStatus"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/postEditText" />
         </android.support.constraint.ConstraintLayout>

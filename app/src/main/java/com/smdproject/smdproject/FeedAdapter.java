@@ -34,7 +34,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             holder.dp.setImageURI(items.get(position).getPostman().dp);
             holder.name.setText(items.get(position).getPostman().getName());
             holder.nickname.setText("@"+items.get(position).getGroup().getNicknames().get(items.get(position).getPostman().getUid()));
-            holder.timestamp.setText(items.get(position).getStamp().getTimestamp().toString());
+            holder.timestamp.setText(items.get(position).getStamp().toString());
             holder.text.setText(items.get(position).getText());
         }
     }

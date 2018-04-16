@@ -5,6 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.security.Timestamp;
+import java.util.Date;
 
 /**
  * Created by Ahmad on 28-Mar-18.
@@ -22,7 +23,7 @@ public class Comment {
     private User commentator;
 //
 //    //@ColumnInfo(name = "time")
-    private Timestamp stamp;
+    private Date stamp;
 //
 //    public void setCid(int cid) {
 //        this.cid = cid;

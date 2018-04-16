@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 /**
  * Created by Abdullah on 2/28/2018.
  */
@@ -16,13 +17,15 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     public TextView nickname;
     public TextView timestamp;
     public TextView text;
+    public ImageView image;
 
     public FeedViewHolder(View view){
         super(view);
-        dp = view.findViewById(R.id.dpOnPost);
-        name = view.findViewById(R.id.nameOnPost);
-        nickname = view.findViewById(R.id.nicknameOnPost);
-        timestamp = view.findViewById(R.id.timestampOnPost);
-        text = view.findViewById(R.id.textOnPost);
+        dp = (ImageView) view.findViewById(R.id.dpOnPost);
+        name = (TextView) view.findViewById(R.id.nameOnPost);
+        nickname = (TextView) view.findViewById(R.id.nicknameOnPost);
+        timestamp = (TextView)view.findViewById(R.id.timestampOnPost);
+        text = (TextView) view.findViewById(R.id.textOnPost);
+        //image= view.findViewById(R.id.)
     }
 }

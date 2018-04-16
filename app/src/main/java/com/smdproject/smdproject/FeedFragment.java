@@ -4,10 +4,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import java.security.Timestamp;
+import java.util.Date;
+
+import database.Post;
 
 
 /**
@@ -34,10 +42,10 @@ public class FeedFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private Context context;
+    private MainActivity context;
 
     public FeedFragment(Context c) {
-        context=c;
+        context=(MainActivity)c;
     }
 
     /**
@@ -71,7 +79,17 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        FeedAdapter adapter=new FeedAdapter(context.getCurrentGroup().getPosts(),R.layout.feed_row_layout);
+
+        RecyclerView rc=(RecyclerView)context.findViewById(R.id.feedRecycler);
+
+        rc.setLayoutManager(new LinearLayoutManager(context));
+        rc.setItemAnimator(new DefaultItemAnimator());
+        rc.setAdapter(adapter);
+
         return inflater.inflate(R.layout.fragment_feed, container, false);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -116,9 +134,13 @@ public class FeedFragment extends Fragment {
     }
 
     public void postStatus(View v){
-        EditText statusText=(EditText)findViewById(R.id.postEditText);
+        EditText statusText=(EditText)context.findViewById(R.id.postEditText);
 
-        //Post post=new Post(currentGroup,currentUser,statusText,null, new Timestamp());
+        Post post=new Post(context.getCurrentGroup(),context.getCurrentUser(),statusText.getText().toString(),null ,null, new Date());
+
+        context.getCurrentGroup().getPosts().add(post);
+
+        ((RecyclerView)context.findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
 
     }
 

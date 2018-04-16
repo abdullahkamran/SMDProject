@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import java.security.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Ahmad on 28-Mar-18.
@@ -16,17 +17,17 @@ public class Post {
     Group group;
     User postman;
     String text;
-    ArrayList<Uri> images;
-    ArrayList<Uri> videos;
-    Timestamp stamp;
+    Uri image;
+    Uri video;
+    Date stamp;
     ArrayList<Comment> comments;
 
-    public Post(Group group, User postman, String text, ArrayList<Uri> images, ArrayList<Uri> videos, Timestamp stamp) {
+    public Post(Group group, User postman, String text, Uri image, Uri video, Date stamp) {
         this.group = group;
         this.postman = postman;
         this.text = text;
-        this.images = images;
-        this.videos = videos;
+        this.image = image;
+        this.video = video;
         this.stamp = stamp;
     }
 
@@ -54,31 +55,31 @@ public class Post {
         this.text = text;
     }
 
-    public ArrayList<Uri> getImages() {
-        return images;
+    public Uri getImage() {
+        return image;
     }
 
-    public void setImages(ArrayList<Uri> images) {
-        this.images = images;
+    public void setImage(Uri image) {
+        this.image = image;
     }
 
-    public ArrayList<Uri> getVideos() {
-        return videos;
+    public Uri getVideo() {
+        return video;
     }
 
-    public void setVideos(ArrayList<Uri> videos) {
-        this.videos = videos;
+    public void Video(Uri videos) {
+        this.video = videos;
     }
 
     //public Timestamp getTextStamp() {
-      //  stamp.getTimestamp()
+    //  stamp.getTimestamp()
     //}
 
-    public Timestamp getStamp() {
+    public Date getStamp() {
         return stamp;
     }
 
-    public void setStamp(Timestamp stamp) {
+    public void setStamp(Date stamp) {
         this.stamp = stamp;
     }
 
