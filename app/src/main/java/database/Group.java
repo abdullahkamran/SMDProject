@@ -20,6 +20,12 @@ public class Group {
     private HashMap<Integer,String> nicknames;
     private int groupPic;
 
+    public Group(String name) {
+        this.name = name;
+        members=new ArrayList<>();
+        posts=new ArrayList<>();
+        nicknames=new HashMap<Integer,String>();
+    }
 
     public ArrayList<User> getMembers() {
         return members;

@@ -17,6 +17,13 @@ public class User {
     @PrimaryKey(autoGenerate = true)
     private int uid;
 
+    public User(Uri dp, int uid, String firstName, String lastName) {
+        this.dp = dp;
+        this.uid = uid;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     @ColumnInfo(name = "first_name")
     private String firstName;
 

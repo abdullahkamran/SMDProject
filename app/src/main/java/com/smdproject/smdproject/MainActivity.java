@@ -2,6 +2,7 @@ package com.smdproject.smdproject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -25,7 +26,7 @@ import database.Group;
 import database.User;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements FeedFragment.OnFragmentInteractionListener,NavigationView.OnNavigationItemSelectedListener{
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -90,19 +91,28 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
 
+    }
     @Override
     public void onStart() {
+
         super.onStart();
+
+        currentUser=new User(Uri.parse("res:///"+R.drawable.com_facebook_button_icon_blue),1,"Abdullah","Kamran");
+        currentGroup=new Group("Koders");
+        currentGroup.getMembers().add(currentUser);
+
+    /*
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser==null){
+        if(currentUser==null && false){
             Intent auth=new Intent(this,LoginActivity.class);
             startActivity(auth);
             finish();
-        }
+        }*/
+
     }
+
 
     @Override
     public void onBackPressed() {
@@ -165,38 +175,10 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {
-        }
+    @Override
+    public void onFragmentInteraction(Uri uri){}
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
-            return rootView;
-        }
-    }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         private String tabNames[]=new String[]{"Squad Feed","Squad Events","Squad Map","Squad Chat"};
