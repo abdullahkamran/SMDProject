@@ -26,7 +26,11 @@ import database.Group;
 import database.User;
 
 public class MainActivity extends AppCompatActivity
-        implements FeedFragment.OnFragmentInteractionListener,NavigationView.OnNavigationItemSelectedListener{
+        implements FeedFragment.OnFragmentInteractionListener,
+                    EventFragment.OnFragmentInteractionListener,
+                    MapFragment.OnFragmentInteractionListener,
+                    ChatFragment.OnFragmentInteractionListener,
+        NavigationView.OnNavigationItemSelectedListener{
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a

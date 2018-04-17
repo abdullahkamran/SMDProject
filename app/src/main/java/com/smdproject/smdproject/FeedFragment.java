@@ -80,15 +80,17 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        View v=inflater.inflate(R.layout.fragment_feed, container, false);
+
         FeedAdapter adapter=new FeedAdapter(context.getCurrentGroup().getPosts(),R.layout.feed_row_layout);
 
-        RecyclerView rc=(RecyclerView)context.findViewById(R.id.feedRecycler);
+        RecyclerView rc=(RecyclerView)v.findViewById(R.id.feedRecycler);
 
         rc.setLayoutManager(new LinearLayoutManager(context));
         rc.setItemAnimator(new DefaultItemAnimator());
         rc.setAdapter(adapter);
 
-        return inflater.inflate(R.layout.fragment_feed, container, false);
+        return v;
 
     }
 
