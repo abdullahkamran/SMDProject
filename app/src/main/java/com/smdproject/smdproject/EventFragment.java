@@ -4,10 +4,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
+import database.Event;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,7 +75,14 @@ public class EventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_event, container, false);
+        View v=inflater.inflate(R.layout.fragment_event, container, false);
+        EventAdapter adapter=new EventAdapter(context.getCurrentGroup().getEvents(),R.layout.event_row_layout);
+        RecyclerView rc = v.findViewById(R.id.eventview);
+        rc.setLayoutManager(new LinearLayoutManager(context));
+        rc.setItemAnimator(new DefaultItemAnimator());
+        rc.setAdapter(adapter);
+
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -110,5 +122,15 @@ public class EventFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void postEvent(View v){
+        EditText ename=(EditText)context.findViewById(R.id.ename);
+        EditText edes=(EditText)context.findViewById(R.id.edescription);
+        EditText etime=(EditText)context.findViewById(R.id.etime);
+        EditText edate=(EditText)context.findViewById(R.id.edate);
+        Event event=new Event(context.getCurrentGroup(),ename.toString(),null,null,null);
+        context.getCurrentGroup().getEvents().add(event);
+        ((RecyclerView)context.findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
     }
 }

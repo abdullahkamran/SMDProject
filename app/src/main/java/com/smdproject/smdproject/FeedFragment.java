@@ -137,13 +137,8 @@ public class FeedFragment extends Fragment {
 
     public void postStatus(View v){
         EditText statusText=(EditText)context.findViewById(R.id.postEditText);
-
         Post post=new Post(context.getCurrentGroup(),context.getCurrentUser(),statusText.getText().toString(),null ,null, new Date());
-
         context.getCurrentGroup().getPosts().add(post);
-
         ((RecyclerView)context.findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
-
     }
-
 }

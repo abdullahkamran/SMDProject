@@ -13,47 +13,37 @@ import java.util.Date;
 
 //@Entity(tableName = "comment")
 public class Comment {
-//    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = true)
     private int cid;
-//
-//    @ColumnInfo(name = "text")
+
+    @ColumnInfo(name = "text")
     private String text;
-//
-//    //@ColumnInfo(name = "commentator")
+
+    @ColumnInfo(name = "commentator")
     private User commentator;
-//
-//    //@ColumnInfo(name = "time")
-    private Date stamp;
-//
-//    public void setCid(int cid) {
-//        this.cid = cid;
-//    }
-//
-//    public void setText(String text) {
-//        this.text = text;
-//    }
-//
-//    public void setCommentator(User commentator) {
-//        this.commentator = commentator;
-//    }
-//
-//    public void setStamp(Timestamp stamp) {
-//        this.stamp = stamp;
-//    }
-//
-//    public int getCid() {
-//        return cid;
-//    }
-//
-//    public String getText() {
-//        return text;
-//    }
-//
-//    public User getCommentator() {
-//        return commentator;
-//    }
-//
-//    public Timestamp getStamp() {
-//        return stamp;
-//    }
+
+    @ColumnInfo(name = "time")
+    private Timestamp stamp;
+
+    public Comment(String text, User commentator, Timestamp stamp) {
+        this.text = text;
+        this.commentator = commentator;
+        this.stamp = stamp;
+    }
+
+    public int getCid() {
+        return cid;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public User getCommentator() {
+        return commentator;
+    }
+
+    public Timestamp getStamp() {
+        return stamp;
+    }
 }

@@ -42,6 +42,10 @@ public class MainActivity extends AppCompatActivity
 
     private static int TAB_COUNT=4;
     private FirebaseAuth mAuth;
+    private Group currentGroup;
+    private User currentUser;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
 
     public Group getCurrentGroup() {
         return currentGroup;
@@ -59,13 +63,9 @@ public class MainActivity extends AppCompatActivity
         this.currentUser = currentUser;
     }
 
-    private Group currentGroup;
-    private User currentUser;
-    private SectionsPagerAdapter mSectionsPagerAdapter;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

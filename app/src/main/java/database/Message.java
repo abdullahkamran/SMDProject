@@ -8,4 +8,5 @@ import android.arch.persistence.room.Entity;
 
 //@Entity(tableName = "message")
 public class Message {
+
 }

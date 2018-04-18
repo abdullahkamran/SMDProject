@@ -13,7 +13,6 @@ import java.util.Date;
 
 //@Entity(tableName = "post")
 public class Post {
-
     Group group;
     User postman;
     String text;
