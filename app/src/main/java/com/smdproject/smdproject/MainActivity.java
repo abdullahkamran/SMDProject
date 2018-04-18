@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,9 +21,16 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Date;
+
 import database.Group;
+import database.Post;
 import database.User;
 
 public class MainActivity extends AppCompatActivity
@@ -107,14 +115,13 @@ public class MainActivity extends AppCompatActivity
         currentGroup=new Group("Koders");
         currentGroup.getMembers().add(currentUser);
 
-    /*
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser==null && false){
-            Intent auth=new Intent(this,LoginActivity.class);
-            startActivity(auth);
-            finish();
-        }*/
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if(currentUser == null){
+//            Intent auth=new Intent(this,LoginActivity.class);
+//            startActivity(auth);
+//            finish();
+//        }
 
     }
 

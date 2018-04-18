@@ -73,23 +73,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if(currentUser!=null){
-//            //  updateUI(currentUser);
-//            //make intent
-//            //start activity
-//            //finish();
-//        }
-//    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser!=null){
+            Intent auth=new Intent(this,MainActivity.class);
+            startActivity(auth);
+            finish();
+        }
+    }
 
     public  void onClick(View v){
         switch (v.getId()) {
             case R.id.sign_in_button:
-                //Toast.makeText(this, "Google Sign in button clicked", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Google Sign in button clicked", Toast.LENGTH_LONG).show();
                 Intent i=mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(i,9001);
                 break;
@@ -110,6 +109,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+
+//                account.getDisplayName();
+//                account.getEmail();
+//                account.getPhotoUrl().toString();
+
+               // Glide.with(this).load(account.getPhotoUrl().toString()).into(view v)
+
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w("GoogleSignIn", "Google sign in failed", e);
@@ -162,8 +168,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("FacebookSignIn", "signInWithCredential:success");
                     FirebaseUser user = mAuth.getCurrentUser();
-                    Intent googleIntent=new Intent(LoginActivity.this,MainActivity.class);
-                    startActivity(googleIntent);
+                    Intent facebookIntent=new Intent(LoginActivity.this,MainActivity.class);
+                    startActivity(facebookIntent);
                     finish();
                 }
                 else {
