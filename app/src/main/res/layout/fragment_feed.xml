@@ -31,6 +31,17 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
+                android:id="@+id/attachButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+
+                android:layout_marginEnd="8dp"
+                android:onClick="postStatus"
+                app:layout_constraintBottom_toBottomOf="@+id/postButton"
+                app:layout_constraintEnd_toStartOf="@+id/postButton"
+                app:layout_constraintTop_toTopOf="@+id/postButton" />
+
+            <Button
                 android:id="@+id/postButton"
                 android:layout_width="50dp"
                 android:layout_height="50dp"

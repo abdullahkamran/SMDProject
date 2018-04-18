@@ -42,10 +42,6 @@ public class MainActivity extends AppCompatActivity
 
     private static int TAB_COUNT=4;
     private FirebaseAuth mAuth;
-    private Group currentGroup;
-    private User currentUser;
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
 
     public Group getCurrentGroup() {
         return currentGroup;
@@ -63,9 +59,13 @@ public class MainActivity extends AppCompatActivity
         this.currentUser = currentUser;
     }
 
+    private Group currentGroup=null;
+    private User currentUser=null;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -222,4 +223,44 @@ public class MainActivity extends AppCompatActivity
             return TAB_COUNT;
         }
     }
+
+
+    public void postStatus(View v){
+        EditText statusText=(EditText)findViewById(R.id.postEditText);
+
+        Post post=new Post(currentGroup,currentUser,statusText.getText().toString(),null ,null, new Date());
+
+        currentGroup.getPosts().add(0,post);
+
+        ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
+
+        statusText.setText("");
+
+        InputMethodManager imm=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+
+    }
+
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+        //savedInstanceState.putFloat("finalWeightage",finalWeightage);
+        //savedInstanceState.putFloat("projectWeightage",projectWeightage);
+
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
+        super.onRestoreInstanceState(savedInstanceState);
+
+        //finalWeightage=savedInstanceState.getFloat("finalWeightage");
+        //projectWeightage=savedInstanceState.getFloat("projectWeightage");
+
+    }
+
+
 }
