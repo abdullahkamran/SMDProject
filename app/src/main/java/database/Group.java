@@ -24,6 +24,7 @@ public class Group {
         this.name = name;
         members=new ArrayList<>();
         posts=new ArrayList<>();
+        events=new ArrayList<>();
         nicknames=new HashMap<Integer,String>();
     }
 
