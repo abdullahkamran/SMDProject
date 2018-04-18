@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-
 import database.Event;
 
 /**
@@ -38,10 +37,10 @@ public class EventFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private Context context;
+    private MainActivity context;
 
     public EventFragment(Context c) {
-        context=c;
+        context=(MainActivity)c;
     }
 
     /**
@@ -76,6 +75,7 @@ public class EventFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_event, container, false);
+
         EventAdapter adapter=new EventAdapter(context.getCurrentGroup().getEvents(),R.layout.event_row_layout);
         RecyclerView rc = v.findViewById(R.id.eventview);
         rc.setLayoutManager(new LinearLayoutManager(context));
