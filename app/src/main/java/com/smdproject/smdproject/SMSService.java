@@ -58,5 +58,5 @@ public class SMSService extends Service {
             }
         }
 
-    }
+    };
 }
