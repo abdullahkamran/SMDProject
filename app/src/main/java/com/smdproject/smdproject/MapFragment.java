@@ -32,10 +32,10 @@ public class MapFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private Context context;
+    private MainActivity context;
 
     public MapFragment(Context c) {
-        context=c;
+        context=(MainActivity)c;
     }
 
     /**

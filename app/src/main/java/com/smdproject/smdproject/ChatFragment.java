@@ -31,10 +31,10 @@ public class ChatFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private Context context;
+    private MainActivity context;
 
     public ChatFragment(Context c) {
-        context=c;
+        context=(MainActivity) c;
     }
 
     /**
