@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Date;
 
+import database.Event;
 import database.Group;
 import database.Post;
 import database.User;
@@ -257,6 +258,16 @@ public class MainActivity extends AppCompatActivity
         InputMethodManager imm=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
 
+    }
+
+    public void postEvent(View v){
+        EditText ename = findViewById(R.id.ename);
+        EditText edes = findViewById(R.id.edescription);
+        EditText etime = findViewById(R.id.etime);
+        EditText edate = findViewById(R.id.edate);
+        Event event = new Event(getCurrentGroup(),ename.getText().toString(),null,null,null);
+        currentGroup.getEvents().add(event);
+        ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
     }
 
 

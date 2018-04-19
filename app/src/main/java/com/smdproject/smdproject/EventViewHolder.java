@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 public class EventViewHolder extends RecyclerView.ViewHolder {
 
-    public ImageView eventPic;
+    //public ImageView eventPic;
     public TextView eventName;
     public TextView timePlace;
     public TextView intrPerson;
@@ -16,10 +16,9 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
 
     public EventViewHolder(View view){
         super(view);
-        eventPic = view.findViewById(R.id.eventImage);
+        //eventPic = view.findViewById(R.id.eventImage);
         eventName = view.findViewById(R.id.eventName);
         timePlace = view.findViewById(R.id.eventTime);
         intrPerson = view.findViewById(R.id.persons);
-
     }
 }

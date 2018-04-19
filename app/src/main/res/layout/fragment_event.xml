@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:hint="event daet"
+                    android:hint="event time"
                     android:inputType="time"
                     android:textSize="14sp" />
 

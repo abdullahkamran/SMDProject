@@ -124,13 +124,13 @@ public class EventFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void postEvent(View v){
-        EditText ename = context.findViewById(R.id.ename);
-        EditText edes = context.findViewById(R.id.edescription);
-        EditText etime = context.findViewById(R.id.etime);
-        EditText edate = context.findViewById(R.id.edate);
-        Event event = new Event(context.getCurrentGroup(),ename.toString(),null,null,null);
-        context.getCurrentGroup().getEvents().add(event);
-        ((RecyclerView)context.findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
-    }
+//    public void postEvent(View v){
+//        EditText ename = context.findViewById(R.id.ename);
+//        EditText edes = context.findViewById(R.id.edescription);
+//        EditText etime = context.findViewById(R.id.etime);
+//        EditText edate = context.findViewById(R.id.edate);
+//        Event event = new Event(context.getCurrentGroup(),ename.toString(),null,null,null);
+//        context.getCurrentGroup().getEvents().add(event);
+//        ((RecyclerView)context.findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
+//    }
 }
