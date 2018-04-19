@@ -5,6 +5,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.net.Uri;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by Ahmad on 28-Mar-18.
  */
@@ -22,6 +24,17 @@ public class User {
 
     @ColumnInfo(name = "last_name")
     private String lastName;
+
+
+    private LatLng location;
+
+    public LatLng getLocation() {
+        return location;
+    }
+
+    public void setLocation(LatLng location) {
+        this.location = location;
+    }
 
     public User(Uri dp, int uid, String firstName, String lastName) {
         this.dp = dp;

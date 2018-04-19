@@ -29,6 +29,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         return new ChatViewHolder(v);
     }
 
+
     @Override
     public void onBindViewHolder(ChatViewHolder holder,int position){
         if(items!=null && holder!=null){
