@@ -11,7 +11,7 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by Ahmad on 28-Mar-18.
  */
 
-//@Entity(tableName = "user")
+@Entity(tableName = "user")
 public class User {
 
     public Uri dp;

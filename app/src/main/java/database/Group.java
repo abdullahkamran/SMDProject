@@ -12,7 +12,7 @@ import java.util.HashMap;
  * Created by Ahmad on 28-Mar-18.
  */
 
-@Entity(tableName = "group")
+@Entity(tableName = "groups")
 public class Group {
     @PrimaryKey(autoGenerate = true)
     private int groupId;
