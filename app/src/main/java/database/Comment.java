@@ -32,19 +32,15 @@ public class Comment {
 
     private User commentator;
     private Post p;
-    private Uri image;
-    private Uri video;
     private String text;
 
-    public Comment(String text,Uri image, Uri video, User commentator, Timestamp stamp,Post p) {
+    public Comment(String text, User commentator, Timestamp stamp,Post p) {
         this.text = text;
         this.commentator = commentator;
         this.userid = commentator.getUid();
         this.postid = p.getPid();
         this.stamp = stamp;
         this.p = p;
-        this.image = image;
-        this.video = video;
     }
 
     public int getUserid() {
@@ -65,22 +61,6 @@ public class Comment {
 
     public Timestamp getStamp() {
         return stamp;
-    }
-
-    public Uri getImage() {
-        return image;
-    }
-
-    public void setImage(Uri image) {
-        this.image = image;
-    }
-
-    public Uri getVideo() {
-        return video;
-    }
-
-    public void Video(Uri videos) {
-        this.video = videos;
     }
 
     public void setText(String text) {
