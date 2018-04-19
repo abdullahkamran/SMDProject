@@ -16,16 +16,30 @@ import database.Post;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     private List<Message> items;
-    private int itemLayout;
+    private int itemLayoutIn;
+    private int itemLayoutOut;
+    private MainActivity context;
 
-    public ChatAdapter(List<Message> items, int itemLayout) {
+    public ChatAdapter(List<Message> items, int itemLayoutIn, int itemLayoutOut, MainActivity context) {
         this.items = items;
-        this.itemLayout = itemLayout;
+        this.itemLayoutIn = itemLayoutIn;
+        this.itemLayoutOut = itemLayoutOut;
+        this.context=context;
+    }
+
+    @Override
+    public int getItemViewType(int position){
+        if(items.get(position).getSender().getUid()==context.getCurrentUser().getUid())return 2;
+        else return 1;
     }
 
     @Override
     public ChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-        View v= LayoutInflater.from(parent.getContext()).inflate(itemLayout,parent,false);
+        View v=null;
+
+        if(viewType==1)v=LayoutInflater.from(parent.getContext()).inflate(itemLayoutIn,parent,false);
+        else v=LayoutInflater.from(parent.getContext()).inflate(itemLayoutOut,parent,false);
+
         return new ChatViewHolder(v);
     }
 

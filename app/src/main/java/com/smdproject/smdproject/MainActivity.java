@@ -305,10 +305,13 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        for(int i=0;i<currentGroup.getMembers().size();i++) {
+            mMap.addMarker(new MarkerOptions().position
+                    (currentGroup.getMembers().get(i).getLocation()).title(currentGroup.getMembers().get(i).getName()+" is here!!"));
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentGroup.getMembers().get(i).getLocation()));
+        }
     }
 
 }
