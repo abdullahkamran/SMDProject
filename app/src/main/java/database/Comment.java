@@ -2,6 +2,7 @@ package database;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.security.Timestamp;
@@ -11,7 +12,10 @@ import java.util.Date;
  * Created by Ahmad on 28-Mar-18.
  */
 
-//@Entity(tableName = "comment")
+@Entity(tableName = "comment",
+        foreignKeys = {@ForeignKey(entity = Post.class,parentColumns = "pid",childColumns = "p_id"),
+                       @ForeignKey(entity = User.class,parentColumns = "uid",childColumns = "u_id")})
+
 public class Comment {
     @PrimaryKey(autoGenerate = true)
     private int cid;
@@ -19,16 +23,29 @@ public class Comment {
     @ColumnInfo(name = "text")
     private String text;
 
-    @ColumnInfo(name = "commentator")
-    private User commentator;
+    @ColumnInfo(name = "p_id")
+    private int postid;
 
-    @ColumnInfo(name = "time")
+    @ColumnInfo(name = "u_id")
+    private int userid;
+
+    //@ColumnInfo(name = "time")
     private Timestamp stamp;
 
-    public Comment(String text, User commentator, Timestamp stamp) {
+    private User commentator;
+    private Post p;
+
+    public Comment(String text, User commentator, Timestamp stamp,Post p) {
         this.text = text;
         this.commentator = commentator;
+        this.userid = commentator.getUid();
+        this.postid = p.getPid();
         this.stamp = stamp;
+        this.p = p;
+    }
+
+    public int getUserid() {
+        return userid;
     }
 
     public int getCid() {

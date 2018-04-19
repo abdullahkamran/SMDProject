@@ -1,8 +1,10 @@
 package database;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
 import android.net.Uri;
-
 import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,15 +13,25 @@ import java.util.Date;
  * Created by Ahmad on 28-Mar-18.
  */
 
-//@Entity(tableName = "post")
+@Entity(tableName = "post",
+        foreignKeys = {@ForeignKey(entity = User.class,parentColumns = "uid",childColumns = "u_id"),
+                       @ForeignKey(entity = Group.class,parentColumns = "groupId",childColumns = "g_id")})
 public class Post {
-    Group group;
-    User postman;
-    String text;
-    Uri image;
-    Uri video;
-    Date stamp;
-    ArrayList<Comment> comments;
+    @PrimaryKey(autoGenerate = true)
+    private int pid;
+
+    @ColumnInfo(name = "u_id")
+    private int uid;
+
+    @ColumnInfo(name = "g_id")
+    private int gid;
+    private Group group;
+    private User postman;
+    private String text;
+    private Uri image;
+    private Uri video;
+    private Date stamp;
+    private ArrayList<Comment> comments;
 
     public Post(Group group, User postman, String text, Uri image, Uri video, Date stamp) {
         this.group = group;
@@ -28,6 +40,12 @@ public class Post {
         this.image = image;
         this.video = video;
         this.stamp = stamp;
+        this.uid = postman.getUid();
+        this.gid = group.getGroupId();
+    }
+
+    public int getPid() {
+        return pid;
     }
 
     public Group getGroup() {
