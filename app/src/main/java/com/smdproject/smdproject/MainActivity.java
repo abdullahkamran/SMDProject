@@ -307,10 +307,12 @@ public class MainActivity extends AppCompatActivity
 
 
         for(int i=0;i<currentGroup.getMembers().size();i++) {
-            mMap.addMarker(new MarkerOptions().position
-                    (currentGroup.getMembers().get(i).getLocation()).title(currentGroup.getMembers().get(i).getName()+" is here!!"));
+            if(currentGroup.getMembers().get(i).getLocation()!=null) {
+                mMap.addMarker(new MarkerOptions().position
+                        (currentGroup.getMembers().get(i).getLocation()).title(currentGroup.getMembers().get(i).getName() + " is here!!"));
 
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(currentGroup.getMembers().get(i).getLocation()));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(currentGroup.getMembers().get(i).getLocation()));
+            }
         }
     }
 

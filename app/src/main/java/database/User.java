@@ -31,7 +31,7 @@ public class User {
     private String lastName;
 
     @Ignore
-    private LatLng location;
+    private LatLng location=null;
 
     public User(){
 
