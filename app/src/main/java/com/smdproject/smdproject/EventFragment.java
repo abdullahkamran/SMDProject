@@ -3,6 +3,8 @@ package com.smdproject.smdproject;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -82,6 +84,15 @@ public class EventFragment extends Fragment {
         rc.setItemAnimator(new DefaultItemAnimator());
         rc.setAdapter(adapter);
 
+        FloatingActionButton fab = v.findViewById(R.id.addevent);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
         return v;
     }
 
@@ -123,14 +134,4 @@ public class EventFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-//    public void postEvent(View v){
-//        EditText ename = context.findViewById(R.id.ename);
-//        EditText edes = context.findViewById(R.id.edescription);
-//        EditText etime = context.findViewById(R.id.etime);
-//        EditText edate = context.findViewById(R.id.edate);
-//        Event event = new Event(context.getCurrentGroup(),ename.toString(),null,null,null);
-//        context.getCurrentGroup().getEvents().add(event);
-//        ((RecyclerView)context.findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
-//    }
 }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import database.Message;
@@ -15,12 +16,12 @@ import database.Post;
  */
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
-    private List<Message> items;
+    private ArrayList<Message> items;
     private int itemLayoutIn;
     private int itemLayoutOut;
     private MainActivity context;
 
-    public ChatAdapter(List<Message> items, int itemLayoutIn, int itemLayoutOut, MainActivity context) {
+    public ChatAdapter(ArrayList<Message> items, int itemLayoutIn, int itemLayoutOut, MainActivity context) {
         this.items = items;
         this.itemLayoutIn = itemLayoutIn;
         this.itemLayoutOut = itemLayoutOut;

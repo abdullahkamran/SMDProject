@@ -1,8 +1,11 @@
 package database;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.net.Uri;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -14,6 +17,8 @@ import com.google.android.gms.maps.model.LatLng;
 @Entity(tableName = "user")
 public class User {
 
+    @ColumnInfo(name="epic")
+    @TypeConverters({UriConverter.class})
     public Uri dp;
 
     @PrimaryKey(autoGenerate = true)
@@ -25,17 +30,14 @@ public class User {
     @ColumnInfo(name = "last_name")
     private String lastName;
 
-
+    @Ignore
     private LatLng location;
 
-    public LatLng getLocation() {
-        return location;
+    public User(){
+
     }
 
-    public void setLocation(LatLng location) {
-        this.location = location;
-    }
-
+    @Ignore
     public User(Uri dp, int uid, String firstName, String lastName) {
         this.dp = dp;
         this.uid = uid;
@@ -69,5 +71,21 @@ public class User {
 
     public String getName(){
         return getFirstName()+" "+getLastName();
+    }
+
+    public Uri getDp() {
+        return dp;
+    }
+
+    public void setDp(Uri dp) {
+        this.dp = dp;
+    }
+
+    public LatLng getLocation() {
+        return location;
+    }
+
+    public void setLocation(LatLng location) {
+        this.location = location;
     }
 }

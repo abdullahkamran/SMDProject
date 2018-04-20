@@ -3,7 +3,9 @@ package database;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.net.Uri;
 
 import java.util.Date;
@@ -26,11 +28,23 @@ public class Message {
     @ColumnInfo(name = "u_id")
     private int senderid;
 
-    private Group group;
-    private User sender;
+    @ColumnInfo(name = "text")
     private String text;
+
+    @ColumnInfo(name = "dtime")
+    @TypeConverters({TimestampConverter.class})
     private Date stamp;
 
+    @Ignore
+    private Group group;
+    @Ignore
+    private User sender;
+
+    public Message(){
+
+    }
+
+    @Ignore
     public Message(Group group, User sender, String text, Date stamp) {
         this.group = group;
         this.sender = sender;
@@ -38,6 +52,30 @@ public class Message {
         this.stamp = stamp;
         this.gid = group.getGroupId();
         this.senderid = sender.getUid();
+    }
+
+    public int getMid() {
+        return mid;
+    }
+
+    public int getGid() {
+        return gid;
+    }
+
+    public int getSenderid() {
+        return senderid;
+    }
+
+    public void setMid(int mid) {
+        this.mid = mid;
+    }
+
+    public void setGid(int gid) {
+        this.gid = gid;
+    }
+
+    public void setSenderid(int senderid) {
+        this.senderid = senderid;
     }
 
     public Group getGroup() {

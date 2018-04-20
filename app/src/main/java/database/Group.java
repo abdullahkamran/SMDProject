@@ -2,8 +2,10 @@ package database;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-import android.graphics.Bitmap;
+import android.arch.persistence.room.TypeConverters;
+import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,20 +22,26 @@ public class Group {
     @ColumnInfo(name = "name")
     private String name;
 
-//    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-//    private byte[] image;
-    //convert bitmap to byte to store in db
-    //convert byte to bitmap to load from db
+    @ColumnInfo(name="gpic")
+    @TypeConverters({UriConverter.class})
+    private Uri groupPic;
 
-
-    private int groupPic;
-
+    @Ignore
     private ArrayList<User> members;
+    @Ignore
     private ArrayList<Post> posts;
+    @Ignore
     private ArrayList<Event> events;
+    @Ignore
     private ArrayList<Message> messages;
+    @Ignore
     private HashMap<Integer,String> nicknames;
 
+    public Group(){
+
+    }
+
+    @Ignore
     public Group(String name) {
         this.name = name;
         members=new ArrayList<>();
@@ -94,12 +102,15 @@ public class Group {
         this.nicknames = nicknames;
     }
 
-    public int getGroupPic() {
+    public Uri getGroupPic() {
         return groupPic;
     }
 
-    public void setGroupPic(int groupPic) {
+    public void setGroupPic(Uri groupPic) {
         this.groupPic = groupPic;
     }
 
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
 }

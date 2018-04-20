@@ -3,7 +3,9 @@ package database;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.net.Uri;
 
 import java.security.Timestamp;
@@ -27,19 +29,61 @@ public class Comment {
     @ColumnInfo(name = "u_id")
     private int userid;
 
-    //@ColumnInfo(name = "time")
-    private Timestamp stamp;
-
-    private User commentator;
-    private Post p;
+    @ColumnInfo(name = "text")
     private String text;
 
-    public Comment(String text, User commentator, Timestamp stamp,Post p) {
+    @ColumnInfo(name = "dtime")
+    @TypeConverters({TimestampConverter.class})
+    private Date stamp;
+
+    @Ignore
+    private User commentator;
+    @Ignore
+    private Post p;
+
+    public Comment(){
+
+    }
+
+    @Ignore
+    public Comment(String text, User commentator, Date stamp, Post p) {
         this.text = text;
         this.commentator = commentator;
         this.userid = commentator.getUid();
         this.postid = p.getPid();
         this.stamp = stamp;
+        this.p = p;
+    }
+
+    public int getPostid() {
+        return postid;
+    }
+
+    public Post getP() {
+        return p;
+    }
+
+    public void setCid(int cid) {
+        this.cid = cid;
+    }
+
+    public void setPostid(int postid) {
+        this.postid = postid;
+    }
+
+    public void setUserid(int userid) {
+        this.userid = userid;
+    }
+
+    public void setStamp(Date stamp) {
+        this.stamp = stamp;
+    }
+
+    public void setCommentator(User commentator) {
+        this.commentator = commentator;
+    }
+
+    public void setP(Post p) {
         this.p = p;
     }
 
@@ -59,7 +103,7 @@ public class Comment {
         return commentator;
     }
 
-    public Timestamp getStamp() {
+    public Date getStamp() {
         return stamp;
     }
 

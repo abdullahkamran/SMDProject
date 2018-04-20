@@ -74,7 +74,7 @@ public class ChatFragment extends Fragment {
         View v=inflater.inflate(R.layout.fragment_chat, container, false);
 
         ChatAdapter adapter=
-                new ChatAdapter(context.getCurrentGroup().getMessages(),R.layout.chat_in_row_layout,R.layout.chat_out_row_layout);
+                new ChatAdapter(context.getCurrentGroup().getMessages(),R.layout.chat_in_row_layout,R.layout.chat_out_row_layout,context);
 
         RecyclerView rc=(RecyclerView)v.findViewById(R.id.chatRecycler);
 

@@ -261,13 +261,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void postEvent(View v){
-        EditText ename = findViewById(R.id.ename);
-        EditText edes = findViewById(R.id.edescription);
-        EditText etime = findViewById(R.id.etime);
-        EditText edate = findViewById(R.id.edate);
-        Event event = new Event(getCurrentGroup(),ename.getText().toString(),null,null,null);
-        currentGroup.getEvents().add(event);
-        ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
+//        EditText ename = findViewById(R.id.ename);
+//        EditText edes = findViewById(R.id.edescription);
+//        EditText etime = findViewById(R.id.etime);
+//        EditText edate = findViewById(R.id.edate);
+//        Event event = new Event(getCurrentGroup(),ename.getText().toString(),null,null,null);
+//        currentGroup.getEvents().add(event);
+//        ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
     }
 
 

@@ -31,7 +31,7 @@ public class GroupRecyclerViewAdapter extends RecyclerView.Adapter<GroupViewHold
     @Override
     public void onBindViewHolder(final GroupViewHolder holder, int position) {
         if(items != null && holder != null){
-            holder.groupic.setImageResource(items.get(position).getGroupPic());
+           // holder.groupic.setImageResource(items.get(position).getGroupPic());
             holder.groupname.setText(items.get(position).getName());
             holder.menu.setOnClickListener(new View.OnClickListener() {
                 @Override

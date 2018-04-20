@@ -3,9 +3,10 @@ package database;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.net.Uri;
-import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -25,14 +26,34 @@ public class Post {
 
     @ColumnInfo(name = "g_id")
     private int gid;
-    private Group group;
-    private User postman;
+
+    @ColumnInfo(name = "text")
     private String text;
+
+    @ColumnInfo(name="epic")
+    @TypeConverters({UriConverter.class})
     private Uri image;
-    private Uri video;
+
+    @ColumnInfo(name = "dtime")
+    @TypeConverters({TimestampConverter.class})
     private Date stamp;
+
+    @ColumnInfo(name="video")
+    @TypeConverters({UriConverter.class})
+    private Uri video;
+
+    @Ignore
+    private Group group;
+    @Ignore
+    private User postman;
+    @Ignore
     private ArrayList<Comment> comments;
 
+    public Post(){
+
+    }
+
+    @Ignore
     public Post(Group group, User postman, String text, Uri image, Uri video, Date stamp) {
         this.group = group;
         this.postman = postman;
@@ -42,6 +63,30 @@ public class Post {
         this.stamp = stamp;
         this.uid = postman.getUid();
         this.gid = group.getGroupId();
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public int getGid() {
+        return gid;
+    }
+
+    public void setPid(int pid) {
+        this.pid = pid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
+    public void setGid(int gid) {
+        this.gid = gid;
+    }
+
+    public void setVideo(Uri video) {
+        this.video = video;
     }
 
     public int getPid() {
@@ -87,10 +132,6 @@ public class Post {
     public void Video(Uri videos) {
         this.video = videos;
     }
-
-    //public Timestamp getTextStamp() {
-    //  stamp.getTimestamp()
-    //}
 
     public Date getStamp() {
         return stamp;
