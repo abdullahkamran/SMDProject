@@ -99,13 +99,38 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/attachButton" />
 
+                <Button
+                    android:id="@+id/deleteAttachment"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="32dp"
+                    android:background="@android:drawable/ic_delete"
+                    android:onClick="deleteAttachment"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="@+id/feedAttachThumbnail"
+                    app:layout_constraintTop_toTopOf="@+id/feedAttachThumbnail" />
+
+                <ImageView
+                    android:id="@+id/playsign"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:src="@android:drawable/ic_media_play"
+                    app:layout_constraintBottom_toBottomOf="@+id/feedAttachThumbnail"
+                    app:layout_constraintEnd_toEndOf="@+id/feedAttachThumbnail"
+                    app:layout_constraintStart_toStartOf="@+id/feedAttachThumbnail"
+                    app:layout_constraintTop_toTopOf="@+id/feedAttachThumbnail" />
+
                 <TextView
                     android:id="@+id/textView10"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:text="News Feed"
+                    android:layout_marginTop="16dp"
+                    android:text="News Feed\n"
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"

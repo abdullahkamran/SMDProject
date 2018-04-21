@@ -3,7 +3,9 @@ package com.smdproject.smdproject;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -25,10 +27,12 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -292,22 +296,40 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void deleteAttachment(View v){
+
+        ((ImageView)findViewById(R.id.feedAttachThumbnail)).setImageDrawable(null);
+        ((ImageView)findViewById(R.id.playsign)).setVisibility(ImageView.INVISIBLE);
+        ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.GONE);
+    }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode==0 && resultCode== Activity.RESULT_OK && data!=null && data.getData()!=null){
             Uri uri=data.getData();
             if(uri.toString().contains("image")){
-                try{
-                    Bitmap bm=MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+                ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
 
-                    ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-                    imageview.setImageBitmap(bm);
-                }
-                catch(IOException e){
-                    e.printStackTrace();
-                }
+                Glide.with(this)
+                        .load(uri)
+                        .into(imageview);
+
+                ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
+
             }
             else if(uri.toString().contains("video")){
+
+
+                ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
+
+
+                Glide.with(this)
+                        .load(uri)
+                        .into(imageview);
+
+                ((ImageView)findViewById(R.id.playsign)).setVisibility(ImageView.VISIBLE);
+
+                ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
 
             }
 
