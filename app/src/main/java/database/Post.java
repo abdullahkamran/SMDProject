@@ -38,6 +38,7 @@ public class Post {
     @TypeConverters({TimestampConverter.class})
     private Date stamp;
 
+
     @Ignore
     private Group group;
     @Ignore
@@ -80,6 +81,7 @@ public class Post {
         this.gid = gid;
     }
 
+
     public int getPid() {
         return pid;
     }
@@ -115,6 +117,7 @@ public class Post {
     public void setImage(Uri image) {
         this.image = image;
     }
+
 
     public Date getStamp() {
         return stamp;

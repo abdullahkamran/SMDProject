@@ -19,7 +19,6 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     public TextView timestamp;
     public TextView text;
     public ImageView image;
-    public VideoView video;
 
     public FeedViewHolder(View view){
         super(view);
@@ -29,6 +28,5 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         timestamp = (TextView)view.findViewById(R.id.timestampOnPost);
         text = (TextView) view.findViewById(R.id.textOnPost);
         image= (ImageView)view.findViewById(R.id.imageOnPost);
-        video= (VideoView) view.findViewById(R.id.videoOnPost);
     }
 }
