@@ -84,15 +84,6 @@ public class EventFragment extends Fragment {
         rc.setItemAnimator(new DefaultItemAnimator());
         rc.setAdapter(adapter);
 
-        FloatingActionButton fab = v.findViewById(R.id.addevent);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         return v;
     }
 

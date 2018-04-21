@@ -31,6 +31,9 @@ public class Event {
     @ColumnInfo(name = "name")
     private String name;
 
+    @ColumnInfo(name = "desc")
+    private String description;
+
     @ColumnInfo(name = "dtime")
     @TypeConverters({TimestampConverter.class})
     private Date stamp;
@@ -50,13 +53,22 @@ public class Event {
     }
 
     @Ignore
-    public Event(Group g, String name, Date stamp, LatLng location, Uri ep) {
+    public Event(Group g, String name,String desc, Date stamp, LatLng location, Uri ep) {
         this.name = name;
         this.stamp = stamp;
         this.location = location;
         this.ep = ep;
         this.group = g;
         this.gid = g.getGroupId();
+        this.description = desc;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setEid(int eid) {

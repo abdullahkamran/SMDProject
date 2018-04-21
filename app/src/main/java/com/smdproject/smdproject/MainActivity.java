@@ -129,6 +129,8 @@ public class MainActivity extends AppCompatActivity
 
         super.onStart();
 
+        //do not update group here
+        //make global variable
         currentUser=new User(Uri.parse("res:///"+R.drawable.com_facebook_button_icon_blue),1,"Abdullah","Kamran");
         currentGroup=new Group("Koders");
         currentGroup.getMembers().add(currentUser);
@@ -274,14 +276,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void postEvent(View v){
-//        EditText ename = findViewById(R.id.ename);
-//        EditText edes = findViewById(R.id.edescription);
-//        EditText etime = findViewById(R.id.etime);
-//        EditText edate = findViewById(R.id.edate);
-//        Event event = new Event(getCurrentGroup(),ename.getText().toString(),null,null,null);
-//        currentGroup.getEvents().add(event);
-//        ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
+    public void addEvent(View v){
+        startActivityForResult(new Intent(MainActivity.this,AddEvent.class),123);
     }
 
     public void attachStatus(View v){
@@ -294,9 +290,7 @@ public class MainActivity extends AppCompatActivity
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-
         if(requestCode==0 && resultCode== Activity.RESULT_OK && data!=null && data.getData()!=null){
-
             Uri uri=data.getData();
             if(uri.toString().contains("image")){
                 try{
@@ -313,6 +307,12 @@ public class MainActivity extends AppCompatActivity
 
             }
 
+        }
+        else if (requestCode==123 && data!=null && data.getExtras()!=null){
+            super.onActivityResult(requestCode, resultCode, data);
+            Event e=new Event(currentGroup,data.getExtras().getString("ename"),data.getExtras().getString("edes"),null,null ,null);
+            currentGroup.getEvents().add(0,e);
+            ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
         }
     }
 
