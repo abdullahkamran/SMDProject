@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity
     public void attachStatus(View v){
 
         Intent i=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        i.setType("image/* video/*");
+        i.setType("image/*");
         startActivityForResult(i,0);
 
     }
