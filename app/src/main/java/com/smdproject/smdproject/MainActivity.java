@@ -131,8 +131,12 @@ public class MainActivity extends AppCompatActivity
 
         //do not update group here
         //make global variable
-        currentUser=new User(Uri.parse("res:///"+R.drawable.com_facebook_button_icon_blue),1,"Abdullah","Kamran");
-        currentGroup=new Group("Koders");
+        if(currentUser==null)
+            currentUser=new User(Uri.parse("res:///"+R.drawable.com_facebook_button_icon_blue),1,"Abdullah","Kamran");
+
+        if(currentGroup==null)
+            currentGroup=new Group("Koders");
+
         currentGroup.getMembers().add(currentUser);
 
         // Check if user is signed in (non-null) and update UI accordingly.
