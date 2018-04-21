@@ -94,6 +94,7 @@ public class FeedFragment extends Fragment {
         rc.setLayoutManager(new LinearLayoutManager(context));
         rc.setItemAnimator(new DefaultItemAnimator());
         rc.setAdapter(adapter);
+        rc.setNestedScrollingEnabled(false);
 
         return v;
 

@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 
 /**
@@ -18,6 +19,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     public TextView timestamp;
     public TextView text;
     public ImageView image;
+    public VideoView video;
 
     public FeedViewHolder(View view){
         super(view);
@@ -26,6 +28,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         nickname = (TextView) view.findViewById(R.id.nicknameOnPost);
         timestamp = (TextView)view.findViewById(R.id.timestampOnPost);
         text = (TextView) view.findViewById(R.id.textOnPost);
-        //image= view.findViewById(R.id.)
+        image= (ImageView)view.findViewById(R.id.imageOnPost);
+        video= (VideoView) view.findViewById(R.id.videoOnPost);
     }
 }

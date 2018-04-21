@@ -54,7 +54,8 @@
         app:layout_constraintStart_toStartOf="@+id/nameOnPost"
         app:layout_constraintTop_toBottomOf="@+id/nameOnPost" />
 
-    <EditText
+
+    <TextView
         android:id="@+id/textOnPost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -64,9 +65,32 @@
         android:ems="10"
         android:inputType="none"
         android:text="What's on your mind?"
-        android:textSize="18sp"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/dpOnPost"
         app:layout_constraintTop_toBottomOf="@+id/dpOnPost" />
+
+    <ImageView
+        android:id="@+id/imageOnPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textOnPost" />
+
+    <VideoView
+        android:id="@+id/videoOnPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageOnPost" />
 
 </android.support.constraint.ConstraintLayout>

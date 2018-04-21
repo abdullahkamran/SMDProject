@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.VideoView;
 
 import java.util.List;
 
@@ -39,6 +40,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
             holder.timestamp.setText(items.get(position).getStamp().toString());
             holder.text.setText(items.get(position).getText());
+            holder.image.setImageURI(items.get(position).getImage());
+            holder.video.setVideoURI(items.get(position).getVideo());
+
+            //if(items.get(position).getVideo()!=null) {
+                //holder.video.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+              //  holder.video.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            //}
         }
     }
 

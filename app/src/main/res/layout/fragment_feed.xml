@@ -69,10 +69,12 @@
 
                 <Button
                     android:id="@+id/attachButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
 
                     android:layout_marginEnd="8dp"
+                    android:background="@drawable/ic_menu_gallery"
+                    android:backgroundTint="@color/colorPrimary"
                     android:onClick="attachStatus"
                     app:layout_constraintBottom_toBottomOf="@+id/postButton"
                     app:layout_constraintEnd_toStartOf="@+id/postButton"
@@ -80,11 +82,13 @@
 
                 <Button
                     android:id="@+id/postButton"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginEnd="8dp"
 
                     android:layout_marginTop="4dp"
+                    android:background="@drawable/ic_menu_send"
+                    android:backgroundTint="@color/colorPrimary"
                     android:onClick="postStatus"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/postEditText" />
@@ -119,6 +123,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:src="@android:drawable/ic_media_play"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="@+id/feedAttachThumbnail"
                     app:layout_constraintEnd_toEndOf="@+id/feedAttachThumbnail"
                     app:layout_constraintStart_toStartOf="@+id/feedAttachThumbnail"
@@ -137,12 +142,29 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/feedAttachThumbnail" />
+
             </android.support.constraint.ConstraintLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/feedRecycler"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="End of News Feed."
+                android:textAlignment="center"
+                android:textColor="@color/cardview_dark_background"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/feedAttachThumbnail" />
 
         </LinearLayout>
 

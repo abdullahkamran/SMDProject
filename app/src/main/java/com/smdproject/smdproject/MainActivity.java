@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import com.google.android.gms.ads.MobileAds;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -98,6 +99,9 @@ public class MainActivity extends AppCompatActivity
      */
     private ViewPager mViewPager;
 
+    private Uri postImage=null;
+    private Uri postVideo=null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +110,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -274,13 +279,29 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-        Post post=new Post(currentGroup,currentUser,statusText.getText().toString(),null ,null, new Date());
+        Post post=null;
+
+        if(postVideo==null && postImage==null)
+            post=new Post(currentGroup,currentUser,statusText.getText().toString(), null,null, new Date());
+        else if(postVideo==null)
+            post=new Post(currentGroup,currentUser,statusText.getText().toString(), postImage,null, new Date());
+        else if(postImage==null)
+            post=new Post(currentGroup,currentUser,statusText.getText().toString(), null,postVideo, new Date());
+        else
+            Toast.makeText(this,"ERROR. Both Image and Video assigned.",Toast.LENGTH_SHORT).show();
+
 
         currentGroup.getPosts().add(0,post);
 
         ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
 
         statusText.setText("");
+
+        ((ImageView)findViewById(R.id.feedAttachThumbnail)).setImageDrawable(null);
+        ((ImageView)findViewById(R.id.playsign)).setVisibility(ImageView.INVISIBLE);
+        ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.GONE);
+        postImage=null;
+        postVideo=null;
 
         InputMethodManager imm=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
@@ -304,6 +325,8 @@ public class MainActivity extends AppCompatActivity
         ((ImageView)findViewById(R.id.feedAttachThumbnail)).setImageDrawable(null);
         ((ImageView)findViewById(R.id.playsign)).setVisibility(ImageView.INVISIBLE);
         ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.GONE);
+        postImage=null;
+        postVideo=null;
     }
 
 
@@ -311,20 +334,36 @@ public class MainActivity extends AppCompatActivity
         if(requestCode==0 && resultCode== Activity.RESULT_OK && data!=null && data.getData()!=null){
             Uri uri=data.getData();
             if(uri.toString().contains("image")){
+
+                postImage=uri;
+
                 ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
+                ((ImageView)findViewById(R.id.playsign)).setVisibility(ImageView.INVISIBLE);
+
                 Glide.with(this)
                         .load(uri)
                         .into(imageview);
+
                 ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
+
             }
             else if(uri.toString().contains("video")){
+
+                postVideo=uri;
+
                 ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
+
+
                 Glide.with(this)
                         .load(uri)
                         .into(imageview);
+
                 ((ImageView)findViewById(R.id.playsign)).setVisibility(ImageView.VISIBLE);
+
                 ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
+
             }
+
         }
         else if (requestCode==123 && data!=null && data.getExtras()!=null){
             super.onActivityResult(requestCode, resultCode, data);
