@@ -134,10 +134,10 @@ public class MainActivity extends AppCompatActivity
         if(currentUser==null)
             currentUser=new User(Uri.parse("res:///"+R.drawable.com_facebook_button_icon_blue),1,"Abdullah","Kamran");
 
-        if(currentGroup==null)
-            currentGroup=new Group("Koders");
-
-        currentGroup.getMembers().add(currentUser);
+        if(currentGroup==null) {
+            currentGroup = new Group("Koders");
+            currentGroup.getMembers().add(currentUser);
+        }
 
         // Check if user is signed in (non-null) and update UI accordingly.
 //        FirebaseUser currentUser = mAuth.getCurrentUser();
