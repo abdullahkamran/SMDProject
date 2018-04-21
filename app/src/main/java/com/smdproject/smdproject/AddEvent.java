@@ -1,5 +1,6 @@
 package com.smdproject.smdproject;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,14 +9,34 @@ import android.widget.EditText;
 
 public class AddEvent extends AppCompatActivity {
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
-    }
 
+        EditText txtDate=findViewById(R.id.edate);
+        txtDate.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+            public void onFocusChange(View view, boolean hasfocus){
+                if(hasfocus){
+                    DateDialog dialog=new DateDialog(view);
+                    FragmentTransaction ft =getFragmentManager().beginTransaction();
+                    dialog.show(ft, "DatePicker");
+                }
+            }
+        });
+
+        EditText txtTime=findViewById(R.id.etime);
+        txtTime.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+            public void onFocusChange(View view, boolean hasfocus){
+                if(hasfocus){
+                    TimeDialog dialog=new TimeDialog(view);
+                    FragmentTransaction ft =getFragmentManager().beginTransaction();
+                    dialog.show(ft, "TimePicker");
+                }
+            }
+        });
+
+    }
 
     public void onPost(View view) {
         EditText ename = findViewById(R.id.ename);

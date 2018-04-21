@@ -43,6 +43,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import database.Event;
@@ -309,34 +312,34 @@ public class MainActivity extends AppCompatActivity
             Uri uri=data.getData();
             if(uri.toString().contains("image")){
                 ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-
                 Glide.with(this)
                         .load(uri)
                         .into(imageview);
-
                 ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
-
             }
             else if(uri.toString().contains("video")){
-
-
                 ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-
-
                 Glide.with(this)
                         .load(uri)
                         .into(imageview);
-
                 ((ImageView)findViewById(R.id.playsign)).setVisibility(ImageView.VISIBLE);
-
                 ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
-
             }
-
         }
         else if (requestCode==123 && data!=null && data.getExtras()!=null){
             super.onActivityResult(requestCode, resultCode, data);
-            Event e=new Event(currentGroup,data.getExtras().getString("ename"),data.getExtras().getString("edes"),null,null ,null);
+            DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+            Date d=null;
+            if(data.getExtras().getString("edate")!=null && data.getExtras().getString("etime")!=null){
+                String s=data.getExtras().getString("edate")+" "+data.getExtras().getString("etime")+":00";
+                try {
+                    d = df.parse(s);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Event e=new Event(currentGroup,data.getExtras().getString("ename"),data.getExtras().getString("edes"),d,null);
             currentGroup.getEvents().add(0,e);
             ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
         }

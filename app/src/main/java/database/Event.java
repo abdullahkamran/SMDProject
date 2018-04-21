@@ -41,10 +41,6 @@ public class Event {
     @Ignore
     private LatLng location;
 
-    @ColumnInfo(name="epic")
-    @TypeConverters({UriConverter.class})
-    public Uri ep;
-
     @Ignore
     Group group;
 
@@ -53,11 +49,10 @@ public class Event {
     }
 
     @Ignore
-    public Event(Group g, String name,String desc, Date stamp, LatLng location, Uri ep) {
+    public Event(Group g, String name,String desc, Date stamp, LatLng location) {
         this.name = name;
         this.stamp = stamp;
         this.location = location;
-        this.ep = ep;
         this.group = g;
         this.gid = g.getGroupId();
         this.description = desc;
@@ -87,20 +82,12 @@ public class Event {
         this.location = location;
     }
 
-    public void setEp(Uri ep) {
-        this.ep = ep;
-    }
-
     public void setGroup(Group group) {
         this.group = group;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Uri getEp() {
-        return ep;
     }
 
     public int getEid() {
