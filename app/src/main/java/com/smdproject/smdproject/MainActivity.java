@@ -294,7 +294,6 @@ public class MainActivity extends AppCompatActivity
         statusText.setText("");
 
         ((ImageView)findViewById(R.id.feedAttachThumbnail)).setImageDrawable(null);
-        ((ImageView)findViewById(R.id.playsign)).setVisibility(ImageView.INVISIBLE);
         ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.GONE);
         postImage=null;
 
@@ -318,7 +317,6 @@ public class MainActivity extends AppCompatActivity
     public void deleteAttachment(View v){
 
         ((ImageView)findViewById(R.id.feedAttachThumbnail)).setImageDrawable(null);
-        ((ImageView)findViewById(R.id.playsign)).setVisibility(ImageView.INVISIBLE);
         ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.GONE);
         postImage=null;
     }
@@ -332,7 +330,6 @@ public class MainActivity extends AppCompatActivity
                 postImage=uri;
 
                 ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-                ((ImageView)findViewById(R.id.playsign)).setVisibility(ImageView.INVISIBLE);
 
                 Glide.with(this)
                         .load(uri)

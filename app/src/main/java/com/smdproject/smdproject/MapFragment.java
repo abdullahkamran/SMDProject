@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,6 +43,8 @@ public class MapFragment extends Fragment {
     }
 
     private MainActivity context;
+
+    private AdView banner;
 
     public MapFragment(Context c) {
         context=(MainActivity)c;
@@ -87,6 +91,10 @@ public class MapFragment extends Fragment {
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(context);
+
+        banner=(AdView)v.findViewById(R.id.adView3);
+        AdRequest request=new AdRequest.Builder().build();
+        banner.loadAd(request);
 
         return v;
 

@@ -13,6 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import database.Event;
 
 /**
@@ -34,6 +38,8 @@ public class EventFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private AdView banner;
 
     public EventFragment() {
         // Required empty public constructor
@@ -83,6 +89,10 @@ public class EventFragment extends Fragment {
         rc.setLayoutManager(new LinearLayoutManager(context));
         rc.setItemAnimator(new DefaultItemAnimator());
         rc.setAdapter(adapter);
+
+        banner=(AdView)v.findViewById(R.id.adView2);
+        AdRequest request=new AdRequest.Builder().build();
+        banner.loadAd(request);
 
         return v;
     }

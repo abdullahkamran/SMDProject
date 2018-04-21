@@ -1,9 +1,13 @@
 package com.smdproject.smdproject;
 
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import java.util.List;
@@ -40,7 +44,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
             holder.timestamp.setText(items.get(position).getStamp().toString());
             holder.text.setText(items.get(position).getText());
+
+            if(items.get(position).getText().equalsIgnoreCase("")){
+                holder.text.setVisibility(TextView.GONE);
+            }
+            else holder.text.setVisibility(TextView.VISIBLE);
+
+
             holder.image.setImageURI(items.get(position).getImage());
+
+            if(items.get(position).getImage()==null){
+                holder.image.setVisibility(ImageView.GONE);
+            }
+            else holder.image.setVisibility(ImageView.VISIBLE);
 
         }
     }

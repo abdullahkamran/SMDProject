@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.security.Timestamp;
 import java.util.Date;
@@ -48,6 +52,8 @@ public class FeedFragment extends Fragment {
     }
 
     private MainActivity context;
+
+    private AdView banner;
 
     public FeedFragment(Context c) {
         context=(MainActivity)c;
@@ -91,10 +97,22 @@ public class FeedFragment extends Fragment {
 
         RecyclerView rc=(RecyclerView)v.findViewById(R.id.feedRecycler);
 
-        rc.setLayoutManager(new LinearLayoutManager(context));
+
+
+        LinearLayoutManager layoutManager=new LinearLayoutManager((Context)context);
+
+        rc.setLayoutManager(layoutManager);
         rc.setItemAnimator(new DefaultItemAnimator());
         rc.setAdapter(adapter);
         rc.setNestedScrollingEnabled(false);
+
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(rc.getContext(), layoutManager.getOrientation());
+        rc.addItemDecoration(dividerItemDecoration);
+
+        banner=(AdView)v.findViewById(R.id.adView);
+        AdRequest request=new AdRequest.Builder().build();
+        banner.loadAd(request);
 
         return v;
 
