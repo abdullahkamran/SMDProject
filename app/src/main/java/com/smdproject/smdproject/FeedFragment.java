@@ -1,8 +1,10 @@
 package com.smdproject.smdproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import java.security.Timestamp;
@@ -135,10 +138,5 @@ public class FeedFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void postStatus(View v){
-        EditText statusText=(EditText)context.findViewById(R.id.postEditText);
-        Post post=new Post(context.getCurrentGroup(),context.getCurrentUser(),statusText.getText().toString(),null ,null, new Date());
-        context.getCurrentGroup().getPosts().add(post);
-        ((RecyclerView)context.findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
-    }
+
 }

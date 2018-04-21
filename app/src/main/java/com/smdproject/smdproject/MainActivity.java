@@ -1,9 +1,12 @@
 package com.smdproject.smdproject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -23,6 +26,8 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,6 +38,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.IOException;
 import java.util.Date;
 
 import database.Event;
@@ -246,6 +252,14 @@ public class MainActivity extends AppCompatActivity
 
     public void postStatus(View v){
         EditText statusText=(EditText)findViewById(R.id.postEditText);
+        ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
+
+
+        if(statusText.getText().toString().equalsIgnoreCase("") && imageview.getDrawable()==null){
+            Toast t=Toast.makeText(this,"Status should have text or media to post.",Toast.LENGTH_SHORT);
+            t.show();
+            return;
+        }
 
         Post post=new Post(currentGroup,currentUser,statusText.getText().toString(),null ,null, new Date());
 
@@ -270,6 +284,37 @@ public class MainActivity extends AppCompatActivity
 //        ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
     }
 
+    public void attachStatus(View v){
+
+        Intent i=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        i.setType("image/* video/*");
+        startActivityForResult(i,0);
+
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+
+        if(requestCode==0 && resultCode== Activity.RESULT_OK && data!=null && data.getData()!=null){
+
+            Uri uri=data.getData();
+            if(uri.toString().contains("image")){
+                try{
+                    Bitmap bm=MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+
+                    ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
+                    imageview.setImageBitmap(bm);
+                }
+                catch(IOException e){
+                    e.printStackTrace();
+                }
+            }
+            else if(uri.toString().contains("video")){
+
+            }
+
+        }
+    }
 
 
     @Override
