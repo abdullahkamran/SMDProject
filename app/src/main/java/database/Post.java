@@ -38,10 +38,6 @@ public class Post {
     @TypeConverters({TimestampConverter.class})
     private Date stamp;
 
-    @ColumnInfo(name="video")
-    @TypeConverters({UriConverter.class})
-    private Uri video;
-
     @Ignore
     private Group group;
     @Ignore
@@ -54,12 +50,11 @@ public class Post {
     }
 
     @Ignore
-    public Post(Group group, User postman, String text, Uri image, Uri video, Date stamp) {
+    public Post(Group group, User postman, String text, Uri image, Date stamp) {
         this.group = group;
         this.postman = postman;
         this.text = text;
         this.image = image;
-        this.video = video;
         this.stamp = stamp;
         this.uid = postman.getUid();
         this.gid = group.getGroupId();
@@ -83,10 +78,6 @@ public class Post {
 
     public void setGid(int gid) {
         this.gid = gid;
-    }
-
-    public void setVideo(Uri video) {
-        this.video = video;
     }
 
     public int getPid() {
@@ -123,14 +114,6 @@ public class Post {
 
     public void setImage(Uri image) {
         this.image = image;
-    }
-
-    public Uri getVideo() {
-        return video;
-    }
-
-    public void Video(Uri videos) {
-        this.video = videos;
     }
 
     public Date getStamp() {
