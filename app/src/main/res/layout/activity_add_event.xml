@@ -68,32 +68,43 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
+            <Button
+                android:id="@+id/edateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+            <TextView
                 android:id="@+id/edate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="Event Date"
-                android:inputType="date" />
+                android:hint="Event Date"/>
 
-            <EditText
+            <Button
+                android:id="@+id/etimeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Button" />
+
+            <TextView
                 android:id="@+id/etime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="Event Time"
-                android:inputType="time" />
+                android:hint="Event Time" />
         </LinearLayout>
 
-        <EditText
+        <TextView
             android:id="@+id/eplace"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Place"
-            android:inputType="textPersonName" />
+            android:hint="Place"/>
 
     </LinearLayout>
 

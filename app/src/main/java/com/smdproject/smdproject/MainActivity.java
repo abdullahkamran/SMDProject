@@ -1,9 +1,12 @@
 package com.smdproject.smdproject;
 
+import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -12,9 +15,13 @@ import android.location.LocationManager;
 import android.location.Address;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.provider.*;
 import android.speech.RecognizerIntent;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -41,6 +48,7 @@ import com.google.android.gms.ads.MobileAds;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -113,9 +121,6 @@ public class MainActivity extends AppCompatActivity
     private Uri postImage=null;
 
 
-    private FusedLocationProviderClient mFusedLocationClient;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,8 +131,6 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
 
 
@@ -173,17 +176,27 @@ public class MainActivity extends AppCompatActivity
 
         currentGroup.getNicknames().put(1,"Kami");
 
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            // Logic to handle location object
-                            currentUser.setLocation(new LatLng(location.getLatitude(),location.getLongitude()));
-                        }
-                    }
-                });
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 3);
+        }
+
+
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
+        }
+
+
+        if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 321);
+        } else{
+
+            LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+                Toast.makeText(this, "Yes.", Toast.LENGTH_SHORT).show();
+            } else Toast.makeText(this, "No.", Toast.LENGTH_SHORT).show();
+        }
 
 
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -196,6 +209,48 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 321) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted.
+                LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location != null) {
+                    currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+                    Toast.makeText(this, "Yes.", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(this, "No.", Toast.LENGTH_SHORT).show();
+            } else {
+                // User refused to grant permission. You can add AlertDialog here
+                Toast.makeText(this, "You didn't give permission to access device location.", Toast.LENGTH_LONG).show();
+                startInstalledAppDetailsActivity();
+            }
+        }
+        else if(requestCode==2){
+
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted.
+
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(i, 1);
+
+            } else {
+                // User refused to grant permission. You can add AlertDialog here
+                Toast.makeText(this, "You didn't give permission to access Camera.", Toast.LENGTH_LONG).show();
+                startInstalledAppDetailsActivity();
+            }
+
+        }
+    }
+    private void startInstalledAppDetailsActivity() {
+        Intent i = new Intent();
+        i.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        i.addCategory(Intent.CATEGORY_DEFAULT);
+        i.setData(Uri.parse("package:" + getPackageName()));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+    }
 
     @Override
     public void onBackPressed() {
@@ -352,8 +407,14 @@ public class MainActivity extends AppCompatActivity
 
     public void cameraStatus(View v){
 
-        Intent i=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(i,1);
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 2);
+        }
+
+        else {
+            Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(i, 1);
+        }
 
     }
 
