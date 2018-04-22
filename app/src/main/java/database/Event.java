@@ -1,18 +1,12 @@
 package database;
 
 import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
-import android.location.Location;
-import android.net.Uri;
-
 import com.google.android.gms.maps.model.LatLng;
-
-import java.security.Timestamp;
 import java.util.Date;
 
 /**
@@ -38,24 +32,36 @@ public class Event {
     @TypeConverters({TimestampConverter.class})
     private Date stamp;
 
-    @Ignore
+    @ColumnInfo(name = "location")
+    @TypeConverters({LatLngConverter.class})
     private LatLng location;
 
     @Ignore
     Group group;
+    @Ignore
+    String address;
 
     public Event(){
 
     }
 
     @Ignore
-    public Event(Group g, String name,String desc, Date stamp, LatLng location) {
+    public Event(Group g,String ad, String name,String desc, Date stamp, LatLng location) {
         this.name = name;
         this.stamp = stamp;
+        this.address=ad;
         this.location = location;
         this.group = g;
         this.gid = g.getGroupId();
         this.description = desc;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getDescription() {

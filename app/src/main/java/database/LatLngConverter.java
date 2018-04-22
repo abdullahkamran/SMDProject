@@ -20,7 +20,7 @@ public class LatLngConverter {
     @TypeConverter
     public static LatLng toUri(String s){
         if(s!=null) {
-            String [] arrOfStr = s.split("@", 2);
+            String [] arrOfStr = s.split(",", 2);
 
             Double l1 = Double.parseDouble(arrOfStr[0]);
             Double l2 = Double.parseDouble(arrOfStr[1]);

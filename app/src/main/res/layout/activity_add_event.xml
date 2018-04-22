@@ -87,6 +87,14 @@
                 android:inputType="time" />
         </LinearLayout>
 
+        <EditText
+            android:id="@+id/eplace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Place"
+            android:inputType="textPersonName" />
+
     </LinearLayout>
 
 

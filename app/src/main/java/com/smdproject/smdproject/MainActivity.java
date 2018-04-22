@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.location.Address;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
@@ -382,7 +383,16 @@ public class MainActivity extends AppCompatActivity
                 }
             }
 
-            Event e=new Event(currentGroup,data.getExtras().getString("ename"),data.getExtras().getString("edes"),d,null);
+            String latlng = data.getExtras().getString("eplace");
+
+            String [] arrOfStr = latlng.split(",", 2);
+
+            Double l1 = Double.parseDouble(arrOfStr[0]);
+            Double l2 = Double.parseDouble(arrOfStr[1]);
+            String address=data.getExtras().getString("eadd");
+            LatLng laln= new LatLng(l1, l2);
+
+            Event e=new Event(currentGroup, address,data.getExtras().getString("ename"),data.getExtras().getString("edes"),d,laln);
             currentGroup.getEvents().add(0,e);
             ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
         }

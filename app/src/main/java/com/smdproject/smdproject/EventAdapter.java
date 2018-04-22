@@ -27,7 +27,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
         if(items!=null && holder!=null){
             holder.eventName.setText(items.get(position).getName());
             holder.description.setText(items.get(position).getDescription());
-            holder.timePlace.setText(items.get(position).getStamp().toString()+" at ");
+            holder.timePlace.setText(items.get(position).getStamp().toString()+" at "+items.get(position).getAddress());
             //holder.intrPerson.setText();
         }
     }
