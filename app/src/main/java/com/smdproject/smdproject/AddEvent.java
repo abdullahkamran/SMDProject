@@ -53,7 +53,7 @@ public class AddEvent extends AppCompatActivity {
         i.putExtra("edes",edes.getText().toString());
         i.putExtra("etime",etime.getText().toString());
         i.putExtra("edate",edate.getText().toString());
-        this.setResult(123,i);
+        this.setResult(RESULT_OK,i);
         finish();
     }
 }

@@ -63,10 +63,21 @@
                     android:focusedByDefault="false"
                     android:hint="What's on your mind?"
                     android:inputType="textMultiLine"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintEnd_toStartOf="@+id/micPost"
                     app:layout_constraintStart_toEndOf="@+id/dpOnPostEdit"
                     app:layout_constraintTop_toTopOf="@+id/dpOnPostEdit" />
+
+                <Button
+                    android:id="@+id/micPost"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:drawable/ic_btn_speak_now"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="voicePost"
+                    app:layout_constraintBottom_toBottomOf="@+id/postEditText"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/postEditText" />
 
                 <Button
                     android:id="@+id/attachButton"
@@ -82,12 +93,26 @@
                     app:layout_constraintTop_toTopOf="@+id/postButton" />
 
                 <Button
+                    android:id="@+id/cameraButton"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/ic_menu_camera"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:onClick="cameraStatus"
+                    app:layout_constraintBottom_toBottomOf="@+id/postButton"
+                    app:layout_constraintEnd_toStartOf="@+id/attachButton"
+                    app:layout_constraintTop_toTopOf="@+id/postButton"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <Button
                     android:id="@+id/postButton"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_marginEnd="8dp"
 
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="16dp"
                     android:background="@drawable/ic_menu_send"
                     android:backgroundTint="@color/colorPrimary"
                     android:onClick="postStatus"

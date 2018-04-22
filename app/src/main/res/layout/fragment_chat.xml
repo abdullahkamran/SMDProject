@@ -9,7 +9,7 @@
 
     <EditText
         android:id="@+id/chatEditText"
-        android:layout_width="match_parent"
+        android:layout_width="295dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -18,8 +18,20 @@
         android:inputType="textPersonName"
         android:text="Name"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/micChat"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/micChat"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="8dp"
+        android:background="@android:drawable/ic_btn_speak_now"
+        android:backgroundTint="@color/colorPrimary"
+        android:onClick="voiceChat"
+        app:layout_constraintBottom_toBottomOf="@+id/chatEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/chatEditText" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chatRecycler"

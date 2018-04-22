@@ -1,6 +1,7 @@
 package com.smdproject.smdproject;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,6 +10,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -47,7 +49,9 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import database.Event;
 import database.Group;
@@ -100,6 +104,8 @@ public class MainActivity extends AppCompatActivity
     private ViewPager mViewPager;
 
     private Uri postImage=null;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -314,6 +320,13 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void cameraStatus(View v){
+
+        Intent i=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(i,1);
+
+    }
+
     public void deleteAttachment(View v){
 
         ((ImageView)findViewById(R.id.feedAttachThumbnail)).setImageDrawable(null);
@@ -323,24 +336,40 @@ public class MainActivity extends AppCompatActivity
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if(requestCode==0 && resultCode== Activity.RESULT_OK && data!=null && data.getData()!=null){
+
+        if(requestCode==0 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
             Uri uri=data.getData();
-            if(uri.toString().contains("image")){
 
-                postImage=uri;
+            postImage=uri;
 
-                ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
+            ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
 
-                Glide.with(this)
-                        .load(uri)
-                        .into(imageview);
+            Glide.with(this)
+                    .load(uri)
+                    .into(imageview);
 
-                ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
+            ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
 
-            }
+
 
         }
-        else if (requestCode==123 && data!=null && data.getExtras()!=null){
+        else if(requestCode==1 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
+
+            Uri uri=(Uri)data.getExtras().get("data");
+
+            postImage=uri;
+
+            ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
+
+            Glide.with(this)
+                    .load(uri)
+                    .into(imageview);
+
+            ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
+
+
+        }
+        else if (requestCode==123 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
             super.onActivityResult(requestCode, resultCode, data);
             DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
             Date d=null;
@@ -357,6 +386,19 @@ public class MainActivity extends AppCompatActivity
             currentGroup.getEvents().add(0,e);
             ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
         }
+        else if (requestCode==100 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
+
+            ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            ((EditText)findViewById(R.id.postEditText))
+                    .setText(((EditText)findViewById(R.id.postEditText)).getText().toString()+" "+result.get(0));
+        }
+        else if (requestCode==101 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
+
+            ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            ((EditText)findViewById(R.id.chatEditText))
+                    .setText(((EditText)findViewById(R.id.chatEditText)).getText().toString()+" "+result.get(0));
+        }
+
     }
 
 
@@ -403,5 +445,37 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+
+    private void startVoiceInputPost() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Listening...");
+        try {
+            startActivityForResult(intent, 100);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    private void startVoiceInputChat() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Listening...");
+        try {
+            startActivityForResult(intent, 101);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void voicePost(View v){
+        startVoiceInputPost();
+    }
+    public void voiceChat(View v){
+        startVoiceInputChat();
+    }
+
 
 }
