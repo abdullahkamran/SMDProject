@@ -41,12 +41,14 @@ import com.google.android.gms.ads.MobileAds;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -125,6 +127,10 @@ public class MainActivity extends AppCompatActivity
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),this);
@@ -159,10 +165,26 @@ public class MainActivity extends AppCompatActivity
         if(currentUser==null)
             currentUser=new User(Uri.parse("res:///"+R.drawable.com_facebook_button_icon_blue),1,"Abdullah","Kamran");
 
+
         if(currentGroup==null) {
             currentGroup = new Group("Koders");
             currentGroup.getMembers().add(currentUser);
         }
+
+        currentGroup.getNicknames().put(1,"Kami");
+
+        mFusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+                            currentUser.setLocation(new LatLng(location.getLatitude(),location.getLongitude()));
+                        }
+                    }
+                });
+
 
         // Check if user is signed in (non-null) and update UI accordingly.
 //        FirebaseUser currentUser = mAuth.getCurrentUser();
