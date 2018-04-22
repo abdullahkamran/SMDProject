@@ -9,12 +9,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
 @SuppressLint("ValidFragment")
 public class DateDialog extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-    EditText txtdate;
+    TextView txtdate;
     public DateDialog(View view){
-        txtdate=(EditText)view;
+        txtdate=(TextView) view;
     }
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar c = Calendar.getInstance();
@@ -25,7 +26,7 @@ public class DateDialog extends DialogFragment implements DatePickerDialog.OnDat
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        String date=(month+1)+"/"+day+"/"+year;
+        String date=day+"/"+(month+1)+"/"+year;
         txtdate.setText(date);
     }
 }

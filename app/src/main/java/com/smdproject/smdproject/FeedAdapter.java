@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import java.util.Date;
 import java.util.List;
 
 import database.Post;
@@ -42,7 +43,25 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             if(items.get(position).getGroup().getNicknames().containsKey(items.get(position).getPostman().getUid()))
                 holder.nickname.setText("@"+items.get(position).getGroup().getNicknames().get(items.get(position).getPostman().getUid()));
 
-            holder.timestamp.setText(items.get(position).getStamp().toString());
+
+            String timestamp=items.get(position).getStamp().toString();
+            String today=(new Date()).toString();
+
+            String[] todays=today.split(" ");
+            String[] timestamps=timestamp.split(" ");
+
+            if(todays[0].equalsIgnoreCase(timestamps[0]) && todays[1].equalsIgnoreCase(timestamps[1])
+                    && todays[2].equalsIgnoreCase(timestamps[2])){
+                timestamp=timestamps[3];
+                timestamp=timestamp.substring(0,timestamp.length()-3);
+            }
+            else{
+                timestamp=timestamps[3];
+                timestamp=timestamp.substring(0,timestamp.length()-3);
+                timestamp=timestamps[0]+timestamps[1]+timestamps[2]+timestamp;
+            }
+
+            holder.timestamp.setText(timestamp);
             holder.text.setText(items.get(position).getText());
 
             if(items.get(position).getText().equalsIgnoreCase("")){

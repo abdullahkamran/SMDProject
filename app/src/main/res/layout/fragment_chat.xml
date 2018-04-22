@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     tools:context="com.smdproject.smdproject.ChatFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -15,11 +17,23 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
+        android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/micChat"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/ic_menu_send"
+        android:backgroundTint="@color/colorPrimary"
+        android:onClick="sendMessage"
+        app:layout_constraintBottom_toBottomOf="@+id/micChat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/micChat" />
 
     <Button
         android:id="@+id/micChat"
@@ -30,7 +44,7 @@
         android:backgroundTint="@color/colorPrimary"
         android:onClick="voiceChat"
         app:layout_constraintBottom_toBottomOf="@+id/chatEditText"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/sendButton"
         app:layout_constraintTop_toTopOf="@+id/chatEditText" />
 
     <android.support.v7.widget.RecyclerView

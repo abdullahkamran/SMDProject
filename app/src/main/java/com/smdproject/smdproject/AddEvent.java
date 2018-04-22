@@ -8,9 +8,13 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+
+import java.util.Date;
 
 
 public class AddEvent extends AppCompatActivity {
@@ -34,7 +38,7 @@ public class AddEvent extends AppCompatActivity {
 
     public void selectTime(View v){
 
-        TimeDialog dialog=new TimeDialog(v);
+        TimeDialog dialog=new TimeDialog((TextView)findViewById(R.id.etime));
         FragmentTransaction ft =getFragmentManager().beginTransaction();
         dialog.show(ft, "TimePicker");
 
@@ -42,19 +46,31 @@ public class AddEvent extends AppCompatActivity {
 
     public void selectDate(View v){
 
-        DateDialog dialog=new DateDialog(v);
+        DateDialog dialog=new DateDialog((TextView)findViewById(R.id.edate));
         FragmentTransaction ft =getFragmentManager().beginTransaction();
         dialog.show(ft, "DatePicker");
 
     }
 
     public void onPost(View view) {
-        EditText ename = findViewById(R.id.ename);
-        EditText edes = findViewById(R.id.edescription);
-        EditText etime = findViewById(R.id.etime);
-        EditText edate = findViewById(R.id.edate);
-        EditText txtPlace=findViewById(R.id.eplace);
+        EditText ename = (EditText) findViewById(R.id.ename);
+        EditText edes = (EditText) findViewById(R.id.edescription);
+        TextView etime = (TextView) findViewById(R.id.etime);
+        TextView edate = (TextView) findViewById(R.id.edate);
+        TextView txtPlace = (TextView) findViewById(R.id.eplace);
 
+        if(ename.getText().toString().equalsIgnoreCase("")){
+            Toast.makeText(this,"Event name can not be empty.",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(etime.getText().toString().equalsIgnoreCase("")){
+            Toast.makeText(this,"Error: Please set event time.",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(edate.getText().toString().equalsIgnoreCase("")){
+            Toast.makeText(this,"Error: Please set event date.",Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Intent i=new Intent();
 
@@ -64,7 +80,7 @@ public class AddEvent extends AppCompatActivity {
         i.putExtra("edate",edate.getText().toString());
         //i.putExtra("eplace",place.getLatLng().latitude+","+place.getLatLng().longitude);
         i.putExtra("eadd",txtPlace.getText().toString());
-        this.setResult(123,i);
+        this.setResult(RESULT_OK,i);
         finish();
     }
 }

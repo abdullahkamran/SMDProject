@@ -70,6 +70,7 @@ import java.util.Locale;
 
 import database.Event;
 import database.Group;
+import database.Message;
 import database.Post;
 import database.User;
 
@@ -355,6 +356,27 @@ public class MainActivity extends AppCompatActivity
         public int getCount() {
             return TAB_COUNT;
         }
+    }
+
+
+    public void sendMessage(View v){
+
+        EditText msgText=(EditText)findViewById(R.id.chatEditText);
+
+        if(msgText.getText().toString().equalsIgnoreCase("")){
+            Toast t=Toast.makeText(this,"Message should not be empty.",Toast.LENGTH_SHORT);
+            t.show();
+            return;
+        }
+
+        Message message=new Message(currentGroup,currentUser,msgText.getText().toString(), new Date());
+
+        currentGroup.getMessages().add(message);
+
+        ((RecyclerView)findViewById(R.id.chatRecycler)).getAdapter().notifyDataSetChanged();
+
+        msgText.setText("");
+
     }
 
 

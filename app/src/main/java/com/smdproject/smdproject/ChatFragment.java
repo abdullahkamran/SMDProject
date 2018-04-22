@@ -84,13 +84,14 @@ public class ChatFragment extends Fragment {
 
         LinearLayoutManager layoutManager=new LinearLayoutManager((Context)context);
 
+        layoutManager.setStackFromEnd(true);
         rc.setLayoutManager(layoutManager);
         rc.setItemAnimator(new DefaultItemAnimator());
         rc.setAdapter(adapter);
 
-        DividerItemDecoration dividerItemDecoration =
-                new DividerItemDecoration(rc.getContext(), layoutManager.getOrientation());
-        rc.addItemDecoration(dividerItemDecoration);
+        //DividerItemDecoration dividerItemDecoration =
+          //      new DividerItemDecoration(rc.getContext(), layoutManager.getOrientation());
+        //rc.addItemDecoration(dividerItemDecoration);
 
         return v;
     }

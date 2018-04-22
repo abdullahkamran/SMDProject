@@ -47,6 +47,7 @@ public class Group {
         members=new ArrayList<>();
         posts=new ArrayList<>();
         events=new ArrayList<>();
+        messages=new ArrayList<>();
         nicknames=new HashMap<Integer,String>();
     }
 

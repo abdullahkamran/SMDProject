@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import database.Message;
@@ -54,7 +55,24 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
                 holder.nickname.setText(items.get(position).getGroup().getNicknames().get(items.get(position).getSender().getUid()));
             else holder.nickname.setText(items.get(position).getSender().getName());
 
-            holder.timestamp.setText(items.get(position).getStamp().toString());
+            String timestamp=items.get(position).getStamp().toString();
+            String today=(new Date()).toString();
+
+            String[] todays=today.split(" ");
+            String[] timestamps=timestamp.split(" ");
+
+            if(todays[0].equalsIgnoreCase(timestamps[0]) && todays[1].equalsIgnoreCase(timestamps[1])
+                    && todays[2].equalsIgnoreCase(timestamps[2])){
+                timestamp=timestamps[3];
+                timestamp=timestamp.substring(0,timestamp.length()-3);
+            }
+            else{
+                timestamp=timestamps[3];
+                timestamp=timestamp.substring(0,timestamp.length()-3);
+                timestamp=timestamps[0]+timestamps[1]+timestamps[2]+timestamp;
+            }
+
+            holder.timestamp.setText(timestamp);
             holder.text.setText(items.get(position).getText());
         }
     }
