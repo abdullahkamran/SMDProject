@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.location.Address;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -37,6 +40,7 @@ import android.widget.Toast;
 import com.google.android.gms.ads.MobileAds;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -105,6 +109,9 @@ public class MainActivity extends AppCompatActivity
     private ViewPager mViewPager;
 
     private Uri postImage=null;
+
+
+    private FusedLocationProviderClient mFusedLocationClient;
 
 
 
