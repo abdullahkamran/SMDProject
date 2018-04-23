@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 /**
- * Created by ishrat.fatima on 3/8/2018.
+ * Created by Ahmad on 28-Mar-18.
  */
 
 @Database(entities = {User.class,Event.class,Post.class,Comment.class,Group.class,Message.class},version = 1)
