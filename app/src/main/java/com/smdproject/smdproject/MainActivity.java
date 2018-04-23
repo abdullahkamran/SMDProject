@@ -221,7 +221,10 @@ public class MainActivity extends AppCompatActivity
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission granted.
                 LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Location location=null;
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
                 if (location != null) {
                     currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
                     Toast.makeText(this, "Yes.", Toast.LENGTH_SHORT).show();
@@ -433,7 +436,7 @@ public class MainActivity extends AppCompatActivity
 
     public void cameraStatus(View v){
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 2);
             }
