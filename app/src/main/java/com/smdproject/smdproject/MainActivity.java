@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity
 
     private static int TAB_COUNT=4;
     private FirebaseAuth mAuth;
-    GoogleSignInAccount acct;
 
     public Group getCurrentGroup() {
         return currentGroup;
@@ -132,20 +131,21 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if(getIntent().getSerializableExtra("google_account")!=null) {
-            acct = (GoogleSignInAccount) getIntent().getSerializableExtra("google_account");
-            currentUser=new User(Uri.parse(acct.getPhotoUrl().toString()),acct.getDisplayName());
+        if(mAuth!=null) {
+            FirebaseUser user=mAuth.getCurrentUser();
+            currentUser=new User(Uri.parse(user.getPhotoUrl().toString()),user.getDisplayName());
+
+            if(currentGroup == null) {
+                //startActivityfor result
+                Intent i = new Intent(this,MainGroupActivity.class);
+                startActivityForResult(i,102);
+            }
         }
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
 
         //make global variable
-        if(currentGroup == null) {
-            //startActivityfor result
-            Intent i = new Intent(this,MainGroupActivity.class);
-            startActivityForResult(i,102);
 
-        }
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -207,12 +207,14 @@ public class MainActivity extends AppCompatActivity
 
 
         // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if(currentUser == null){
-//            Intent auth=new Intent(this,LoginActivity.class);
-//            startActivity(auth);
-//            finish();
-//        }
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser == null){
+            Intent auth=new Intent(this,LoginActivity.class);
+            startActivity(auth);
+            finish();
+        }
+
+
 
     }
 
@@ -529,8 +531,8 @@ public class MainActivity extends AppCompatActivity
             //make user
             //add to group
 
-            currentGroup.getNicknames().put(1,"Kami");
-            currentGroup.getMembers().add(currentUser);
+            currentGroup.getNicknames().put(1, (String) currentUser.getName().subSequence(2,5));
+            currentGroup.getMembers().add(1,currentUser);
         }
 
     }

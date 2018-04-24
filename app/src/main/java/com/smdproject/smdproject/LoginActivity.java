@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     // [START auth_with_google]
-    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d("GoogleSignIn", "firebaseAuthWithGoogle:" + acct.getId());
         // [START_EXCLUDE silent]
         //showProgressDialog();
@@ -137,7 +137,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Log.d("GoogleSignIn", "signInWithCredential:success");
                     FirebaseUser user = mAuth.getCurrentUser();
                     Intent googleIntent=new Intent(LoginActivity.this,MainActivity.class);
-                    googleIntent.putExtra("google_account",acct);
                     startActivity(googleIntent);
                     finish();
                 }
