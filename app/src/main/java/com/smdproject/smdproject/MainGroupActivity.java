@@ -1,6 +1,7 @@
 package com.smdproject.smdproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -54,11 +55,12 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
                 View child = rv.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
                 if(child != null){
                     //if tap was performed on some recyclerview row item
-//                    int i = rv.getChildAdapterPosition(child);	//index of item which was clicked
-//                    Course cc=data.get(i);
-//                    Intent ii=new Intent(c,Progress.class);
-//                    ii.putExtra("course",cc);
-//                    startActivityForResult(ii,456);
+                    int i = rv.getChildAdapterPosition(child);	//index of item which was clicked
+                    Group g = data.get(i);
+                    Intent ii=new Intent();
+                    ii.putExtra("Group",g);
+                    MainGroupActivity.this.setResult(102,ii);
+                    finish();
                 }
                 return true;
             }
@@ -94,5 +96,20 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
+        super.onActivityResult(requestCode, resultCode, dataIntent);
+        if(resultCode == 1122 && dataIntent != null && dataIntent.getExtras() != null){
+            Group g = new Group(dataIntent.getExtras().getString("g_name"));
+            data.add(g);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    public void onCreateGroup(View v){
+        Intent i = new Intent(this,CreateGroup.class);
+        startActivityForResult(i,1122);
     }
 }

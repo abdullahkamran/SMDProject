@@ -7,6 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.net.Uri;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,7 +16,7 @@ import java.util.HashMap;
  */
 
 @Entity(tableName = "groups")
-public class Group {
+public class Group implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int groupId;
 

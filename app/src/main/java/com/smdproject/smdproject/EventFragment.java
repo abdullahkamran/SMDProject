@@ -85,7 +85,11 @@ public class EventFragment extends Fragment {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_event, container, false);
 
-        EventAdapter adapter=new EventAdapter(context.getCurrentGroup().getEvents(),R.layout.event_row_layout);
+        EventAdapter adapter=null;
+        if(context.getCurrentGroup()!=null)
+            adapter=new EventAdapter(context.getCurrentGroup().getEvents(),R.layout.event_row_layout);
+        else
+            adapter=new EventAdapter(null,R.layout.event_row_layout);
         RecyclerView rc = v.findViewById(R.id.eventview);
 
         LinearLayoutManager layoutManager=new LinearLayoutManager((Context)context);

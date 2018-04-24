@@ -74,13 +74,13 @@ public class ChatFragment extends Fragment {
         // Inflate the layout for this fragment
         View v=inflater.inflate(R.layout.fragment_chat, container, false);
 
-        ChatAdapter adapter=
-                new ChatAdapter(context.getCurrentGroup().getMessages(),R.layout.chat_in_row_layout,R.layout.chat_out_row_layout,context);
+        ChatAdapter adapter=null;
+        if(context.getCurrentGroup()!=null)
+            adapter=new ChatAdapter(context.getCurrentGroup().getMessages(),R.layout.chat_in_row_layout,R.layout.chat_out_row_layout,context);
+        else
+            adapter=new ChatAdapter(null,R.layout.chat_in_row_layout,R.layout.chat_out_row_layout,context);
 
         RecyclerView rc=(RecyclerView)v.findViewById(R.id.chatRecycler);
-
-
-
 
         LinearLayoutManager layoutManager=new LinearLayoutManager((Context)context);
 

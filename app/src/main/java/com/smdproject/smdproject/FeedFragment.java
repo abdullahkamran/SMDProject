@@ -93,11 +93,13 @@ public class FeedFragment extends Fragment {
 
         View v=inflater.inflate(R.layout.fragment_feed, container, false);
 
-        FeedAdapter adapter=new FeedAdapter(context.getCurrentGroup().getPosts(),R.layout.feed_row_layout);
+        FeedAdapter adapter=null;
+        if(context.getCurrentGroup()!=null)
+            adapter=new FeedAdapter(context.getCurrentGroup().getPosts(),R.layout.feed_row_layout);
+        else
+            adapter=new FeedAdapter(null,R.layout.feed_row_layout);
 
         RecyclerView rc=(RecyclerView)v.findViewById(R.id.feedRecycler);
-
-
 
         LinearLayoutManager layoutManager=new LinearLayoutManager((Context)context);
 

@@ -133,7 +133,13 @@ public class MainActivity extends AppCompatActivity
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
 
+        //make global variable
+        if(currentGroup == null) {
+            //startActivityfor result
+            Intent i = new Intent(this,MainGroupActivity.class);
+            startActivityForResult(i,102);
 
+        }
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -164,18 +170,6 @@ public class MainActivity extends AppCompatActivity
 
         super.onStart();
 
-        //do not update group here
-        //make global variable
-        if(currentUser==null)
-            currentUser=new User(Uri.parse("res:///"+R.drawable.com_facebook_button_icon_blue),1,"Abdullah","Kamran");
-
-
-        if(currentGroup==null) {
-            currentGroup = new Group("Koders");
-            currentGroup.getMembers().add(currentUser);
-        }
-
-        currentGroup.getNicknames().put(1,"Kami");
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 
@@ -196,8 +190,10 @@ public class MainActivity extends AppCompatActivity
                 LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location != null) {
-                    currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
-                    Toast.makeText(this, "Yes.", Toast.LENGTH_SHORT).show();
+                    if(currentUser!=null) {
+                        currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+                        Toast.makeText(this, "Yes.", Toast.LENGTH_SHORT).show();
+                    }
                 } else Toast.makeText(this, "No.", Toast.LENGTH_SHORT).show();
             }
 
@@ -469,27 +465,17 @@ public class MainActivity extends AppCompatActivity
             Glide.with(this)
                     .load(uri)
                     .into(imageview);
-
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
-
-
-
         }
         else if(requestCode==1 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-
             Uri uri=(Uri)data.getExtras().get("data");
-
             postImage=uri;
-
             ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-
             Glide.with(this)
                     .load(uri)
                     .into(imageview);
 
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
-
-
         }
         else if (requestCode==123 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
             super.onActivityResult(requestCode, resultCode, data);
@@ -505,9 +491,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             String latlng = data.getExtras().getString("eplace");
-
             String [] arrOfStr = latlng.split(",", 2);
-
             Double l1 = Double.parseDouble(arrOfStr[0]);
             Double l2 = Double.parseDouble(arrOfStr[1]);
             String address=data.getExtras().getString("eadd");
@@ -528,6 +512,17 @@ public class MainActivity extends AppCompatActivity
             ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             ((EditText)findViewById(R.id.chatEditText))
                     .setText(((EditText)findViewById(R.id.chatEditText)).getText().toString()+" "+result.get(0));
+        }
+        else if(requestCode==102 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
+
+            currentGroup = (Group) getIntent().getSerializableExtra("Group");
+
+            ///get user picture from fb login or //google login
+            //make user
+            //add to group
+            currentUser=new User(Uri.parse("res:///"+R.drawable.com_facebook_button_icon_blue),1,"Abdullah","Kamran");
+            currentGroup.getNicknames().put(1,"Kami");
+            currentGroup.getMembers().add(currentUser);
         }
 
     }
@@ -565,7 +560,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
 
         for(int i=0;i<currentGroup.getMembers().size();i++) {
             if(currentGroup.getMembers().get(i).getLocation()!=null) {

@@ -38,5 +38,6 @@
     <string name="google_maps_key">AIzaSyCvGSsmh8v9pAvPyMuSygG_sSg_HOCCOVI</string>
     <string name="google_address_key">AIzaSyBnNtA4H-rsJLxf4ZA0T5Dqe3X_cwKItog</string>
     <string name="title_activity_add_event">AddEvent</string>
+    <string name="title_activity_create_group">CreateGroup</string>
 
 </resources>
