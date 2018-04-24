@@ -127,9 +127,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         if(mAuth.getCurrentUser()!=null) {
-            FirebaseUser user=mAuth.getCurrentUser();
-            currentUser=new User(Uri.parse(user.getPhotoUrl().toString()),user.getDisplayName());
+            FirebaseUser user = mAuth.getCurrentUser();
+            currentUser = new User(Uri.parse(user.getPhotoUrl().toString()), user.getDisplayName());
+        }
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
 
