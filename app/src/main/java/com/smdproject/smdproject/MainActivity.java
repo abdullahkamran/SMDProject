@@ -47,10 +47,6 @@ import android.widget.Toast;
 import com.google.android.gms.ads.MobileAds;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -135,11 +131,14 @@ public class MainActivity extends AppCompatActivity
             FirebaseUser user=mAuth.getCurrentUser();
             currentUser=new User(Uri.parse(user.getPhotoUrl().toString()),user.getDisplayName());
 
-            if(currentGroup == null) {
-                //startActivityfor result
-                Intent i = new Intent(this,MainGroupActivity.class);
-                startActivityForResult(i,102);
-            }
+        MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
+
+        //make global variable
+        if(currentGroup == null) {
+            //startActivityfor result
+            Intent i = new Intent(this,MainGroupActivity.class);
+            startActivityForResult(i,102);
+
         }
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
@@ -159,6 +158,8 @@ public class MainActivity extends AppCompatActivity
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+        mViewPager.setOffscreenPageLimit(3);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

@@ -2,6 +2,7 @@ package com.smdproject.smdproject;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 
 import java.util.Date;
 
@@ -33,7 +36,21 @@ public class AddEvent extends AppCompatActivity {
 
     public void selectLocation(View v){
 
+        PlacePicker.IntentBuilder builder=new PlacePicker.IntentBuilder();
+        try {
+            startActivityForResult(builder.build(this), 1);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
 
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode==1 && resultCode==RESULT_OK && data!=null){
+            Place place=PlacePicker.getPlace(this,data);
+            ((TextView)findViewById(R.id.eplace)).setText(place.getName()+" @"+place.getAddress());
+        }
     }
 
     public void selectTime(View v){

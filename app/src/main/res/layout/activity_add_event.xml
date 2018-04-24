@@ -146,6 +146,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/mapblack"
                 android:backgroundTint="@color/colorPrimary"
+                android:onClick="selectLocation"
                 app:layout_constraintStart_toStartOf="@+id/etimeButton"
                 app:layout_constraintTop_toBottomOf="@+id/etimeButton" />
 
