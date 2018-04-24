@@ -373,6 +373,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
     public void sendMessage(View v){
 
         EditText msgText=(EditText)findViewById(R.id.chatEditText);
@@ -489,7 +490,7 @@ public class MainActivity extends AppCompatActivity
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
         }
         else if (requestCode==123 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
-            super.onActivityResult(requestCode, resultCode, data);
+
             DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
             Date d=null;
             if(data.getExtras().getString("edate")!=null && data.getExtras().getString("etime")!=null){
@@ -501,16 +502,21 @@ public class MainActivity extends AppCompatActivity
                 }
             }
 
+            String latlng="";
+            Double l1=0D;
+            Double l2=0D;
+            String address="";
+            LatLng laln=new LatLng(0,0);
             if(data.getExtras().getString("eplace")!=null) {
-                String latlng = data.getExtras().getString("eplace");
+                 latlng= data.getExtras().getString("eplace");
                 String[] arrOfStr = latlng.split(",", 2);
-                Double l1 = Double.parseDouble(arrOfStr[0]);
-                Double l2 = Double.parseDouble(arrOfStr[1]);
-                String address = data.getExtras().getString("eadd");
-                LatLng laln = new LatLng(l1, l2);
+                l1 = Double.parseDouble(arrOfStr[0]);
+                l2 = Double.parseDouble(arrOfStr[1]);
+                address = data.getExtras().getString("eadd");
+                laln = new LatLng(l1, l2);
             }
 
-            Event e=new Event(currentGroup, null,data.getExtras().getString("ename"),data.getExtras().getString("edes"),d,null);
+            Event e=new Event(currentGroup, address,data.getExtras().getString("ename"),data.getExtras().getString("edes"),d,laln);
             currentGroup.getEvents().add(0,e);
             ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
         }

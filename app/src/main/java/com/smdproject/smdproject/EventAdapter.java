@@ -1,19 +1,30 @@
 package com.smdproject.smdproject;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.List;
+import java.util.Locale;
+
 import database.Event;
 
 public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
     private List<Event> items;
     private int itemLayout;
 
-    public EventAdapter(List <Event> items, int itemLayout) {
+    private MainActivity context;
+
+
+    public EventAdapter(List <Event> items, int itemLayout, MainActivity context) {
         this.items = items;
         this.itemLayout = itemLayout;
+        this.context=context;
     }
 
     @Override
@@ -23,12 +34,28 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(EventViewHolder holder,int position){
+    public void onBindViewHolder(EventViewHolder holder, final int position){
+
+
         if(items!=null && holder!=null){
             holder.eventName.setText(items.get(position).getName());
             holder.description.setText(items.get(position).getDescription());
-            holder.timePlace.setText(items.get(position).getStamp().toString()+" at "+items.get(position).getAddress());
-            //holder.intrPerson.setText();
+            holder.time.setText(items.get(position).getStamp().toString());
+            holder.place.setText(items.get(position).getAddress());
+
+            holder.b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+                    String uri=
+                            String.format
+                                    (Locale.ENGLISH,"geo:%f,%f",items.get(position).getLocation().latitude,items.get(position).getLocation().longitude);
+
+                    Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    context.startActivity(intent);
+
+                }
+            });
+
         }
     }
 

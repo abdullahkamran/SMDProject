@@ -10,17 +10,19 @@ public class EventViewHolder extends RecyclerView.ViewHolder {
 
     //public ImageView eventPic;
     public TextView eventName;
-    public TextView timePlace;
-    public TextView intrPerson;
+    public TextView time;
+    public TextView place;
     public TextView description;
-    //public Button b;
+    public Button b;
 
     public EventViewHolder(View view){
         super(view);
-        //eventPic = view.findViewById(R.id.eventImage);
-        eventName = view.findViewById(R.id.eventName);
+        eventName = view.findViewById(R.id.nameEvent);
         description = view.findViewById(R.id.desc);
-        timePlace = view.findViewById(R.id.eventTime);
-        intrPerson = view.findViewById(R.id.persons);
+        time = view.findViewById(R.id.eventTime);
+        place = view.findViewById(R.id.eventPlace);
+        b=view.findViewById(R.id.dButton);
     }
+
+
 }

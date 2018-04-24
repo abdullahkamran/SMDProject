@@ -6,81 +6,74 @@
     android:layout_height="wrap_content">
 
 
-    <ImageView
-        android:id="@+id/eventImage"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_launcher" />
-
     <TextView
-        android:id="@+id/eventName"
-        android:layout_width="260dp"
-        android:layout_height="20dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
+        android:id="@+id/nameEvent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="6dp"
         android:text="Event name"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/eventImage"
+        app:layout_constraintEnd_toStartOf="@+id/directionButton"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/eventTime"
-        android:layout_width="260dp"
-        android:layout_height="16dp"
-        android:layout_marginLeft="16dp"
+        android:id="@+id/desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="2dp"
-        android:text="time and place"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/eventImage"
+        android:layout_marginTop="8dp"
+        android:text="Description"
+        android:textColor="@color/cardview_dark_background"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/directionButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventName" />
+
+    <TextView
+        android:id="@+id/eventTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="time"
+        android:textColor="@color/cardview_dark_background"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/directionButton"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/desc" />
 
     <TextView
-        android:id="@+id/persons"
-        android:layout_width="260dp"
-        android:layout_height="16dp"
-        android:layout_marginBottom="6dp"
-        android:layout_marginLeft="16dp"
+        android:id="@+id/eventPlace"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="2dp"
-        android:text="interested persons"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/eventImage"
+        android:layout_marginTop="8dp"
+        android:text="place"
+        android:textColor="@color/cardview_dark_background"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/directionButton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/eventTime" />
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
+    <Button
+        android:id="@+id/dButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/mapblack"
+        android:backgroundTint="@color/colorPrimary"
+        android:onClick="jumpTo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
-
-    <TextView
-        android:id="@+id/desc"
-        android:layout_width="260dp"
-        android:layout_height="18dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="2dp"
-        android:text="Description"
-        app:layout_constraintStart_toEndOf="@+id/eventImage"
-        app:layout_constraintTop_toBottomOf="@+id/eventName" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
