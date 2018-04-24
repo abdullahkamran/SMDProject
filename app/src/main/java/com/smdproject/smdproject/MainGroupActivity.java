@@ -59,7 +59,7 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
                     Group g = data.get(i);
                     Intent ii=new Intent();
                     ii.putExtra("Group",g);
-                    MainGroupActivity.this.setResult(102,ii);
+                    MainGroupActivity.this.setResult(RESULT_OK,ii);
                     finish();
                 }
                 return true;
