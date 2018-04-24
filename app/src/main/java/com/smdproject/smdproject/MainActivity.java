@@ -47,6 +47,7 @@ import android.widget.Toast;
 import com.google.android.gms.ads.MobileAds;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity
 
     private static int TAB_COUNT=4;
     private FirebaseAuth mAuth;
+    GoogleSignInAccount acct;
 
     public Group getCurrentGroup() {
         return currentGroup;
@@ -130,6 +132,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if(getIntent().getSerializableExtra("google_account")!=null) {
+            acct = (GoogleSignInAccount) getIntent().getSerializableExtra("google_account");
+            currentUser=new User(Uri.parse(acct.getPhotoUrl().toString()),acct.getDisplayName());
+        }
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
 
@@ -522,7 +528,7 @@ public class MainActivity extends AppCompatActivity
             ///get user picture from fb login or //google login
             //make user
             //add to group
-            currentUser=new User(Uri.parse("res:///"+R.drawable.com_facebook_button_icon_blue),1,"Abdullah","Kamran");
+
             currentGroup.getNicknames().put(1,"Kami");
             currentGroup.getMembers().add(currentUser);
         }

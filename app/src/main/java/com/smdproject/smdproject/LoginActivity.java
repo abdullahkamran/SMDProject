@@ -88,7 +88,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public  void onClick(View v){
         switch (v.getId()) {
             case R.id.sign_in_button:
-                Toast.makeText(this, "Google Sign in button clicked", Toast.LENGTH_LONG).show();
                 Intent i=mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(i,9001);
                 break;
@@ -110,12 +109,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
 
-//                account.getDisplayName();
-//                account.getEmail();
-//                account.getPhotoUrl().toString();
-
-               // Glide.with(this).load(account.getPhotoUrl().toString()).into(view v)
-
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w("GoogleSignIn", "Google sign in failed", e);
@@ -128,7 +121,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     // [START auth_with_google]
-    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
         Log.d("GoogleSignIn", "firebaseAuthWithGoogle:" + acct.getId());
         // [START_EXCLUDE silent]
         //showProgressDialog();
@@ -144,6 +137,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Log.d("GoogleSignIn", "signInWithCredential:success");
                     FirebaseUser user = mAuth.getCurrentUser();
                     Intent googleIntent=new Intent(LoginActivity.this,MainActivity.class);
+                    googleIntent.putExtra("google_account",acct);
                     startActivity(googleIntent);
                     finish();
                 }
