@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if(mAuth!=null) {
+        if(mAuth.getCurrentUser()!=null) {
             FirebaseUser user=mAuth.getCurrentUser();
             currentUser=new User(Uri.parse(user.getPhotoUrl().toString()),user.getDisplayName());
 
@@ -532,7 +532,7 @@ public class MainActivity extends AppCompatActivity
             //add to group
 
             currentGroup.getNicknames().put(1, (String) currentUser.getName().subSequence(2,5));
-            currentGroup.getMembers().add(1,currentUser);
+            currentGroup.getMembers().add(0,currentUser);
         }
 
     }
