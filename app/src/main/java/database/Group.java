@@ -23,6 +23,9 @@ public class Group implements Serializable {
     @ColumnInfo(name = "name")
     private String name;
 
+    @ColumnInfo(name = "key")
+    private String key;
+
     @ColumnInfo(name="gpic")
     @TypeConverters({UriConverter.class})
     private Uri groupPic;
@@ -50,6 +53,14 @@ public class Group implements Serializable {
         events=new ArrayList<>();
         messages=new ArrayList<>();
         nicknames=new HashMap<Integer,String>();
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public int getGroupId() {
