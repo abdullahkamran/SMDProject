@@ -90,10 +90,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.sign_in_button:
                 Intent i=mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(i,9001);
+                //disable facebook and mobile button
                 break;
             case R.id.button4:
                 Intent ii=new Intent(this,MobileAuth.class);
                 startActivity(ii);
+                //disable facebook and google button
                 finish();
                 break;
         }
@@ -163,6 +165,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     FirebaseUser user = mAuth.getCurrentUser();
                     Intent facebookIntent=new Intent(LoginActivity.this,MainActivity.class);
                     startActivity(facebookIntent);
+                    //disable google and mobile buttons
                     finish();
                 }
                 else {
