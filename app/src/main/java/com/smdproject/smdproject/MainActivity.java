@@ -488,14 +488,14 @@ public class MainActivity extends AppCompatActivity
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
         }
         else if(requestCode==1 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-            Uri uri=(Uri)data.getExtras().get("data");
-            postImage=uri;
-            ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-            Glide.with(this)
-                    .load(uri)
-                    .into(imageview);
+            Bundle extras=data.getExtras();
+            Bitmap bm=(Bitmap)extras.get("data");
 
-            ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
+            //postImage=uri;
+
+            ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
+
+            imageview.setImageBitmap(bm);
         }
         else if (requestCode==123 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
 
