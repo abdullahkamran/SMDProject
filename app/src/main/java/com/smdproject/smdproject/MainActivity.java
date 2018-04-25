@@ -619,10 +619,11 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this,"You did not give permission to access Location.",Toast.LENGTH_SHORT).show();
-        }
-        else mMap.setMyLocationEnabled(true);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "You did not give permission to access Location.", Toast.LENGTH_SHORT).show();
+            } else mMap.setMyLocationEnabled(true);
+        }else mMap.setMyLocationEnabled(true);
 
 
 
