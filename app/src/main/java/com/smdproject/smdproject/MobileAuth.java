@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -165,10 +167,16 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
     }
 
     private void verifyPhoneNumberWithCode(String verificationId, String code) {
-        // [START verify_with_code]
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
-        // [END verify_with_code]
-        signInWithPhoneAuthCredential(credential);
+
+        try {
+            // [START verify_with_code]
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
+            // [END verify_with_code]
+            signInWithPhoneAuthCredential(credential);
+        }catch (IllegalArgumentException e){
+            Log.w("PhoneAuth", "Wrong Code", e);
+            Toast.makeText(this, "Wrong Code Entered, Please re-enter code!!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // [START resend_verification]

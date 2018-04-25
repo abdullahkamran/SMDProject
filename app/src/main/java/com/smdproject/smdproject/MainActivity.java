@@ -130,18 +130,18 @@ public class MainActivity extends AppCompatActivity
 
         if(mAuth.getCurrentUser()!=null) {
             FirebaseUser user = mAuth.getCurrentUser();
-            currentUser = new User(Uri.parse(user.getPhotoUrl().toString()), user.getDisplayName());
+            if(user.getPhotoUrl()!=null && user.getDisplayName()!=null) {
+                currentUser = new User(Uri.parse(user.getPhotoUrl().toString()), user.getDisplayName());
+            }
+            else {
+                //startactivityfor result to get username,pic
+                Intent i = new Intent(this,GetName.class);
+                startActivityForResult(i,103);
+            }
+
         }
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
-
-        //make global variable
-        if(currentGroup == null) {
-            //startActivityfor result
-            Intent i = new Intent(this,MainGroupActivity.class);
-            startActivityForResult(i,102);
-
-        }
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
 
@@ -216,9 +216,14 @@ public class MainActivity extends AppCompatActivity
             startActivity(auth);
             finish();
         }
-
-
-
+        else{
+            //make global variable
+            if (currentGroup == null && this.currentUser != null) {
+                //startActivityfor result
+                Intent i = new Intent(this, MainGroupActivity.class);
+                startActivityForResult(i, 102);
+            }
+        }
     }
 
     @Override
@@ -534,10 +539,13 @@ public class MainActivity extends AppCompatActivity
             //make user
             //add to group
 
-            currentGroup.getNicknames().put(1, (String) currentUser.getName().subSequence(2,5));
+            currentGroup.getNicknames().put(currentUser.getUid(), (String) currentUser.getName().subSequence(2,5));
             currentGroup.getMembers().add(0,currentUser);
         }
-
+        else if(requestCode==103 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
+            String s= data.getExtras().getString("p_name");
+            currentUser=new User(null,s);
+        }
     }
 
 
@@ -573,13 +581,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        if(currentGroup!=null) {
+            for (int i = 0; i < currentGroup.getMembers().size(); i++) {
+                if (currentGroup.getMembers().get(i).getLocation() != null) {
+                    mMap.addMarker(new MarkerOptions().position
+                            (currentGroup.getMembers().get(i).getLocation()).title(currentGroup.getMembers().get(i).getName() + " is here!!"));
 
-        for(int i=0;i<currentGroup.getMembers().size();i++) {
-            if(currentGroup.getMembers().get(i).getLocation()!=null) {
-                mMap.addMarker(new MarkerOptions().position
-                        (currentGroup.getMembers().get(i).getLocation()).title(currentGroup.getMembers().get(i).getName() + " is here!!"));
-
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(currentGroup.getMembers().get(i).getLocation()));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(currentGroup.getMembers().get(i).getLocation()));
+                }
             }
         }
     }

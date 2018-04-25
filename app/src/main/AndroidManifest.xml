@@ -82,7 +82,8 @@
             android:name=".AddEvent"
             android:label="@string/title_activity_add_event"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".CreateGroup"></activity>
+        <activity android:name=".CreateGroup" />
+        <activity android:name=".GetName"></activity>
     </application>
 
 </manifest>
