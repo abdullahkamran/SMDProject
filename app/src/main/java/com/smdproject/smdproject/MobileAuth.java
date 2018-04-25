@@ -181,13 +181,20 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
 
     // [START resend_verification]
     private void resendVerificationCode(String phoneNumber,PhoneAuthProvider.ForceResendingToken token) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-            phoneNumber,        // Phone number to verify
-            60,                 // Timeout duration
-            TimeUnit.SECONDS,   // Unit of timeout
-            this,               // Activity (for callback binding)
-            mCallbacks,         // OnVerificationStateChangedCallbacks
-            token);             // ForceResendingToken from callbacks
+        try {
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                    phoneNumber,        // Phone number to verify
+                    60,                 // Timeout duration
+                    TimeUnit.SECONDS,   // Unit of timeout
+                    this,               // Activity (for callback binding)
+                    mCallbacks,         // OnVerificationStateChangedCallbacks
+                    token);             // ForceResendingToken from callbacks
+
+        }catch (IllegalArgumentException e){
+            Log.w("PhoneAuth", "Empty Mobile Number", e);
+            Toast.makeText(this, "Enter Mobile No", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
