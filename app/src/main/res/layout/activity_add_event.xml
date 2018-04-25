@@ -154,12 +154,12 @@
                 android:id="@+id/eplace"
                 android:layout_width="311dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="Select Place"
                 android:textAppearance="@style/TextAppearance.AppCompat"
                 android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@+id/eplaceButton"
                 app:layout_constraintStart_toStartOf="@+id/etime"
                 app:layout_constraintTop_toTopOf="@+id/eplaceButton" />
 
@@ -167,7 +167,7 @@
                 android:id="@+id/textView11"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="\n\n\n"
                 android:textColor="@color/cardview_light_background"
                 app:layout_constraintTop_toBottomOf="@+id/eplaceButton"

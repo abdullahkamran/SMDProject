@@ -87,9 +87,9 @@ public class EventFragment extends Fragment {
 
         EventAdapter adapter=null;
         if(context.getCurrentGroup()!=null)
-            adapter=new EventAdapter(context.getCurrentGroup().getEvents(),R.layout.event_row_layout);
+            adapter=new EventAdapter(context.getCurrentGroup().getEvents(),R.layout.event_row_layout,context);
         else
-            adapter=new EventAdapter(null,R.layout.event_row_layout);
+            adapter=new EventAdapter(null,R.layout.event_row_layout,context);
         RecyclerView rc = v.findViewById(R.id.eventview);
 
         LinearLayoutManager layoutManager=new LinearLayoutManager((Context)context);

@@ -22,6 +22,7 @@ import java.util.Date;
 
 public class AddEvent extends AppCompatActivity {
 
+    private Place place=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class AddEvent extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode==1 && resultCode==RESULT_OK && data!=null){
-            Place place=PlacePicker.getPlace(this,data);
+            place=PlacePicker.getPlace(this,data);
             ((TextView)findViewById(R.id.eplace)).setText(place.getName()+" @"+place.getAddress());
         }
     }
@@ -74,7 +75,7 @@ public class AddEvent extends AppCompatActivity {
         EditText edes = (EditText) findViewById(R.id.edescription);
         TextView etime = (TextView) findViewById(R.id.etime);
         TextView edate = (TextView) findViewById(R.id.edate);
-        TextView txtPlace = (TextView) findViewById(R.id.eplace);
+        TextView eplace = (TextView) findViewById(R.id.eplace);
 
         if(ename.getText().toString().equalsIgnoreCase("")){
             Toast.makeText(this,"Event name can not be empty.",Toast.LENGTH_SHORT).show();
@@ -88,6 +89,10 @@ public class AddEvent extends AppCompatActivity {
             Toast.makeText(this,"Error: Please set event date.",Toast.LENGTH_SHORT).show();
             return;
         }
+        if(eplace.getText().toString().equalsIgnoreCase("")){
+            Toast.makeText(this,"Error: Please set event location.",Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Intent i=new Intent();
 
@@ -95,8 +100,8 @@ public class AddEvent extends AppCompatActivity {
         i.putExtra("edes",edes.getText().toString());
         i.putExtra("etime",etime.getText().toString());
         i.putExtra("edate",edate.getText().toString());
-        //i.putExtra("eplace",place.getLatLng().latitude+","+place.getLatLng().longitude);
-        i.putExtra("eadd",txtPlace.getText().toString());
+        i.putExtra("eplace",place.getLatLng().latitude+","+place.getLatLng().longitude);
+        i.putExtra("eadd",eplace.getText().toString());
         this.setResult(RESULT_OK,i);
         finish();
     }
