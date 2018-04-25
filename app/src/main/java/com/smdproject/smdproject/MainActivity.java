@@ -618,7 +618,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMyLocationEnabled(true);
+
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this,"You did not give permission to access Location.",Toast.LENGTH_SHORT).show();
+        }
+        else mMap.setMyLocationEnabled(true);
+
+
 
         if(currentGroup!=null) {
 
