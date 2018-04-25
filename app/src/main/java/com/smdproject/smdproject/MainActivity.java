@@ -47,11 +47,14 @@ import android.widget.Toast;
 import com.google.android.gms.ads.MobileAds;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -88,6 +91,7 @@ public class MainActivity extends AppCompatActivity
      */
 
     private GoogleMap mMap;
+    ArrayList<Marker> markers=new ArrayList<>();
 
     private static int TAB_COUNT=4;
     private FirebaseAuth mAuth;
@@ -141,7 +145,6 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
 
@@ -587,16 +590,40 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         if(currentGroup!=null) {
+
             for (int i = 0; i < currentGroup.getMembers().size(); i++) {
                 if (currentGroup.getMembers().get(i).getLocation() != null) {
-                    mMap.addMarker(new MarkerOptions().position
-                            (currentGroup.getMembers().get(i).getLocation()).title(currentGroup.getMembers().get(i).getName() + " is here!!"));
+                    markers.add(
+                            mMap.addMarker(new MarkerOptions().position
+                                    (currentGroup.getMembers().get(i).getLocation()).title(currentGroup.getMembers().get(i).getName() + " is here!!"))
+                    );
 
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(currentGroup.getMembers().get(i).getLocation()));
                 }
             }
+
+            mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                @Override
+                public void onMapLoaded() {
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    for (Marker marker : markers) {
+                        builder.include(marker.getPosition());
+                    }
+
+                    LatLngBounds bounds = builder.build();
+
+                    int padding = 100; // offset from edges of the map in pixels
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+                    mMap.animateCamera(cu);
+                }
+            });
+
+
         }
+
     }
 
 
