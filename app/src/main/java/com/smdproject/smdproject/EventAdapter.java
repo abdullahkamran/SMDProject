@@ -40,15 +40,22 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
         if(items!=null && holder!=null){
             holder.eventName.setText(items.get(position).getName());
             holder.description.setText(items.get(position).getDescription());
-            holder.time.setText(items.get(position).getStamp().toString());
-            holder.place.setText(items.get(position).getAddress());
+            String s=items.get(position).getStamp().toString();
+            s=s.substring(0,s.length()-15);
+            String[] strings=s.split(" ");
+            s=strings[0]+" "+strings[1]+" "+strings[2]+"    @"+strings[3].substring(0,strings[3].length()-3);
+            holder.time.setText(s);
+            holder.place.setText(items.get(position).getAddress()+"\n");
 
             holder.b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
-                    String uri=
-                            String.format
-                                    (Locale.ENGLISH,"geo:%f,%f",items.get(position).getLocation().latitude,items.get(position).getLocation().longitude);
+                    //String uri=
+                      //      String.format
+                        //            (Locale.ENGLISH,"geo:%f,%f",items.get(position).getLocation().latitude,items.get(position).getLocation().longitude);
+
+                    String uri="http://maps.google.com/maps?daddr="+items.get(position).getLocation().latitude
+                            +","+items.get(position).getLocation().longitude;
 
                     Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                     context.startActivity(intent);

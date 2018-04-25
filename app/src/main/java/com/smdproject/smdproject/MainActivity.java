@@ -5,10 +5,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,11 +19,13 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.*;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -52,6 +56,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -60,6 +65,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -121,6 +129,7 @@ public class MainActivity extends AppCompatActivity
     private ViewPager mViewPager;
 
     private Uri postImage=null;
+    private String filename=null;
 
 
 
@@ -255,8 +264,13 @@ public class MainActivity extends AppCompatActivity
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission granted.
 
-                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(i, 1);
+                filename=Environment.getExternalStorageDirectory().getPath()+"/squadApp/camfile.jpg";
+                postImage= FileProvider.getUriForFile(getApplicationContext(),getPackageName()+".fileprovider",new File(filename));
+                //postImage=Uri.fromFile(new File(filename));
+
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,postImage);
+                startActivityForResult(takePictureIntent, 1);
 
             } else {
                 // User refused to grant permission. You can add AlertDialog here
@@ -456,11 +470,26 @@ public class MainActivity extends AppCompatActivity
             if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 2);
             }
+            else {
+                filename=Environment.getExternalStorageDirectory().getPath()+"/squadApp/camfile.jpg";
+                postImage= FileProvider.getUriForFile(getApplicationContext(),getPackageName()+".fileprovider",new File(filename));
+                //postImage=Uri.fromFile(new File(filename));
+
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,postImage);
+                startActivityForResult(takePictureIntent, 1);
+            }
         }
 
         else {
-            Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(i, 1);
+            filename=Environment.getExternalStorageDirectory().getPath()+"/squadApp/camfile.jpg";
+            postImage= FileProvider.getUriForFile(getApplicationContext(),getPackageName()+".fileprovider",new File(filename));
+            //postImage=Uri.fromFile(new File(filename));
+
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,postImage);
+            startActivityForResult(takePictureIntent, 1);
+
         }
 
     }
@@ -487,15 +516,14 @@ public class MainActivity extends AppCompatActivity
                     .into(imageview);
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
         }
-        else if(requestCode==1 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-            Bundle extras=data.getExtras();
-            Bitmap bm=(Bitmap)extras.get("data");
+        else if(requestCode==1 && resultCode==RESULT_OK && filename!=null){
 
-            //postImage=uri;
 
             ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
+            imageview.setImageURI(postImage);
 
-            imageview.setImageBitmap(bm);
+            ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
+
         }
         else if (requestCode==123 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
 
@@ -548,7 +576,7 @@ public class MainActivity extends AppCompatActivity
             //make user
             //add to group
 
-            currentGroup.getNicknames().put(currentUser.getUid(), (String) currentUser.getName().subSequence(2,5));
+            //currentGroup.getNicknames().put(currentUser.getUid(), (String) currentUser.getName().subSequence(2,5));
             currentGroup.getMembers().add(0,currentUser);
         }
         else if(requestCode==103 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
@@ -590,23 +618,35 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setMyLocationEnabled(true);
 
         if(currentGroup!=null) {
 
             for (int i = 0; i < currentGroup.getMembers().size(); i++) {
                 if (currentGroup.getMembers().get(i).getLocation() != null) {
-                    markers.add(
-                            mMap.addMarker(new MarkerOptions().position
-                                    (currentGroup.getMembers().get(i).getLocation()).title(currentGroup.getMembers().get(i).getName() + " is here!!"))
-                    );
+                    if(currentGroup.getMembers().get(i)!=currentUser) {
+                        markers.add(
+                                mMap.addMarker(new MarkerOptions().position
+                                        (currentGroup.getMembers().get(i).getLocation()).title(currentGroup.getMembers().get(i).getName() + " is here!!"))
+                        );
+                    }
 
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(currentGroup.getMembers().get(i).getLocation()));
                 }
             }
 
             mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                 @Override
                 public void onMapLoaded() {
+
+                    if(markers.isEmpty()){
+                        Location location=mMap.getMyLocation();
+                        CameraPosition position=new CameraPosition.Builder()
+                        .target(new LatLng(location.getLatitude(),location.getLongitude()))
+                                .zoom(0).build();
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+                        return;
+                    }
+
                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
                     for (Marker marker : markers) {
                         builder.include(marker.getPosition());
@@ -656,6 +696,58 @@ public class MainActivity extends AppCompatActivity
     public void voiceChat(View v){
         startVoiceInputChat();
     }
+
+
+
+    private String saveToInternalStorage(Bitmap bitmapImage){
+
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,"profile.jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath();
+    }
+
+
+
+    public void createAlarm(String message, int hour, int minutes) {
+        Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM)
+                .putExtra(AlarmClock.EXTRA_MESSAGE, message)
+                .putExtra(AlarmClock.EXTRA_HOUR, hour)
+                .putExtra(AlarmClock.EXTRA_MINUTES, minutes)
+                .putExtra(AlarmClock.EXTRA_SKIP_UI,false);
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    public void showAlarm(String message, int hour, int minutes) {
+        Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM).putExtra(AlarmClock.EXTRA_HOUR,3)
+                .putExtra(AlarmClock.EXTRA_MESSAGE,"evening tea")
+                .putExtra(AlarmClock.EXTRA_SKIP_UI,true);
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
 
 
 }

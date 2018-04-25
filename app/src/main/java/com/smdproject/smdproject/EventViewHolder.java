@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 public class EventViewHolder extends RecyclerView.ViewHolder {
 
-    //public ImageView eventPic;
     public TextView eventName;
     public TextView time;
     public TextView place;

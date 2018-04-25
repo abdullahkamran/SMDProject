@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
         android:text="Event name"
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/directionButton"
+        app:layout_constraintEnd_toStartOf="@+id/dButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,13 +27,13 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="Description"
         android:textColor="@color/cardview_dark_background"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/directionButton"
+        app:layout_constraintEnd_toStartOf="@+id/dButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eventName" />
+        app:layout_constraintTop_toBottomOf="@+id/nameEvent" />
 
     <TextView
         android:id="@+id/eventTime"
@@ -41,11 +41,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="time"
         android:textColor="@color/cardview_dark_background"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/directionButton"
+        app:layout_constraintEnd_toStartOf="@+id/dButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/desc" />
 
@@ -55,12 +55,11 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="place"
         android:textColor="@color/cardview_dark_background"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/directionButton"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@+id/dButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/eventTime" />
 
