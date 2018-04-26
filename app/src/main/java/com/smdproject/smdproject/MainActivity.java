@@ -151,6 +151,11 @@ public class MainActivity extends AppCompatActivity
 
     TTSManager ttsManager = null;
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        ttsManager.shutDown();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
