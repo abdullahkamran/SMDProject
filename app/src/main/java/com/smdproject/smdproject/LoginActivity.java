@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser!=null){
-            Intent auth=new Intent(this,MainActivity.class);
+            Intent auth=new Intent(this,Dummy.class);
             startActivity(auth);
             finish();
         }
@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("GoogleSignIn", "signInWithCredential:success");
                     FirebaseUser user = mAuth.getCurrentUser();
-                    Intent googleIntent=new Intent(LoginActivity.this,MainActivity.class);
+                    Intent googleIntent=new Intent(LoginActivity.this,Dummy.class);
                     startActivity(googleIntent);
                     finish();
                 }
@@ -163,7 +163,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("FacebookSignIn", "signInWithCredential:success");
                     FirebaseUser user = mAuth.getCurrentUser();
-                    Intent facebookIntent=new Intent(LoginActivity.this,MainActivity.class);
+                    Intent facebookIntent=new Intent(LoginActivity.this,Dummy.class);
                     startActivity(facebookIntent);
                     //disable google and mobile buttons
                     finish();

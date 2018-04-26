@@ -161,7 +161,11 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        retrieveCurrentUser();
+        retrieveCurrent();
+        if(getIntent()!=null) {
+            currentUser = (User)getIntent().getSerializableExtra("user");
+            currentGroup= (Group)getIntent().getSerializableExtra("group");
+        }
 
         mAuth = FirebaseAuth.getInstance();//firebase
         setContentView(R.layout.activity_main);
@@ -177,7 +181,21 @@ public class MainActivity extends AppCompatActivity
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 if (mAuth.getCurrentUser() != null) {
-                    currentUser = dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).getValue(User.class);
+                    if(currentUser==null)
+                        currentUser=new User();
+
+                    currentUser.setDp(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("dp").getValue(String.class));
+                    String s =dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("location").getValue(String.class);
+                    if(s!=null){
+                        String [] arrOfStr = s.split(",", 2);
+                        Double l1 = Double.parseDouble(arrOfStr[0]);
+                        Double l2 = Double.parseDouble(arrOfStr[1]);
+                        currentUser.setLocation(new LatLng(l1, l2));
+                    }
+                    currentUser.setName(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("name").getValue(String.class));
+                    currentUser.setUid(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("uid").getValue(String.class));
+                    currentUser.setPhone(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("phone").getValue(String.class));
+                    currentUser.setIsAdmin(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("isAdmin").getValue(Boolean.class));
                 }
             }
 
@@ -188,21 +206,21 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        if (currentUser == null){
-            if (mAuth.getCurrentUser() != null) {
-                FirebaseUser user = mAuth.getCurrentUser();
-                if (user.getPhotoUrl() != null && user.getDisplayName() != null) {
-                    currentUser = new User(user.getUid(), user.getPhotoUrl().toString(), user.getDisplayName());
-                    saveCurrentUser();
-                    mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
-                } else {
-                    //startactivityfor result to get username,pic
-                    Intent i = new Intent(this, GetName.class);
-                    startActivityForResult(i, 103);
-                }
-            }
-
-        }
+//        if (currentUser == null){
+//            if (mAuth.getCurrentUser() != null) {
+//                FirebaseUser user = mAuth.getCurrentUser();
+//                if (user.getPhotoUrl() != null && user.getDisplayName() != null) {
+//                    currentUser = new User(user.getUid(), user.getPhotoUrl().toString(), user.getDisplayName(),user.getPhoneNumber());
+//                    saveCurrentUser();
+//                    mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
+//                } else {
+//                    //startactivityfor result to get username,pic
+//                    Intent i = new Intent(this, GetName.class);
+//                    startActivityForResult(i, 103);
+//                }
+//            }
+//
+//        }
 
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
@@ -240,19 +258,23 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void retrieveCurrentUser() {
+    private void retrieveCurrent() {
         SharedPreferences mPrefs = getPreferences(Context.MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = mPrefs.getString("currentUser", "");
-        currentUser = gson.fromJson(json, User.class);
+        String user = mPrefs.getString("currentUser", "");
+        String group = mPrefs.getString("currentGroup", "");
+        currentUser = gson.fromJson(user, User.class);
+        currentGroup = gson.fromJson(group, Group.class);
     }
 
-    private void saveCurrentUser() {
+    private void saveCurrent() {
         SharedPreferences mPrefs = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(currentUser);
-        prefsEditor.putString("currentUser", json);
+        String user = gson.toJson(currentUser);
+        String group = gson.toJson(currentGroup);
+        prefsEditor.putString("currentUser", user);
+        prefsEditor.putString("currentUser", group);
         prefsEditor.commit();
     }
 
@@ -260,7 +282,7 @@ public class MainActivity extends AppCompatActivity
     public void onStart() {
 
         super.onStart();
-
+        saveCurrent();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 
@@ -283,6 +305,8 @@ public class MainActivity extends AppCompatActivity
                 if (location != null) {
                     if(currentUser!=null) {
                         currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+                        String s=currentUser.getLocation().latitude+","+currentUser.getLocation().longitude;
+                        mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(s);
                     }
                 }
             }
@@ -297,14 +321,14 @@ public class MainActivity extends AppCompatActivity
             startActivity(auth);
             finish();
         }
-        else{
-            //make global variable
-            if (currentGroup == null && this.currentUser != null) {
-                //startActivityfor result
-                Intent i = new Intent(this, MainGroupActivity.class);
-                startActivityForResult(i, 102);
-            }
-        }
+//        else{
+//            //make global variable
+//            if (currentGroup == null && this.currentUser != null) {
+//                //startActivityfor result
+//                Intent i = new Intent(this, MainGroupActivity.class);
+//                startActivityForResult(i, 102);
+//            }
+//        }
     }
 
     @Override
@@ -320,7 +344,8 @@ public class MainActivity extends AppCompatActivity
 
                 if (location != null) {
                     currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
-
+                    String s=currentUser.getLocation().latitude+","+currentUser.getLocation().longitude;
+                    mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(s);
                 }
             } else {
                 // User refused to grant permission. You can add AlertDialog here
@@ -523,6 +548,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
+
         currentGroup.getPosts().add(0,post);
 
         ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
@@ -656,23 +682,23 @@ public class MainActivity extends AppCompatActivity
             ((EditText)findViewById(R.id.chatEditText))
                     .setText(((EditText)findViewById(R.id.chatEditText)).getText().toString()+" "+result.get(0));
         }
-        else if(requestCode==102 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
-
-            currentGroup = (Group) data.getSerializableExtra("Group");
-
-            ///get user picture from fb login or //google login
-            //make user
-            //add to group
-
-            //currentGroup.getNicknames().put(currentUser.getUid(), (String) currentUser.getName().subSequence(2,5));
-            currentGroup.getMembers().add(0,currentUser);
-        }
-        else if(requestCode==103 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
-            String s= data.getExtras().getString("p_name");
-            currentUser = new User(mAuth.getCurrentUser().getUid(),null,s);
-            saveCurrentUser();
-            mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
-        }
+//        else if(requestCode==102 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
+//
+//            currentGroup = (Group) data.getSerializableExtra("Group");
+//
+//            ///get user picture from fb login or //google login
+//            //make user
+//            //add to group
+//
+//            //currentGroup.getNicknames().put(currentUser.getUid(), (String) currentUser.getName().subSequence(2,5));
+//            currentGroup.getMembers().add(0,currentUser);
+//        }
+//        else if(requestCode==103 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
+//            String s= data.getExtras().getString("p_name");
+//            currentUser = new User(mAuth.getCurrentUser().getUid(),null,s,mAuth.getCurrentUser().getPhoneNumber());
+//            saveCurrentUser();
+//            mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
+//        }
     }
 
 

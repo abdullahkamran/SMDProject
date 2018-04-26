@@ -10,28 +10,29 @@ import java.io.Serializable;
  * Created by Ahmad on 28-Mar-18.
  */
 
-public class User {
+public class User implements Serializable{
     public String dp;
     private String uid;
     private String name;
     private LatLng location;
-    private String isAdmin;
+    private Boolean isAdmin;
     private String phone;
 
 
     public User(){}
 
-    public User(String uid,String dp, String name) {
+    public User(String uid,String dp, String name,String p) {
         this.dp = dp;
         this.uid = uid;
         this.name = name;
+        this.phone = p;
     }
 
-    public String getIsAdmin() {
+    public Boolean getIsAdmin() {
         return isAdmin;
     }
 
-    public void setIsAdmin(String isAdmin) {
+    public void setIsAdmin(Boolean isAdmin) {
         this.isAdmin = isAdmin;
     }
 

@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import java.util.ArrayList;
 import database.Group;
+import database.User;
 
 public class MainGroupActivity extends AppCompatActivity implements RecyclerView.OnItemTouchListener{
     private GestureDetector gestureDetector;
@@ -21,6 +22,7 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
     ArrayList<Group> data=new ArrayList<>();
     private GroupRecyclerViewAdapter adapter;
     private RecyclerView.LayoutManager lm;
+    private User u;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +103,7 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
         super.onActivityResult(requestCode, resultCode, dataIntent);
-        if(resultCode == 1122 && dataIntent != null && dataIntent.getExtras() != null){
+        if(requestCode == 1122 && resultCode==RESULT_OK && dataIntent != null && dataIntent.getExtras() != null){
             Group g = new Group(dataIntent.getExtras().getString("g_name"));
             data.add(g);
             adapter.notifyDataSetChanged();

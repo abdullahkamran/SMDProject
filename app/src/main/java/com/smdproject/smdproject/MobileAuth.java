@@ -131,8 +131,8 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("PhoneAuth", "signInWithCredential:success");
                     FirebaseUser user = task.getResult().getUser();
-                    Intent mainActivity=new Intent(MobileAuth.this,MainActivity.class);
-                    startActivity(mainActivity);
+                    Intent dummy=new Intent(MobileAuth.this,Dummy.class);
+                    startActivity(dummy);
                     finish();
                 }
                 else {
