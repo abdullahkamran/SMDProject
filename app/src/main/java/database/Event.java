@@ -1,11 +1,5 @@
 package database;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverters;
 import com.google.android.gms.maps.model.LatLng;
 import java.util.Date;
 
@@ -13,39 +7,17 @@ import java.util.Date;
  * Created by Ahmad on 28-Mar-18.
  */
 
-@Entity(tableName = "event",
-        foreignKeys = @ForeignKey(entity = Group.class,parentColumns = "groupId",childColumns = "g_id"))
+
 public class Event {
-    @PrimaryKey(autoGenerate = true)
     private int eid;
-
-    @ColumnInfo(name = "g_id")
     private int gid;
-
-    @ColumnInfo(name = "name")
     private String name;
-
-    @ColumnInfo(name = "desc")
     private String description;
-
-    @ColumnInfo(name = "dtime")
-    @TypeConverters({TimestampConverter.class})
     private Date stamp;
-
-    @ColumnInfo(name = "location")
-    @TypeConverters({LatLngConverter.class})
     private LatLng location;
-
-    @Ignore
     Group group;
-    @Ignore
     String address;
 
-    public Event(){
-
-    }
-
-    @Ignore
     public Event(Group g,String ad, String name,String desc, Date stamp, LatLng location) {
         this.name = name;
         this.stamp = stamp;
@@ -56,12 +28,28 @@ public class Event {
         this.description = desc;
     }
 
-    public String getAddress() {
-        return address;
+    public int getEid() {
+        return eid;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setEid(int eid) {
+        this.eid = eid;
+    }
+
+    public int getGid() {
+        return gid;
+    }
+
+    public void setGid(int gid) {
+        this.gid = gid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -72,51 +60,35 @@ public class Event {
         this.description = description;
     }
 
-    public void setEid(int eid) {
-        this.eid = eid;
-    }
-
-    public void setGid(int gid) {
-        this.gid = gid;
+    public Date getStamp() {
+        return stamp;
     }
 
     public void setStamp(Date stamp) {
         this.stamp = stamp;
     }
 
+    public LatLng getLocation() {
+        return location;
+    }
+
     public void setLocation(LatLng location) {
         this.location = location;
+    }
+
+    public Group getGroup() {
+        return group;
     }
 
     public void setGroup(Group group) {
         this.group = group;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getAddress() {
+        return address;
     }
 
-    public int getEid() {
-        return eid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Date getStamp() {
-        return stamp;
-    }
-
-    public LatLng getLocation() {
-        return location;
-    }
-
-    public int getGid() {
-        return gid;
-    }
-
-    public Group getGroup() {
-        return group;
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

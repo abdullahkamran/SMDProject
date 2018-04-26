@@ -2,7 +2,6 @@ package database;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
@@ -13,10 +12,7 @@ import java.util.Date;
  * Created by Ahmad on 28-Mar-18.
  */
 
-@Entity(tableName = "message",
-        foreignKeys = {@ForeignKey(entity = Group.class,parentColumns = "groupId",childColumns = "g_id"),
-                @ForeignKey(entity = User.class,parentColumns = "uid",childColumns = "u_id")})
-
+@Entity(tableName = "message")
 public class Message {
     @PrimaryKey(autoGenerate = true)
     private int mid;
@@ -25,7 +21,7 @@ public class Message {
     private int gid;
 
     @ColumnInfo(name = "u_id")
-    private int senderid;
+    private String senderid;
 
     @ColumnInfo(name = "text")
     private String text;
@@ -61,7 +57,7 @@ public class Message {
         return gid;
     }
 
-    public int getSenderid() {
+    public String getSenderid() {
         return senderid;
     }
 
@@ -73,7 +69,7 @@ public class Message {
         this.gid = gid;
     }
 
-    public void setSenderid(int senderid) {
+    public void setSenderid(String senderid) {
         this.senderid = senderid;
     }
 

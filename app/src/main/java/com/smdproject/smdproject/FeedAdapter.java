@@ -1,5 +1,6 @@
 package com.smdproject.smdproject;
 
+import android.net.Uri;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,7 +38,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
     @Override
     public void onBindViewHolder(FeedViewHolder holder,int position){
         if(items!=null && holder!=null){
-            holder.dp.setImageURI(items.get(position).getPostman().dp);
+            if(items.get(position).getPostman().dp!=null)
+                holder.dp.setImageURI(Uri.parse(items.get(position).getPostman().dp));
+
             holder.name.setText(items.get(position).getPostman().getName());
 
             if(items.get(position).getGroup().getNicknames().containsKey(items.get(position).getPostman().getUid()))

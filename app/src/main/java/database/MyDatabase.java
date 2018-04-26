@@ -9,12 +9,11 @@ import android.content.Context;
  * Created by Ahmad on 28-Mar-18.
  */
 
-@Database(entities = {User.class,Event.class,Post.class,Comment.class,Group.class,Message.class},version = 1)
+@Database(entities = {Message.class},version = 1)
 public abstract class MyDatabase extends RoomDatabase {
-
     private static MyDatabase INSTANCE;
 
-    public abstract UserDao userDao();
+    public abstract MessageDao messageDao();
 
     public static MyDatabase getAppDatabase(Context context) {
         if (INSTANCE == null) {

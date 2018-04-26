@@ -1,5 +1,6 @@
 package com.smdproject.smdproject;
 
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +18,12 @@ import database.Post;
  */
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
-    private ArrayList<Message> items;
+    private List<Message> items;
     private int itemLayoutIn;
     private int itemLayoutOut;
     private MainActivity context;
 
-    public ChatAdapter(ArrayList<Message> items, int itemLayoutIn, int itemLayoutOut, MainActivity context) {
+    public ChatAdapter(List<Message> items, int itemLayoutIn, int itemLayoutOut, MainActivity context) {
         this.items = items;
         this.itemLayoutIn = itemLayoutIn;
         this.itemLayoutOut = itemLayoutOut;
@@ -49,7 +50,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     @Override
     public void onBindViewHolder(ChatViewHolder holder,int position){
         if(items!=null && holder!=null){
-            holder.dp.setImageURI(items.get(position).getSender().dp);
+            if(items.get(position).getSender().dp!=null)
+                holder.dp.setImageURI(Uri.parse(items.get(position).getSender().dp));
 
             if(items.get(position).getGroup().getNicknames().containsKey(items.get(position).getSender().getUid()))
                 holder.nickname.setText(items.get(position).getGroup().getNicknames().get(items.get(position).getSender().getUid()));

@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -64,6 +66,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -84,11 +92,11 @@ import database.User;
 
 public class MainActivity extends AppCompatActivity
         implements FeedFragment.OnFragmentInteractionListener,
-                    EventFragment.OnFragmentInteractionListener,
-                    MapFragment.OnFragmentInteractionListener,
-                    ChatFragment.OnFragmentInteractionListener,
-                    NavigationView.OnNavigationItemSelectedListener,
-                    OnMapReadyCallback {
+        EventFragment.OnFragmentInteractionListener,
+        MapFragment.OnFragmentInteractionListener,
+        ChatFragment.OnFragmentInteractionListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        OnMapReadyCallback {
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -130,28 +138,55 @@ public class MainActivity extends AppCompatActivity
 
     private Uri postImage=null;
     private String filename=null;
+    private DatabaseReference mDatabase;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        retrieveCurrentUser();
+
         mAuth = FirebaseAuth.getInstance();//firebase
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if(mAuth.getCurrentUser()!=null) {
-            FirebaseUser user = mAuth.getCurrentUser();
-            if(user.getPhotoUrl()!=null && user.getDisplayName()!=null) {
-                currentUser = new User(Uri.parse(user.getPhotoUrl().toString()), user.getDisplayName());
-            }
-            else {
-                //startactivityfor result to get username,pic
-                Intent i = new Intent(this,GetName.class);
-                startActivityForResult(i,103);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                if (mAuth.getCurrentUser() != null) {
+                    currentUser = dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).getValue(User.class);
+                }
             }
 
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("Database", "Failed to read value.", error.toException());
+            }
+        });
+
+        if (currentUser == null){
+            if (mAuth.getCurrentUser() != null) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user.getPhotoUrl() != null && user.getDisplayName() != null) {
+                    currentUser = new User(user.getUid(), user.getPhotoUrl().toString(), user.getDisplayName());
+                    saveCurrentUser();
+                    mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
+                } else {
+                    //startactivityfor result to get username,pic
+                    Intent i = new Intent(this, GetName.class);
+                    startActivityForResult(i, 103);
+                }
+
+            }
         }
 
 
@@ -186,6 +221,23 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+
+    private void retrieveCurrentUser() {
+        SharedPreferences mPrefs = getPreferences(Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("currentUser", "");
+        currentUser = gson.fromJson(json, User.class);
+    }
+
+    private void saveCurrentUser() {
+        SharedPreferences mPrefs = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(currentUser);
+        prefsEditor.putString("currentUser", json);
+        prefsEditor.commit();
+    }
+
     @Override
     public void onStart() {
 
@@ -544,7 +596,7 @@ public class MainActivity extends AppCompatActivity
             String address="";
             LatLng laln=new LatLng(0,0);
             if(data.getExtras().getString("eplace")!=null) {
-                 latlng= data.getExtras().getString("eplace");
+                latlng= data.getExtras().getString("eplace");
                 String[] arrOfStr = latlng.split(",", 2);
                 l1 = Double.parseDouble(arrOfStr[0]);
                 l2 = Double.parseDouble(arrOfStr[1]);
@@ -581,7 +633,9 @@ public class MainActivity extends AppCompatActivity
         }
         else if(requestCode==103 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
             String s= data.getExtras().getString("p_name");
-            currentUser=new User(null,s);
+            currentUser = new User(mAuth.getCurrentUser().getUid(),null,s);
+            saveCurrentUser();
+            mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
         }
     }
 
@@ -648,7 +702,7 @@ public class MainActivity extends AppCompatActivity
                     if(markers.isEmpty()){
                         Location location=mMap.getMyLocation();
                         CameraPosition position=new CameraPosition.Builder()
-                        .target(new LatLng(location.getLatitude(),location.getLongitude()))
+                                .target(new LatLng(location.getLatitude(),location.getLongitude()))
                                 .zoom(0).build();
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
                         return;

@@ -1,43 +1,52 @@
 package database;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
-import android.arch.persistence.room.TypeConverters;
 import android.net.Uri;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import java.io.Serializable;
 
 /**
  * Created by Ahmad on 28-Mar-18.
  */
 
-@Entity(tableName = "user")
 public class User {
-
-    @PrimaryKey(autoGenerate = true)
-    private int uid;
-
-    @ColumnInfo(name="epic")
-    @TypeConverters({UriConverter.class})
-    public Uri dp;
-
-    @ColumnInfo(name = "name")
+    public String dp;
+    private String uid;
     private String name;
+    private LatLng location;
+    private String isAdmin;
 
-    @ColumnInfo(name = "location")
-    @TypeConverters({LatLngConverter.class})
-    private LatLng location=null;
+    public User(){}
 
-    public User(){
-
+    public User(String uid,String dp, String name) {
+        this.dp = dp;
+        this.uid = uid;
+        this.name = name;
     }
 
-    @Ignore
-    public User(Uri dp, String Name) {
+    public String getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(String isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    public String getDp() {
+        return dp;
+    }
+
+    public void setDp(String dp) {
         this.dp = dp;
-        this.name = Name;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getName() {
@@ -46,22 +55,6 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getUid() {
-        return uid;
-    }
-
-    public void setUid(int uid) {
-        this.uid = uid;
-    }
-
-    public Uri getDp() {
-        return dp;
-    }
-
-    public void setDp(Uri dp) {
-        this.dp = dp;
     }
 
     public LatLng getLocation() {

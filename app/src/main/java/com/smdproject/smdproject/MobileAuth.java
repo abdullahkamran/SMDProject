@@ -62,11 +62,7 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
                 Log.d("PhoneAuth", "onVerificationCompleted:" + credential);
                 // [START_EXCLUDE silent]
                 mVerificationInProgress = false;
-                // [END_EXCLUDE]
-                // [START_EXCLUDE silent]
-                // Update the UI and attempt sign in with the phone credential
-                //updateUI(STATE_VERIFY_SUCCESS, credential);
-                // [END_EXCLUDE]
+                mVerificationField.setText(credential.getSmsCode());
                 signInWithPhoneAuthCredential(credential);
             }
 
@@ -91,10 +87,6 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
                             Snackbar.LENGTH_SHORT).show();
                     // [END_EXCLUDE]
                 }
-                // Show a message and update the UI
-                // [START_EXCLUDE]
-                //updateUI(STATE_VERIFY_FAILED);
-                // [END_EXCLUDE]
             }
 
             @Override
@@ -106,10 +98,6 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
                 // Save verification ID and resending token so we can use them later
                 mVerificationId = verificationId;
                 mResendToken = token;
-                // [START_EXCLUDE]
-                // Update UI
-                //updateUI(STATE_CODE_SENT);
-                // [END_EXCLUDE]
             }
         };
 
@@ -157,10 +145,6 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
                         mVerificationField.setError("Invalid code.");
                         // [END_EXCLUDE]
                     }
-                    // [START_EXCLUDE silent]
-                    // Update UI
-                    //updateUI(STATE_SIGNIN_FAILED);
-                    // [END_EXCLUDE]
                 }
                 }
             });
