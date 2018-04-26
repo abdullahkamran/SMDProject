@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Ahmad on 28-Mar-18.
@@ -19,7 +20,7 @@ public class Group implements Serializable {
     private List<Post> posts;
     private List<Event> events;
     private List<Message> messages;
-    private HashMap<Integer,String> nicknames;
+    private Map<Integer,String> nicknames;
     private User admin;
 
     public Group() {
@@ -100,7 +101,7 @@ public class Group implements Serializable {
         this.messages = messages;
     }
 
-    public HashMap<Integer, String> getNicknames() {
+    public Map<Integer, String> getNicknames() {
         return nicknames;
     }
 
