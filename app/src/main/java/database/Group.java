@@ -21,6 +21,10 @@ public class Group implements Serializable {
     private List<Message> messages;
     private HashMap<Integer,String> nicknames;
 
+    public Group() {
+
+    }
+
     public Group(String name) {
         this.name = name;
         members=new ArrayList<>();

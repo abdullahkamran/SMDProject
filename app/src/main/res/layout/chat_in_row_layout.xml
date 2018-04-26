@@ -46,7 +46,7 @@
         android:id="@+id/textOnMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="48dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/incoming_bubble"
         android:fontFamily="sans-serif"
@@ -59,9 +59,19 @@
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:typeface="normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@+id/tts"
         app:layout_constraintStart_toStartOf="@+id/nicknameOnMessage"
         app:layout_constraintTop_toBottomOf="@+id/nicknameOnMessage" />
+
+    <Button
+        android:id="@+id/tts"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/sound"
+        android:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/textOnMessage"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

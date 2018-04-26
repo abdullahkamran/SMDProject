@@ -2,6 +2,7 @@ package com.smdproject.smdproject;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder{
     public TextView nickname;
     public TextView timestamp;
     public TextView text;
+    public Button b;
 
     public ChatViewHolder(View view){
         super(view);
@@ -22,6 +24,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder{
         nickname = (TextView) view.findViewById(R.id.nicknameOnMessage);
         timestamp = (TextView)view.findViewById(R.id.timestampOnMessage);
         text = (TextView) view.findViewById(R.id.textOnMessage);
+        b=(Button)view.findViewById(R.id.tts);
 
     }
 

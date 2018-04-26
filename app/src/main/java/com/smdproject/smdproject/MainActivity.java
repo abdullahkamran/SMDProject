@@ -3,6 +3,7 @@ package com.smdproject.smdproject;
 import android.*;
 import android.Manifest;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -28,6 +29,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -112,6 +114,13 @@ public class MainActivity extends AppCompatActivity
     private static int TAB_COUNT=4;
     private FirebaseAuth mAuth;
 
+
+    private static String SENT = "SMS_SENT";
+    private static String DELIVERED = "SMS_DELIVERED";
+    private static int MAX_SMS_MESSAGE_LENGTH = 160;
+
+
+
     public Group getCurrentGroup() {
         return currentGroup;
     }
@@ -140,6 +149,7 @@ public class MainActivity extends AppCompatActivity
     private String filename=null;
     private DatabaseReference mDatabase;
 
+    TTSManager ttsManager = null;
 
 
     @Override
@@ -185,12 +195,15 @@ public class MainActivity extends AppCompatActivity
                     Intent i = new Intent(this, GetName.class);
                     startActivityForResult(i, 103);
                 }
-
             }
+
         }
 
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
+
+        ttsManager = new TTSManager();
+        ttsManager.init(this);
 
         //make global variable
 
@@ -265,9 +278,8 @@ public class MainActivity extends AppCompatActivity
                 if (location != null) {
                     if(currentUser!=null) {
                         currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
-                        Toast.makeText(this, "Yes.", Toast.LENGTH_SHORT).show();
                     }
-                } else Toast.makeText(this, "No.", Toast.LENGTH_SHORT).show();
+                }
             }
 
         }
@@ -303,8 +315,8 @@ public class MainActivity extends AppCompatActivity
 
                 if (location != null) {
                     currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
-                    Toast.makeText(this, "Yes.", Toast.LENGTH_SHORT).show();
-                } else Toast.makeText(this, "No.", Toast.LENGTH_SHORT).show();
+
+                }
             } else {
                 // User refused to grant permission. You can add AlertDialog here
                 Toast.makeText(this, "You didn't give permission to access device location.", Toast.LENGTH_LONG).show();
@@ -466,6 +478,23 @@ public class MainActivity extends AppCompatActivity
 
         msgText.setText("");
 
+        PendingIntent piSent = PendingIntent.getBroadcast(this, 0, new Intent(SENT), 0);
+        PendingIntent piDelivered = PendingIntent.getBroadcast(this, 0,new Intent(DELIVERED), 0);
+        SmsManager smsManager = SmsManager.getDefault();
+
+        int length = message.getText().length();
+        if(length > MAX_SMS_MESSAGE_LENGTH) {
+            ArrayList<String> messagelist = smsManager.divideMessage(message.getText());
+
+            for(User u:currentGroup.getMembers())
+                if(u!=currentUser && u.getPhone()!=null)
+                    smsManager.sendMultipartTextMessage(u.getPhone(), null, messagelist, null, null);
+        }
+        else
+            for(User u:currentGroup.getMembers())
+                if(u!=currentUser && u.getPhone()!=null)
+                    smsManager.sendTextMessage(u.getPhone(), null, message.getText(), piSent, piDelivered);
+
     }
 
 
@@ -556,6 +585,8 @@ public class MainActivity extends AppCompatActivity
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
 
+        super.onActivityResult(requestCode,resultCode,data);
+
         if(requestCode==0 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
             Uri uri=data.getData();
 
@@ -643,8 +674,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-        //savedInstanceState.putFloat("finalWeightage",finalWeightage);
-        //savedInstanceState.putFloat("projectWeightage",projectWeightage);
+        //savedInstanceState.putParcelable("currentUser",currentUser);
+        savedInstanceState.putSerializable("currentGroup",currentGroup);
+        if(postImage!=null)savedInstanceState.putString("postImage",postImage.toString());
+        else savedInstanceState.putString("postImage","");
 
 
         super.onSaveInstanceState(savedInstanceState);
@@ -654,8 +687,11 @@ public class MainActivity extends AppCompatActivity
 
         super.onRestoreInstanceState(savedInstanceState);
 
-        //finalWeightage=savedInstanceState.getFloat("finalWeightage");
-        //projectWeightage=savedInstanceState.getFloat("projectWeightage");
+        //currentUser=(User)savedInstanceState.getParcelable("currentUser");
+        currentGroup=(Group)savedInstanceState.getSerializable("currentGroup");
+        if(savedInstanceState.getString("postImage").equalsIgnoreCase(""))postImage=null;
+        else postImage=Uri.parse(savedInstanceState.getString("postImage"));
+
 
     }
 

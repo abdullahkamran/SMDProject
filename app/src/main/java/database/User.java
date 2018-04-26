@@ -16,6 +16,8 @@ public class User {
     private String name;
     private LatLng location;
     private String isAdmin;
+    private String phone;
+
 
     public User(){}
 
@@ -39,6 +41,14 @@ public class User {
 
     public void setDp(String dp) {
         this.dp = dp;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getUid() {

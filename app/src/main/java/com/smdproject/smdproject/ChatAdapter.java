@@ -1,5 +1,6 @@
 package com.smdproject.smdproject;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,12 +23,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     private int itemLayoutIn;
     private int itemLayoutOut;
     private MainActivity context;
+    private TTSManager ttsManager;
 
-    public ChatAdapter(List<Message> items, int itemLayoutIn, int itemLayoutOut, MainActivity context) {
+    public ChatAdapter(List<Message> items, int itemLayoutIn, int itemLayoutOut,TTSManager ttsManager, MainActivity context) {
         this.items = items;
         this.itemLayoutIn = itemLayoutIn;
         this.itemLayoutOut = itemLayoutOut;
         this.context=context;
+        this.ttsManager=ttsManager;
+
     }
 
     @Override
@@ -48,7 +52,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
 
 
     @Override
-    public void onBindViewHolder(ChatViewHolder holder,int position){
+    public void onBindViewHolder(ChatViewHolder holder,final int position){
         if(items!=null && holder!=null){
             if(items.get(position).getSender().dp!=null)
                 holder.dp.setImageURI(Uri.parse(items.get(position).getSender().dp));
@@ -76,6 +80,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
 
             holder.timestamp.setText(timestamp);
             holder.text.setText(items.get(position).getText());
+
+            holder.b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+
+                    String text = items.get(position).getText();
+                    ttsManager.initQueue(text);
+                }
+            });
+
+
         }
     }
 
