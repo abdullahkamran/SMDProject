@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -25,12 +26,15 @@ public class Dummy extends AppCompatActivity {
     String number;
     TextView t;
     TextView g;
+    Button btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dummy);
         mAuth = FirebaseAuth.getInstance();
+        btn = findViewById(R.id.button5);
+        btn.setEnabled(false);
         t=findViewById(R.id.textView);
         g=findViewById(R.id.textView13);
         TelephonyManager tMgr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
@@ -67,7 +71,7 @@ public class Dummy extends AppCompatActivity {
             t.setText("You Signed in with Name : "+s+", Mobile Number : "+number);
         }
         else if(requestCode==103 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
-            group=new Group(data.getExtras().getString("g_name"));
+            group=new Group(data.getExtras().getString("g_name"),user);
             g.setText("You created Group : "+group.getName());
 
         }
@@ -76,6 +80,7 @@ public class Dummy extends AppCompatActivity {
     public void nCreateGroup(View v){
         Intent i = new Intent(this,CreateGroup.class);
         startActivityForResult(i,1111);
+        btn.setEnabled(true);
     }
 
     public void onClickCont(View v){
@@ -85,4 +90,10 @@ public class Dummy extends AppCompatActivity {
         startActivity(ii);
         finish();
     }
+
+    @Override
+    public void onBackPressed(){
+
+    }
+
 }

@@ -104,9 +104,9 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
         super.onActivityResult(requestCode, resultCode, dataIntent);
         if(requestCode == 1122 && resultCode==RESULT_OK && dataIntent != null && dataIntent.getExtras() != null){
-            Group g = new Group(dataIntent.getExtras().getString("g_name"));
-            data.add(g);
-            adapter.notifyDataSetChanged();
+//            Group g = new Group(dataIntent.getExtras().getString("g_name"),user);
+//            data.add(g);
+//            adapter.notifyDataSetChanged();
         }
     }
 

@@ -7,8 +7,8 @@ import java.util.Date;
  */
 
 public class Comment {
-    private int cid;
-    private int postid;
+    private String cid;
+    private String postid;
     private String userid;
     private String text;
     private Date stamp;
@@ -24,19 +24,19 @@ public class Comment {
         this.p = p;
     }
 
-    public int getCid() {
+    public String getCid() {
         return cid;
     }
 
-    public void setCid(int cid) {
+    public void setCid(String cid) {
         this.cid = cid;
     }
 
-    public int getPostid() {
+    public String getPostid() {
         return postid;
     }
 
-    public void setPostid(int postid) {
+    public void setPostid(String postid) {
         this.postid = postid;
     }
 

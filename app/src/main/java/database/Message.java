@@ -18,7 +18,7 @@ public class Message {
     private int mid;
 
     @ColumnInfo(name = "g_id")
-    private int gid;
+    private String gid;
 
     @ColumnInfo(name = "u_id")
     private String senderid;
@@ -53,7 +53,7 @@ public class Message {
         return mid;
     }
 
-    public int getGid() {
+    public String getGid() {
         return gid;
     }
 
@@ -65,7 +65,7 @@ public class Message {
         this.mid = mid;
     }
 
-    public void setGid(int gid) {
+    public void setGid(String gid) {
         this.gid = gid;
     }
 

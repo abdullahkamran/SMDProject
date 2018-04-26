@@ -11,9 +11,9 @@ import java.util.Date;
  */
 
 public class Post {
-    private int pid;
+    private String pid;
     private String uid;
-    private int gid;
+    private String gid;
     private String text;
     private Uri image;
     private Date stamp;
@@ -32,11 +32,11 @@ public class Post {
         comments=new ArrayList<>();
     }
 
-    public int getPid() {
+    public String getPid() {
         return pid;
     }
 
-    public void setPid(int pid) {
+    public void setPid(String pid) {
         this.pid = pid;
     }
 
@@ -48,11 +48,11 @@ public class Post {
         this.uid = uid;
     }
 
-    public int getGid() {
+    public String getGid() {
         return gid;
     }
 
-    public void setGid(int gid) {
+    public void setGid(String gid) {
         this.gid = gid;
     }
 

@@ -9,8 +9,8 @@ import java.util.Date;
 
 
 public class Event {
-    private int eid;
-    private int gid;
+    private String eid;
+    private String gid;
     private String name;
     private String description;
     private Date stamp;
@@ -28,19 +28,19 @@ public class Event {
         this.description = desc;
     }
 
-    public int getEid() {
+    public String getEid() {
         return eid;
     }
 
-    public void setEid(int eid) {
+    public void setEid(String eid) {
         this.eid = eid;
     }
 
-    public int getGid() {
+    public String getGid() {
         return gid;
     }
 
-    public void setGid(int gid) {
+    public void setGid(String gid) {
         this.gid = gid;
     }
 

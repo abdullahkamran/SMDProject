@@ -15,9 +15,7 @@ public class User implements Serializable{
     private String uid;
     private String name;
     private LatLng location;
-    private Boolean isAdmin;
     private String phone;
-
 
     public User(){}
 
@@ -26,14 +24,6 @@ public class User implements Serializable{
         this.uid = uid;
         this.name = name;
         this.phone = p;
-    }
-
-    public Boolean getIsAdmin() {
-        return isAdmin;
-    }
-
-    public void setIsAdmin(Boolean isAdmin) {
-        this.isAdmin = isAdmin;
     }
 
     public String getDp() {

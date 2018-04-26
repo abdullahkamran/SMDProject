@@ -12,7 +12,7 @@ import java.util.HashMap;
  */
 
 public class Group implements Serializable {
-    private int groupId;
+    private String groupId;
     private String name;
     private Uri groupPic;
     private List<User> members;
@@ -20,25 +20,35 @@ public class Group implements Serializable {
     private List<Event> events;
     private List<Message> messages;
     private HashMap<Integer,String> nicknames;
+    private User admin;
 
     public Group() {
 
     }
 
-    public Group(String name) {
+    public Group(String name,User u) {
         this.name = name;
         members=new ArrayList<>();
         posts=new ArrayList<>();
         events=new ArrayList<>();
         messages=new ArrayList<>();
         nicknames=new HashMap<Integer,String>();
+        admin = u;
     }
 
-    public int getGroupId() {
+    public User getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(User admin) {
+        this.admin = admin;
+    }
+
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(int groupId) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 

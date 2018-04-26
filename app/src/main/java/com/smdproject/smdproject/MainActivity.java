@@ -162,10 +162,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         retrieveCurrent();
-        if(getIntent()!=null) {
-            currentUser = (User)getIntent().getSerializableExtra("user");
-            currentGroup= (Group)getIntent().getSerializableExtra("group");
-        }
 
         mAuth = FirebaseAuth.getInstance();//firebase
         setContentView(R.layout.activity_main);
@@ -195,7 +191,6 @@ public class MainActivity extends AppCompatActivity
                     currentUser.setName(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("name").getValue(String.class));
                     currentUser.setUid(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("uid").getValue(String.class));
                     currentUser.setPhone(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("phone").getValue(String.class));
-                    currentUser.setIsAdmin(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("isAdmin").getValue(Boolean.class));
                 }
             }
 
@@ -205,6 +200,14 @@ public class MainActivity extends AppCompatActivity
                 Log.w("Database", "Failed to read value.", error.toException());
             }
         });
+
+
+        if(getIntent()!=null) {
+            currentUser = (User)getIntent().getSerializableExtra("user");
+            if(currentUser!=null)
+                mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
+            currentGroup= (Group)getIntent().getSerializableExtra("group");
+        }
 
 //        if (currentUser == null){
 //            if (mAuth.getCurrentUser() != null) {
