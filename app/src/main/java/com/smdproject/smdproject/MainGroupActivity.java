@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import database.Group;
 import database.User;
@@ -60,7 +62,7 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
                     int i = rv.getChildAdapterPosition(child);	//index of item which was clicked
                     Group g = data.get(i);
                     Intent ii=new Intent();
-                    ii.putExtra("Group",g);
+                    ii.putExtra("Group",(Serializable)g);
                     MainGroupActivity.this.setResult(RESULT_OK,ii);
                     finish();
                 }
@@ -104,9 +106,9 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
     protected void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
         super.onActivityResult(requestCode, resultCode, dataIntent);
         if(requestCode == 1122 && resultCode==RESULT_OK && dataIntent != null && dataIntent.getExtras() != null){
-//            Group g = new Group(dataIntent.getExtras().getString("g_name"),user);
-//            data.add(g);
-//            adapter.notifyDataSetChanged();
+            Group g = new Group(dataIntent.getExtras().getString("g_name"),u.getUid());
+            data.add(g);
+            adapter.notifyDataSetChanged();
         }
     }
 

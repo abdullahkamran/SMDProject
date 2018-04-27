@@ -1,48 +1,46 @@
 package database;
 
-import android.net.Uri;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Ahmad on 28-Mar-18.
  */
 
-public class Group implements Serializable {
+public class Group implements Serializable{
     private String groupId;
     private String name;
-    private Uri groupPic;
+    private String groupPic;
+    private String adminId;
     private List<User> members;
     private List<Post> posts;
     private List<Event> events;
     private List<Message> messages;
     private Map<Integer,String> nicknames;
-    private User admin;
 
     public Group() {
 
     }
 
-    public Group(String name,User u) {
+    public Group(String name,String u) {
         this.name = name;
         members=new ArrayList<>();
         posts=new ArrayList<>();
         events=new ArrayList<>();
         messages=new ArrayList<>();
         nicknames=new HashMap<Integer,String>();
-        admin = u;
+        adminId = u;
     }
 
-    public User getAdmin() {
-        return admin;
+    public String getAdmin() {
+        return adminId;
     }
 
-    public void setAdmin(User admin) {
-        this.admin = admin;
+    public void setAdmin(String admin) {
+        this.adminId = admin;
     }
 
     public String getGroupId() {
@@ -61,11 +59,11 @@ public class Group implements Serializable {
         this.name = name;
     }
 
-    public Uri getGroupPic() {
+    public String getGroupPic() {
         return groupPic;
     }
 
-    public void setGroupPic(Uri groupPic) {
+    public void setGroupPic(String groupPic) {
         this.groupPic = groupPic;
     }
 
@@ -73,7 +71,7 @@ public class Group implements Serializable {
         return members;
     }
 
-    public void setMembers(List<User> members) {
+    public void setMembers(ArrayList<User> members) {
         this.members = members;
     }
 
@@ -81,7 +79,7 @@ public class Group implements Serializable {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public void setPosts(ArrayList<Post> posts) {
         this.posts = posts;
     }
 
@@ -89,7 +87,7 @@ public class Group implements Serializable {
         return events;
     }
 
-    public void setEvents(List<Event> events) {
+    public void setEvents(ArrayList<Event> events) {
         this.events = events;
     }
 
@@ -97,7 +95,7 @@ public class Group implements Serializable {
         return messages;
     }
 
-    public void setMessages(List<Message> messages) {
+    public void setMessages(ArrayList<Message> messages) {
         this.messages = messages;
     }
 

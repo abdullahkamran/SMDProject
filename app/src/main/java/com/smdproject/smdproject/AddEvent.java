@@ -1,8 +1,6 @@
 package com.smdproject.smdproject;
 
-import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +19,6 @@ import java.util.Date;
 
 
 public class AddEvent extends AppCompatActivity {
-
     private Place place=null;
 
     @Override
@@ -30,13 +27,9 @@ public class AddEvent extends AppCompatActivity {
         setContentView(R.layout.activity_add_event);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
     }
 
-
     public void selectLocation(View v){
-
         PlacePicker.IntentBuilder builder=new PlacePicker.IntentBuilder();
         try {
             startActivityForResult(builder.build(this), 1);
@@ -44,7 +37,6 @@ public class AddEvent extends AppCompatActivity {
         catch(Exception e){
             e.printStackTrace();
         }
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -55,19 +47,15 @@ public class AddEvent extends AppCompatActivity {
     }
 
     public void selectTime(View v){
-
         TimeDialog dialog=new TimeDialog((TextView)findViewById(R.id.etime));
         FragmentTransaction ft =getFragmentManager().beginTransaction();
         dialog.show(ft, "TimePicker");
-
     }
 
     public void selectDate(View v){
-
         DateDialog dialog=new DateDialog((TextView)findViewById(R.id.edate));
         FragmentTransaction ft =getFragmentManager().beginTransaction();
         dialog.show(ft, "DatePicker");
-
     }
 
     public void onPost(View view) {

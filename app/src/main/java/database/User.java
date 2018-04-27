@@ -1,9 +1,5 @@
 package database;
 
-import android.net.Uri;
-
-import com.google.android.gms.maps.model.LatLng;
-
 import java.io.Serializable;
 
 /**
@@ -14,7 +10,7 @@ public class User implements Serializable{
     public String dp;
     private String uid;
     private String name;
-    private LatLng location;
+    private String location;
     private String phone;
 
     public User(){}
@@ -58,11 +54,11 @@ public class User implements Serializable{
         this.name = name;
     }
 
-    public LatLng getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(LatLng location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 }

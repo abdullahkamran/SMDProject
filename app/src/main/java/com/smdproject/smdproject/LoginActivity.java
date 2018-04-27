@@ -27,8 +27,21 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private static FirebaseDatabase mDatabase;
+    public static FirebaseDatabase getDatabase(){
+        if(mDatabase==null){
+            mDatabase = FirebaseDatabase.getInstance();
+            mDatabase.setPersistenceEnabled(true);
+            mDatabase.getReference().keepSynced(true);
+        }
+        return mDatabase;
+    }
+
 
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;

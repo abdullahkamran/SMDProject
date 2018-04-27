@@ -20,7 +20,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
 
     private MainActivity context;
 
-
     public EventAdapter(List <Event> items, int itemLayout, MainActivity context) {
         this.items = items;
         this.itemLayout = itemLayout;
@@ -35,18 +34,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
 
     @Override
     public void onBindViewHolder(EventViewHolder holder, final int position){
-
-
         if(items!=null && holder!=null){
             holder.eventName.setText(items.get(position).getName());
             holder.description.setText(items.get(position).getDescription());
-            String s=items.get(position).getStamp().toString();
-            s=s.substring(0,s.length()-15);
+            String s=items.get(position).getStamp();
             String[] strings=s.split(" ");
-            s=strings[0]+" "+strings[1]+" "+strings[2]+"    @"+strings[3].substring(0,strings[3].length()-3);
+            if(s!=null)
+                s=strings[0]+"    @"+strings[1];
             holder.time.setText(s);
             holder.place.setText(items.get(position).getAddress()+"\n");
-
             holder.b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
@@ -54,15 +50,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
                       //      String.format
                         //            (Locale.ENGLISH,"geo:%f,%f",items.get(position).getLocation().latitude,items.get(position).getLocation().longitude);
 
-                    String uri="http://maps.google.com/maps?daddr="+items.get(position).getLocation().latitude
-                            +","+items.get(position).getLocation().longitude;
+                    String[] arrOfStr = items.get(position).getLocation().split(",", 2);
+                    Double l1 = Double.parseDouble(arrOfStr[0]);
+                    Double l2 = Double.parseDouble(arrOfStr[1]);
+                    String uri="http://maps.google.com/maps?daddr="+l1
+                            +","+l2;
 
                     Intent intent=new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                     context.startActivity(intent);
-
                 }
             });
-
         }
     }
 

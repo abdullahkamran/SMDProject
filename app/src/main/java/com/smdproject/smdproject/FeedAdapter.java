@@ -1,19 +1,16 @@
 package com.smdproject.smdproject;
 
 import android.net.Uri;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.VideoView;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import database.Post;
 
 /**
@@ -42,26 +39,23 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
                 holder.dp.setImageURI(Uri.parse(items.get(position).getPostman().dp));
 
             holder.name.setText(items.get(position).getPostman().getName());
-
             if(items.get(position).getGroup().getNicknames().containsKey(items.get(position).getPostman().getUid()))
                 holder.nickname.setText("@"+items.get(position).getGroup().getNicknames().get(items.get(position).getPostman().getUid()));
 
-
-            String timestamp=items.get(position).getStamp().toString();
-            String today=(new Date()).toString();
-
+            String timestamp=items.get(position).getStamp();
+            Date d =new Date();
+            DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+            String today=df.format(d);
             String[] todays=today.split(" ");
             String[] timestamps=timestamp.split(" ");
-
-            if(todays[0].equalsIgnoreCase(timestamps[0]) && todays[1].equalsIgnoreCase(timestamps[1])
-                    && todays[2].equalsIgnoreCase(timestamps[2])){
-                timestamp=timestamps[3];
+            if(todays[0].equalsIgnoreCase(timestamps[0])){
+                timestamp=timestamps[1];
                 timestamp=timestamp.substring(0,timestamp.length()-3);
             }
             else{
-                timestamp=timestamps[3];
+                timestamp=timestamps[1];
                 timestamp=timestamp.substring(0,timestamp.length()-3);
-                timestamp=timestamps[0]+timestamps[1]+timestamps[2]+timestamp;
+                timestamp=timestamps[0]+" "+timestamp;
             }
 
             holder.timestamp.setText(timestamp);
@@ -72,14 +66,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             }
             else holder.text.setVisibility(TextView.VISIBLE);
 
-
-            holder.image.setImageURI(items.get(position).getImage());
-
             if(items.get(position).getImage()==null){
                 holder.image.setVisibility(ImageView.GONE);
             }
-            else holder.image.setVisibility(ImageView.VISIBLE);
-
+            else{
+                holder.image.setVisibility(ImageView.VISIBLE);
+                holder.image.setImageURI(Uri.parse(items.get(position).getImage()));
+            }
         }
     }
 

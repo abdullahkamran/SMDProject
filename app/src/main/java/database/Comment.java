@@ -1,28 +1,23 @@
 package database;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by Ahmad on 28-Mar-18.
  */
 
-public class Comment implements Serializable {
+public class Comment implements Serializable{
     private String cid;
     private String postid;
     private String userid;
     private String text;
-    private Date stamp;
-    private User commentator;
-    private Post p;
+    private String stamp;
 
-    public Comment(String text, User commentator, Date stamp, Post p) {
+    public Comment(String text, String commentator, String stamp, String p) {
         this.text = text;
-        this.commentator = commentator;
-        this.userid = commentator.getUid();
-        this.postid = p.getPid();
+        this.userid = commentator;
+        this.postid = p;
         this.stamp = stamp;
-        this.p = p;
     }
 
     public String getCid() {
@@ -57,27 +52,11 @@ public class Comment implements Serializable {
         this.text = text;
     }
 
-    public Date getStamp() {
+    public String getStamp() {
         return stamp;
     }
 
-    public void setStamp(Date stamp) {
+    public void setStamp(String stamp) {
         this.stamp = stamp;
-    }
-
-    public User getCommentator() {
-        return commentator;
-    }
-
-    public void setCommentator(User commentator) {
-        this.commentator = commentator;
-    }
-
-    public Post getP() {
-        return p;
-    }
-
-    public void setP(Post p) {
-        this.p = p;
     }
 }

@@ -4,25 +4,29 @@ import android.net.Uri;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Ahmad on 28-Mar-18.
  */
 
-public class Post implements Serializable {
+public class Post implements Serializable{
     private String pid;
     private String uid;
     private String gid;
     private String text;
-    private Uri image;
-    private Date stamp;
+    private String image;
+    private String stamp;
     private Group group;
     private User postman;
     private List<Comment> comments;
 
-    public Post(Group group, User postman, String text, Uri image, Date stamp) {
+    public Post(){
+
+    }
+
+    public Post(Group group, User postman, String text, String image, String stamp) {
         this.group = group;
         this.postman = postman;
         this.text = text;
@@ -65,19 +69,19 @@ public class Post implements Serializable {
         this.text = text;
     }
 
-    public Uri getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Uri image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
-    public Date getStamp() {
+    public String getStamp() {
         return stamp;
     }
 
-    public void setStamp(Date stamp) {
+    public void setStamp(String stamp) {
         this.stamp = stamp;
     }
 
@@ -101,7 +105,7 @@ public class Post implements Serializable {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
     }
 }

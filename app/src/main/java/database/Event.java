@@ -1,32 +1,31 @@
 package database;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by Ahmad on 28-Mar-18.
  */
 
 
-public class Event implements Serializable {
+public class Event implements Serializable{
     private String eid;
     private String gid;
     private String name;
     private String description;
-    private Date stamp;
-    private LatLng location;
-    Group group;
-    String address;
+    private String stamp;
+    private String location;
+    private String address;
 
-    public Event(Group g,String ad, String name,String desc, Date stamp, LatLng location) {
+    public Event(){
+
+    }
+
+    public Event(String id,String ad, String name,String desc, String stamp, String location) {
         this.name = name;
         this.stamp = stamp;
         this.address=ad;
         this.location = location;
-        this.group = g;
-        this.gid = g.getGroupId();
+        this.gid = id;
         this.description = desc;
     }
 
@@ -62,28 +61,20 @@ public class Event implements Serializable {
         this.description = description;
     }
 
-    public Date getStamp() {
+    public String getStamp() {
         return stamp;
     }
 
-    public void setStamp(Date stamp) {
+    public void setStamp(String stamp) {
         this.stamp = stamp;
     }
 
-    public LatLng getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(LatLng location) {
+    public void setLocation(String location) {
         this.location = location;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
     }
 
     public String getAddress() {

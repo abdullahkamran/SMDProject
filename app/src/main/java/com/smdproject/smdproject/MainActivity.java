@@ -75,16 +75,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import database.Event;
@@ -148,8 +152,12 @@ public class MainActivity extends AppCompatActivity
 
     private Uri postImage=null;
     private String filename=null;
-    private DatabaseReference mDatabase;
     private DatabaseReference mdb;
+    private DatabaseReference meventc;
+    private DatabaseReference mpostc;
+    private DatabaseReference mevent;
+    private DatabaseReference mpost;
+    private DatabaseReference mDatabase;
 
     TTSManager ttsManager = null;
 
@@ -160,45 +168,45 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        saveCurrent();
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
 
         mAuth = FirebaseAuth.getInstance();//firebase
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase database = LoginActivity.getDatabase();
+        mDatabase=LoginActivity.getDatabase().getReference();
+        mevent = LoginActivity.getDatabase().getReference("Events");
+        mevent.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                if (mAuth.getCurrentUser() != null) {
-                    if(currentUser==null)
-                        currentUser=new User();
-
-                    currentUser.setDp(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("dp").getValue(String.class));
-                    String s =dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("location").getValue(String.class);
-                    if(s!=null){
-                        String [] arrOfStr = s.split(",", 2);
-                        Double l1 = Double.parseDouble(arrOfStr[0]);
-                        Double l2 = Double.parseDouble(arrOfStr[1]);
-                        currentUser.setLocation(new LatLng(l1, l2));
+                if(currentGroup != null&&currentGroup.getEvents() == null){
+                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                        Event e=ds.getValue(Event.class);
+                        currentGroup.getEvents().add(0,e);
                     }
-                    currentUser.setName(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("name").getValue(String.class));
-                    currentUser.setUid(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("uid").getValue(String.class));
-                    currentUser.setPhone(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("phone").getValue(String.class));
-
-                    if(currentGroup==null)
-                        currentGroup=new Group();
-
-                   // currentGroup.setAdmin(dataSnapshot.child("currentGroup").child(mAuth.getCurrentUser().getUid()).child("dp").getValue(String.class));
-
+                }
+                else {
+                    Event e = dataSnapshot.getValue(Event.class);
+                    if (currentGroup != null) {
+                        for (int i = 0; i < currentGroup.getEvents().size(); i++)
+                            if (currentGroup.getEvents().get(i).getEid() != e.getEid()) {
+                                currentGroup.getEvents().add(e);
+                                break;
+                            }
+                    }
                 }
             }
 
@@ -209,13 +217,106 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mdb=FirebaseDatabase.getInstance().getReference("currentGroup");
+        mpost = LoginActivity.getDatabase().getReference("Posts");
+        mpost.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                if(currentGroup!=null && currentGroup.getPosts()==null){
+                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                        Post e=ds.getValue(Post.class);
+                        currentGroup.getPosts().add(0,e);
+                    }
+                }
+                else {
+                    Post e = dataSnapshot.getValue(Post.class);
+                    if (currentGroup != null) {
+                        for (int i = 0; i < currentGroup.getPosts().size(); i++)
+                            if (currentGroup.getPosts().get(i).getPid() != e.getPid()) {
+                                currentGroup.getPosts().add(e);
+                                break;
+                            }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("Database", "Failed to read value.", error.toException());
+            }
+        });
+
+        mdb=LoginActivity.getDatabase().getReference("currentGroup");
         mdb.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (currentGroup != null) {
                     currentGroup.setGroupId(dataSnapshot.getKey());
                     mDatabase.child("currentGroup").child(currentGroup.getGroupId()).child("groupId").setValue(currentGroup.getGroupId());
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        meventc=LoginActivity.getDatabase().getReference("Events");
+        meventc.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if(currentGroup!=null && !currentGroup.getEvents().isEmpty()) {
+                    currentGroup.getEvents().get(0).setEid(dataSnapshot.getKey());
+                    mDatabase.child("Events").child(dataSnapshot.getKey()).child("eid").setValue(dataSnapshot.getKey());
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        mpostc=LoginActivity.getDatabase().getReference("Events");
+        mpostc.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if(currentGroup!=null && !currentGroup.getPosts().isEmpty()) {
+                    currentGroup.getPosts().get(0).setPid(dataSnapshot.getKey());
+                    mDatabase.child("Posts").child(dataSnapshot.getKey()).child("pid").setValue(dataSnapshot.getKey());
                 }
             }
 
@@ -249,30 +350,10 @@ public class MainActivity extends AppCompatActivity
                 mDatabase.child("currentGroup").push().setValue(currentGroup);
         }
 
-//        if (currentUser == null){
-//            if (mAuth.getCurrentUser() != null) {
-//                FirebaseUser user = mAuth.getCurrentUser();
-//                if (user.getPhotoUrl() != null && user.getDisplayName() != null) {
-//                    currentUser = new User(user.getUid(), user.getPhotoUrl().toString(), user.getDisplayName(),user.getPhoneNumber());
-//                    saveCurrentUser();
-//                    mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
-//                } else {
-//                    //startactivityfor result to get username,pic
-//                    Intent i = new Intent(this, GetName.class);
-//                    startActivityForResult(i, 103);
-//                }
-//            }
-//
-//        }
-
-
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
 
         ttsManager = new TTSManager();
         ttsManager.init(this);
-
-        //make global variable
-
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -306,27 +387,65 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences mPrefs = getPreferences(Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String user = mPrefs.getString("currentUser", "");
-        String group = mPrefs.getString("currentGroup", "");
         currentUser = gson.fromJson(user, User.class);
-        currentGroup = gson.fromJson(group, Group.class);
+
+        currentGroup=new Group();
+        currentGroup.setGroupId(mPrefs.getString("currentGroupId",""));
+        if(mPrefs.getString("currentGroupPic","").equals(""))
+            currentGroup.setGroupPic(null);
+        else
+            currentGroup.setGroupPic(mPrefs.getString("currentGroupPic",""));
+        currentGroup.setName(mPrefs.getString("currentGroupName",""));
+        currentGroup.setAdmin(mPrefs.getString("currentGroupAdmin",""));
+
+        currentGroup.setEvents(gson.fromJson(mPrefs.getString("currentGroupEvent",""), ArrayList.class));
+        currentGroup.setMembers(gson.fromJson(mPrefs.getString("currentGroupMembers",""), ArrayList.class));
+        currentGroup.setMessages(gson.fromJson(mPrefs.getString("currentGroupMessages",""), ArrayList.class));
+        //currentGroup.setPosts(gson.fromJson(mPrefs.getString("currentGroupPosts",""), ArrayList.class));
+
+        String hash=mPrefs.getString("hashmap","");
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+        HashMap<Integer,String> testHashMap2 = gson.fromJson(hash, type);
+        currentGroup.setNicknames(testHashMap2);
+
+        if(mPrefs.getString("currentGroupId","").equals(""))
+            currentGroup=null;
     }
 
     private void saveCurrent() {
-        SharedPreferences mPrefs = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         Gson gson = new Gson();
         String user = gson.toJson(currentUser);
-        String group = gson.toJson(currentGroup);
+        //String group = gson.toJson(currentGroup);
+
         prefsEditor.putString("currentUser", user);
-        prefsEditor.putString("currentGroup", group);
-        prefsEditor.commit();
+        prefsEditor.putString("currentGroupId", currentGroup.getGroupId());
+        prefsEditor.putString("currentGroupName", currentGroup.getName());
+        prefsEditor.putString("currentGroupAdmin", currentGroup.getAdmin());
+        if(currentGroup.getGroupPic()!=null)
+            prefsEditor.putString("currentGroupPic", currentGroup.getGroupPic().toString());
+        else
+            prefsEditor.putString("currentGroupPic", "");
+
+        List<Event>e=currentGroup.getEvents();
+        String events=gson.toJson(e);
+        prefsEditor.putString("currentGroupEvents",events);
+        prefsEditor.putString("currentGroupMembers",gson.toJson(currentGroup.getMembers()));
+        prefsEditor.putString("currentGroupMessages",gson.toJson(currentGroup.getMessages()));
+        //prefsEditor.putString("currentGroupPosts",gson.toJson(currentGroup.getPosts()));
+
+        String hashMapString = gson.toJson(currentGroup.getNicknames());
+        prefsEditor.putString("hashmap",hashMapString);
+
+        prefsEditor.apply();
     }
 
     @Override
     public void onStart() {
 
         super.onStart();
-        saveCurrent();
+        //saveCurrent();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 
@@ -348,9 +467,8 @@ public class MainActivity extends AppCompatActivity
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location != null) {
                     if(currentUser!=null) {
-                        currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
-                        String s=currentUser.getLocation().latitude+","+currentUser.getLocation().longitude;
-                        mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(s);
+                        currentUser.setLocation(location.getLatitude()+","+location.getLongitude());
+                        mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(currentUser.getLocation());
                     }
                 }
             }
@@ -379,14 +497,6 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, "both are ok", Toast.LENGTH_SHORT).show();
             }
         }
-//        else{
-//            //make global variable
-//            if (currentGroup == null && this.currentUser != null) {
-//                //startActivityfor result
-//                Intent i = new Intent(this, MainGroupActivity.class);
-//                startActivityForResult(i, 102);
-//            }
-//        }
     }
 
     @Override
@@ -401,9 +511,8 @@ public class MainActivity extends AppCompatActivity
                     location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
                 if (location != null) {
-                    currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
-                    String s=currentUser.getLocation().latitude+","+currentUser.getLocation().longitude;
-                    mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(s);
+                    currentUser.setLocation(location.getLatitude()+","+location.getLongitude());
+                    mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(currentUser.getLocation());
                 }
             } else {
                 // User refused to grant permission. You can add AlertDialog here
@@ -598,16 +707,18 @@ public class MainActivity extends AppCompatActivity
         }
 
         Post post=null;
+        Date d =new Date();
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
-        if(postImage==null)
-            post=new Post(currentGroup,currentUser,statusText.getText().toString(), null, new Date());
-        else
-            post=new Post(currentGroup,currentUser,statusText.getText().toString(), postImage, new Date());
-
-
-
+        if(postImage==null) {
+            post = new Post(currentGroup, currentUser, statusText.getText().toString(), null, df.format(d));
+        }
+        else {
+            post = new Post(currentGroup, currentUser, statusText.getText().toString(), postImage.toString(), df.format(d));
+        }
 
         currentGroup.getPosts().add(0,post);
+        mDatabase.child("Posts").push().setValue(post);
 
         ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
 
@@ -698,34 +809,18 @@ public class MainActivity extends AppCompatActivity
 
         }
         else if (requestCode==123 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
-
-            DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-            Date d=null;
-            if(data.getExtras().getString("edate")!=null && data.getExtras().getString("etime")!=null){
-                String s=data.getExtras().getString("edate")+" "+data.getExtras().getString("etime")+":00";
-                try {
-                    d = df.parse(s);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-
             String latlng="";
-            Double l1=0D;
-            Double l2=0D;
             String address="";
-            LatLng laln=new LatLng(0,0);
+
             if(data.getExtras().getString("eplace")!=null) {
                 latlng= data.getExtras().getString("eplace");
-                String[] arrOfStr = latlng.split(",", 2);
-                l1 = Double.parseDouble(arrOfStr[0]);
-                l2 = Double.parseDouble(arrOfStr[1]);
                 address = data.getExtras().getString("eadd");
-                laln = new LatLng(l1, l2);
             }
 
-            Event e=new Event(currentGroup, address,data.getExtras().getString("ename"),data.getExtras().getString("edes"),d,laln);
+
+            Event e=new Event(currentGroup.getGroupId(), address,data.getExtras().getString("ename"),data.getExtras().getString("edes"),data.getExtras().getString("edate")+" "+data.getExtras().getString("etime")+":00",latlng);
             currentGroup.getEvents().add(0,e);
+            mDatabase.child("Events").push().setValue(e);
             ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
         }
         else if (requestCode==100 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
@@ -764,7 +859,7 @@ public class MainActivity extends AppCompatActivity
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         //savedInstanceState.putParcelable("currentUser",currentUser);
-        savedInstanceState.putSerializable("currentGroup",currentGroup);
+        savedInstanceState.putSerializable("currentGroup",(Serializable) currentGroup);
         if(postImage!=null)savedInstanceState.putString("postImage",postImage.toString());
         else savedInstanceState.putString("postImage","");
 
@@ -811,9 +906,12 @@ public class MainActivity extends AppCompatActivity
             for (int i = 0; i < currentGroup.getMembers().size(); i++) {
                 if (currentGroup.getMembers().get(i).getLocation() != null) {
                     if(currentGroup.getMembers().get(i)!=currentUser) {
+                        String[] arrOfStr = currentGroup.getMembers().get(i).getLocation().split(",", 2);
+                        Double l1 = Double.parseDouble(arrOfStr[0]);
+                        Double l2 = Double.parseDouble(arrOfStr[1]);
                         markers.add(
                                 mMap.addMarker(new MarkerOptions().position
-                                        (currentGroup.getMembers().get(i).getLocation()).title(currentGroup.getMembers().get(i).getName() + " is here!!"))
+                                        (new LatLng(l1,l2)).title(currentGroup.getMembers().get(i).getName() + " is here!!"))
                         );
                     }
 

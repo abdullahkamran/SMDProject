@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.Serializable;
+
 import database.Group;
 import database.User;
 
@@ -71,7 +73,7 @@ public class Dummy extends AppCompatActivity {
             t.setText("You Signed in with Name : "+s+", Mobile Number : "+number);
         }
         else if(requestCode==1111 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
-            group=new Group(data.getExtras().getString("g_name"),user);
+            group=new Group(data.getExtras().getString("g_name"),user.getUid());
             g.setText("You created Group : "+group.getName());
 
         }
@@ -85,7 +87,7 @@ public class Dummy extends AppCompatActivity {
 
     public void onClickCont(View v){
         Intent ii=new Intent(this,MainActivity.class);
-        ii.putExtra("user",user);
+        ii.putExtra("user", user);
         ii.putExtra("group",group);
         startActivity(ii);
         finish();

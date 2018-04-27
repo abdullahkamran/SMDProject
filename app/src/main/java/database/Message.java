@@ -14,7 +14,7 @@ import java.util.Date;
  */
 
 @Entity(tableName = "message")
-public class Message implements Serializable {
+public class Message implements Serializable{
     @PrimaryKey(autoGenerate = true)
     private int mid;
 
