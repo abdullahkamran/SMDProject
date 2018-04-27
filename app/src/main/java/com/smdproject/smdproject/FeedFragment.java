@@ -94,8 +94,10 @@ public class FeedFragment extends Fragment {
         View v=inflater.inflate(R.layout.fragment_feed, container, false);
 
         FeedAdapter adapter=null;
-        if(context.getCurrentGroup()!=null)
-            adapter=new FeedAdapter(context.getCurrentGroup().getPosts(),R.layout.feed_row_layout);
+        if(context.getCurrentGroup()!=null) {
+            adapter = new FeedAdapter(context.getCurrentGroup().getPosts(), R.layout.feed_row_layout);
+            //context.setNav();
+        }
         else
             adapter=new FeedAdapter(null,R.layout.feed_row_layout);
 

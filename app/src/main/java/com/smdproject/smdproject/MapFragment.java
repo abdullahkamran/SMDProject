@@ -4,6 +4,10 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +83,6 @@ public class MapFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-
     }
 
     @Override
@@ -95,6 +98,36 @@ public class MapFragment extends Fragment {
         banner=(AdView)v.findViewById(R.id.adView3);
         AdRequest request=new AdRequest.Builder().build();
         banner.loadAd(request);
+
+
+        HorizontalEventAdapter adapter=null;
+        if(context.getCurrentGroup()!=null)
+            adapter=new HorizontalEventAdapter(context.getCurrentGroup().getEvents(),R.layout.horizontal_row_layout,context);
+        else
+            adapter=new HorizontalEventAdapter(null,R.layout.horizontal_row_layout,context);
+        RecyclerView rc = v.findViewById(R.id.eventHorizontal);
+
+        LinearLayoutManager layoutManager=new LinearLayoutManager((Context)context,LinearLayoutManager.HORIZONTAL,false);
+
+        rc.setLayoutManager(layoutManager);
+        rc.setItemAnimator(new DefaultItemAnimator());
+        rc.setAdapter(adapter);
+
+
+
+        HorizontalUsersAdapter adapter1=null;
+        if(context.getCurrentGroup()!=null)
+            adapter1=new HorizontalUsersAdapter(context.getCurrentGroup().getMembers(),R.layout.horizontal_row_layout,context);
+        else
+            adapter1=new HorizontalUsersAdapter(null,R.layout.horizontal_row_layout,context);
+        RecyclerView rc1 = v.findViewById(R.id.userHorizontal);
+
+        LinearLayoutManager layoutManager1=new LinearLayoutManager((Context)context,LinearLayoutManager.HORIZONTAL,false);
+
+        rc1.setLayoutManager(layoutManager1);
+        rc1.setItemAnimator(new DefaultItemAnimator());
+        rc1.setAdapter(adapter1);
+
 
         return v;
 
