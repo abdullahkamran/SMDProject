@@ -1,12 +1,13 @@
 package database;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Ahmad on 28-Mar-18.
  */
 
-public class Comment {
+public class Comment implements Serializable {
     private String cid;
     private String postid;
     private String userid;

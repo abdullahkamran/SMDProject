@@ -2,6 +2,7 @@ package database;
 
 import android.net.Uri;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -10,7 +11,7 @@ import java.util.Date;
  * Created by Ahmad on 28-Mar-18.
  */
 
-public class Post {
+public class Post implements Serializable {
     private String pid;
     private String uid;
     private String gid;

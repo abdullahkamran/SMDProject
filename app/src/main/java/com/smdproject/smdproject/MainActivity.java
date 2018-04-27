@@ -191,6 +191,12 @@ public class MainActivity extends AppCompatActivity
                     currentUser.setName(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("name").getValue(String.class));
                     currentUser.setUid(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("uid").getValue(String.class));
                     currentUser.setPhone(dataSnapshot.child("currentUser").child(mAuth.getCurrentUser().getUid()).child("phone").getValue(String.class));
+
+                    if(currentGroup==null)
+                        currentGroup=new Group();
+
+                   // currentGroup.setAdmin(dataSnapshot.child("currentGroup").child(mAuth.getCurrentUser().getUid()).child("dp").getValue(String.class));
+
                 }
             }
 
@@ -207,8 +213,8 @@ public class MainActivity extends AppCompatActivity
             if(currentUser!=null)
                 mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
             currentGroup= (Group)getIntent().getSerializableExtra("group");
-//            if(currentGroup!=null)
-//
+            if(currentGroup!=null)
+                mDatabase.child("currentGroup").push().setValue(currentGroup);
         }
 
 //        if (currentUser == null){

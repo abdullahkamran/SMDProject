@@ -1,6 +1,8 @@
 package database;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +10,7 @@ import java.util.Date;
  */
 
 
-public class Event {
+public class Event implements Serializable {
     private String eid;
     private String gid;
     private String name;

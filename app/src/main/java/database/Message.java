@@ -6,6 +6,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Date;
  */
 
 @Entity(tableName = "message")
-public class Message {
+public class Message implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int mid;
 
