@@ -70,7 +70,7 @@ public class Dummy extends AppCompatActivity {
             user = new User(mAuth.getCurrentUser().getUid(),null,s,number);
             t.setText("You Signed in with Name : "+s+", Mobile Number : "+number);
         }
-        else if(requestCode==103 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
+        else if(requestCode==1111 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
             group=new Group(data.getExtras().getString("g_name"),user);
             g.setText("You created Group : "+group.getName());
 

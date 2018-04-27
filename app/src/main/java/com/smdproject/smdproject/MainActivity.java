@@ -207,6 +207,8 @@ public class MainActivity extends AppCompatActivity
             if(currentUser!=null)
                 mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
             currentGroup= (Group)getIntent().getSerializableExtra("group");
+//            if(currentGroup!=null)
+//
         }
 
 //        if (currentUser == null){
@@ -323,6 +325,20 @@ public class MainActivity extends AppCompatActivity
             Intent auth=new Intent(this,LoginActivity.class);
             startActivity(auth);
             finish();
+        }
+        else{
+            if(this.currentGroup==null && this.currentUser==null){
+                Toast.makeText(this, "both are null", Toast.LENGTH_SHORT).show();
+            }
+            else if(this.currentGroup==null && this.currentUser!=null){
+                Toast.makeText(this, "group is null", Toast.LENGTH_SHORT).show();
+            }
+            else if(this.currentUser==null && this.currentGroup!=null){
+                Toast.makeText(this, "usr is null", Toast.LENGTH_SHORT).show();
+            }
+            else if(this.currentGroup!=null && this.currentGroup!=null){
+                Toast.makeText(this, "both are ok", Toast.LENGTH_SHORT).show();
+            }
         }
 //        else{
 //            //make global variable
