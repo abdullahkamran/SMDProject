@@ -76,6 +76,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity
 
     public void setNav(){
 
-        ((ImageView)findViewById(R.id.groupPicOnNav)).setImageURI(currentGroup.getGroupPic());
+        ((ImageView)findViewById(R.id.groupPicOnNav)).setImageURI(Uri.parse(currentGroup.getGroupPic()));
         ((TextView)findViewById(R.id.groupNameOnNav)).setText(currentGroup.getName());
         ((ImageView)findViewById(R.id.dpOnNav)).setImageURI(Uri.parse(currentUser.dp));
         String name=currentUser.getName();
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                if(currentGroup != null&&currentGroup.getEvents() == null){
+                if(currentGroup != null && currentGroup.getEvents().isEmpty()){
                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                         Event e=ds.getValue(Event.class);
                         currentGroup.getEvents().add(0,e);
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                if(currentGroup!=null && currentGroup.getPosts()==null){
+                if(currentGroup!=null && currentGroup.getPosts().isEmpty()){
                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                         Post e=ds.getValue(Post.class);
                         currentGroup.getPosts().add(0,e);
@@ -459,16 +460,16 @@ public class MainActivity extends AppCompatActivity
 
          if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-             LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-             if (location != null) {
-                 if (currentUser != null) {
-                     currentUser.setLocation(location.getLatitude()+","+location.getLongitude());
-                     String s = currentUser.getLocation();
-                     mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(s);
-                 }
-             }
-         }
+            LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                if (currentUser != null) {
+                    currentUser.setLocation(location.getLatitude()+" "+location.getLongitude());
+                    String s = currentUser.getLocation();
+                    mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(s);
+                }
+            }
+        }
     }
 
 
@@ -480,7 +481,7 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
 
 
-        saveCurrent();
+       // saveCurrent();
 
 
 
