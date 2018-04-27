@@ -1,8 +1,6 @@
 package com.smdproject.smdproject;
 
-import android.*;
 import android.Manifest;
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -10,24 +8,14 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.Address;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.*;
 import android.speech.RecognizerIntent;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -45,12 +33,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.ads.MobileAds;
 
@@ -59,13 +46,11 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -78,12 +63,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -160,6 +142,20 @@ public class MainActivity extends AppCompatActivity
     private DatabaseReference mDatabase;
 
     TTSManager ttsManager = null;
+
+
+    public void setNav(){
+
+        ((ImageView)findViewById(R.id.groupPicOnNav)).setImageURI(currentGroup.getGroupPic());
+        ((TextView)findViewById(R.id.groupNameOnNav)).setText(currentGroup.getName());
+        ((ImageView)findViewById(R.id.dpOnNav)).setImageURI(Uri.parse(currentUser.dp));
+        String name=currentUser.getName();
+
+        if(currentGroup.getNicknames().containsKey(currentUser.getUid()))
+            name=name+" @"+currentGroup.getNicknames().get(currentUser.getUid());
+
+        ((TextView)findViewById(R.id.userNameOnNav)).setText(name);
+    }
 
     @Override
     protected void onDestroy(){
@@ -441,39 +437,34 @@ public class MainActivity extends AppCompatActivity
         prefsEditor.apply();
     }
 
+    public void sendMyLocation(){
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                if (currentUser != null) {
+                    currentUser.setLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+                    String s = currentUser.getLocation().latitude + "," + currentUser.getLocation().longitude;
+                    mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(s);
+                }
+            }
+        }
+    }
+
+
+
+
     @Override
     public void onStart() {
 
         super.onStart();
-        //saveCurrent();
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 3);
-            }
 
 
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
-            }
+        saveCurrent();
 
 
-            if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 321);
-            } else {
-
-                LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null) {
-                    if(currentUser!=null) {
-                        currentUser.setLocation(location.getLatitude()+","+location.getLongitude());
-                        mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(currentUser.getLocation());
-                    }
-                }
-            }
-
-        }
 
 
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -489,58 +480,20 @@ public class MainActivity extends AppCompatActivity
             }
             else if(this.currentGroup==null && this.currentUser!=null){
                 Toast.makeText(this, "group is null", Toast.LENGTH_SHORT).show();
+                sendMyLocation();
             }
             else if(this.currentUser==null && this.currentGroup!=null){
                 Toast.makeText(this, "usr is null", Toast.LENGTH_SHORT).show();
             }
             else if(this.currentGroup!=null && this.currentGroup!=null){
                 Toast.makeText(this, "both are ok", Toast.LENGTH_SHORT).show();
+                sendMyLocation();
             }
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 321) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted.
-                LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-                Location location=null;
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-                if (location != null) {
-                    currentUser.setLocation(location.getLatitude()+","+location.getLongitude());
-                    mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(currentUser.getLocation());
-                }
-            } else {
-                // User refused to grant permission. You can add AlertDialog here
-                Toast.makeText(this, "You didn't give permission to access device location.", Toast.LENGTH_LONG).show();
-                startInstalledAppDetailsActivity();
-            }
-        }
-        else if(requestCode==2){
 
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted.
-
-                filename=Environment.getExternalStorageDirectory().getPath()+"/squadApp/camfile.jpg";
-                postImage= FileProvider.getUriForFile(getApplicationContext(),getPackageName()+".fileprovider",new File(filename));
-                //postImage=Uri.fromFile(new File(filename));
-
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,postImage);
-                startActivityForResult(takePictureIntent, 1);
-
-            } else {
-                // User refused to grant permission. You can add AlertDialog here
-                Toast.makeText(this, "You didn't give permission to access Camera.", Toast.LENGTH_LONG).show();
-                startInstalledAppDetailsActivity();
-            }
-
-        }
-    }
     private void startInstalledAppDetailsActivity() {
         Intent i = new Intent();
         i.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -747,29 +700,11 @@ public class MainActivity extends AppCompatActivity
 
     public void cameraStatus(View v){
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 2);
-            }
-            else {
-                filename=Environment.getExternalStorageDirectory().getPath()+"/squadApp/camfile.jpg";
-                postImage= FileProvider.getUriForFile(getApplicationContext(),getPackageName()+".fileprovider",new File(filename));
-                //postImage=Uri.fromFile(new File(filename));
-
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,postImage);
-                startActivityForResult(takePictureIntent, 1);
-            }
-        }
-
-        else {
-            filename=Environment.getExternalStorageDirectory().getPath()+"/squadApp/camfile.jpg";
-            postImage= FileProvider.getUriForFile(getApplicationContext(),getPackageName()+".fileprovider",new File(filename));
-            //postImage=Uri.fromFile(new File(filename));
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,postImage);
-            startActivityForResult(takePictureIntent, 1);
+            if(takePictureIntent.resolveActivity(getPackageManager())!=null)
+                startActivityForResult(takePictureIntent, 1);
 
         }
 
@@ -799,11 +734,14 @@ public class MainActivity extends AppCompatActivity
                     .into(imageview);
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
         }
-        else if(requestCode==1 && resultCode==RESULT_OK && filename!=null){
+        else if(requestCode==1 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
 
+
+            Bundle extras = data.getExtras();
+            Bitmap  bm = (Bitmap) extras.get("data");
 
             ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-            imageview.setImageURI(postImage);
+            imageview.setImageBitmap(bm);
 
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
 
@@ -859,7 +797,7 @@ public class MainActivity extends AppCompatActivity
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         //savedInstanceState.putParcelable("currentUser",currentUser);
-        savedInstanceState.putSerializable("currentGroup",(Serializable) currentGroup);
+        savedInstanceState.putSerializable("currentGroup",currentGroup);
         if(postImage!=null)savedInstanceState.putString("postImage",postImage.toString());
         else savedInstanceState.putString("postImage","");
 

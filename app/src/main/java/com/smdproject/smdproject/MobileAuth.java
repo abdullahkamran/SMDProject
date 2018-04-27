@@ -104,6 +104,7 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
     }
 
     private boolean validatePhoneNumber() {
+        Toast.makeText(this,"Sending...",Toast.LENGTH_SHORT).show();
         String phoneNumber = mPhoneNumberField.getText().toString();
         if (TextUtils.isEmpty(phoneNumber)) {
             mPhoneNumberField.setError("Invalid phone number.");
@@ -165,6 +166,7 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
 
     // [START resend_verification]
     private void resendVerificationCode(String phoneNumber,PhoneAuthProvider.ForceResendingToken token) {
+        Toast.makeText(this,"Sending...",Toast.LENGTH_SHORT).show();
         try {
             PhoneAuthProvider.getInstance().verifyPhoneNumber(
                     phoneNumber,        // Phone number to verify

@@ -69,7 +69,7 @@
         android:layout_height="50dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/mapblack"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@android:color/holo_red_dark"
         android:onClick="jumpTo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

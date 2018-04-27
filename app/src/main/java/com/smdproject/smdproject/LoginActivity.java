@@ -1,8 +1,15 @@
 package com.smdproject.smdproject;
 
+import android.*;
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -86,9 +93,60 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+
+
+    String[] PERMISSIONS = {
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA ,
+            android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.SEND_SMS,
+            android.Manifest.permission.READ_CONTACTS,
+            Manifest.permission.GET_ACCOUNTS,Manifest.permission.READ_PHONE_STATE,
+    };
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 333) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                // User refused to grant permission. You can add AlertDialog here
+                Toast.makeText(this, "All permissions should be allowed to use this app.", Toast.LENGTH_LONG).show();
+                startInstalledAppDetailsActivity();
+                finish();
+            }
+        }
+    }
+
+    private void startInstalledAppDetailsActivity() {
+        Intent i = new Intent();
+        i.setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        i.addCategory(Intent.CATEGORY_DEFAULT);
+        i.setData(Uri.parse("package:" + getPackageName()));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+    }
+
+
     @Override
     public void onStart() {
         super.onStart();
+
+        //permissions
+        if(!hasPermissions(this, PERMISSIONS))ActivityCompat.requestPermissions(this, PERMISSIONS, 333);
+
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser!=null){
