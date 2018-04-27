@@ -81,6 +81,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -148,7 +149,7 @@ public class MainActivity extends AppCompatActivity
     private ViewPager mViewPager;
 
     private Uri postImage=null;
-    private String filename=null;
+
     private DatabaseReference mDatabase;
     private DatabaseReference mdb;
 
@@ -605,13 +606,48 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    String mCurrentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
     public void cameraStatus(View v){
 
         if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if(takePictureIntent.resolveActivity(getPackageManager())!=null)
-                startActivityForResult(takePictureIntent, 1);
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(this,
+                            "com.smdproject.smdproject.fileprovider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, 1);
+                }
+            }
+
 
         }
 
@@ -644,13 +680,21 @@ public class MainActivity extends AppCompatActivity
         else if(requestCode==1 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
 
 
-            Bundle extras = data.getExtras();
-            Bitmap  bm = (Bitmap) extras.get("data");
+            //Bundle extras = data.getExtras();
+            //Bitmap  bm = (Bitmap) extras.get("data");
+
+            Uri uri=(Uri)data.getExtras().get(MediaStore.EXTRA_OUTPUT);
+
+            postImage=uri;
 
             ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-            imageview.setImageBitmap(bm);
+            //imageview.setImageBitmap(bm);
 
+            Glide.with(this)
+                    .load(uri)
+                    .into(imageview);
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
+
 
         }
         else if (requestCode==123 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
