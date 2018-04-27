@@ -68,6 +68,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -148,6 +149,7 @@ public class MainActivity extends AppCompatActivity
     private Uri postImage=null;
     private String filename=null;
     private DatabaseReference mDatabase;
+    private DatabaseReference mdb;
 
     TTSManager ttsManager = null;
 
@@ -161,7 +163,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        retrieveCurrent();
+
 
         mAuth = FirebaseAuth.getInstance();//firebase
         setContentView(R.layout.activity_main);
@@ -207,6 +209,36 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        mdb=FirebaseDatabase.getInstance().getReference("currentGroup");
+        mdb.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if (currentGroup != null) {
+                    currentGroup.setGroupId(dataSnapshot.getKey());
+                    mDatabase.child("currentGroup").child(currentGroup.getGroupId()).child("groupId").setValue(currentGroup.getGroupId());
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         if(getIntent()!=null) {
             currentUser = (User)getIntent().getSerializableExtra("user");
@@ -265,7 +297,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+        if(currentGroup==null && currentUser==null)
+            retrieveCurrent();
 
     }
 
@@ -285,7 +318,7 @@ public class MainActivity extends AppCompatActivity
         String user = gson.toJson(currentUser);
         String group = gson.toJson(currentGroup);
         prefsEditor.putString("currentUser", user);
-        prefsEditor.putString("currentUser", group);
+        prefsEditor.putString("currentGroup", group);
         prefsEditor.commit();
     }
 
