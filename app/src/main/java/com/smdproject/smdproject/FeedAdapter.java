@@ -7,6 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.google.firebase.storage.StorageReference;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -71,7 +75,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             }
             else{
                 holder.image.setVisibility(ImageView.VISIBLE);
-                holder.image.setImageURI(Uri.parse(items.get(position).getImage()));
+                StorageReference mStorage=LoginActivity.getStorage().getReference().child("Images/" + items.get(position).getUid() + "," + items.get(position).getPid());
+//                Glide.with(context)
+//                        .using(new FirebaseImageLoader())
+//                        .load(mStorage)
+//                        .into(holder.image);
             }
         }
     }

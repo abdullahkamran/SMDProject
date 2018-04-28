@@ -66,6 +66,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -75,6 +76,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -158,6 +161,7 @@ public class MainActivity extends AppCompatActivity
     private Uri postImage=null;
 
     private DatabaseReference mDatabase;
+    private StorageReference mStorage;
     private DatabaseReference mdb;
     private DatabaseReference meventc;
     private DatabaseReference mpostc;
@@ -205,15 +209,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FirebaseDatabase database = LoginActivity.getDatabase();
         mDatabase=LoginActivity.getDatabase().getReference();
+        mStorage=LoginActivity.getStorage().getReference();
         mevent = LoginActivity.getDatabase().getReference("Events");
         mevent.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-
                 if(currentGroup != null && currentGroup.getEvents().isEmpty()){
                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                         Event e=ds.getValue(Event.class);
@@ -346,6 +349,22 @@ public class MainActivity extends AppCompatActivity
                     if (currentGroup.getGroupId().equals(dataSnapshot.child("gid"))) {
                         currentGroup.getPosts().get(0).setPid(dataSnapshot.getKey());
                         mDatabase.child("Posts").child(dataSnapshot.getKey()).child("pid").setValue(dataSnapshot.getKey());
+
+                        if(postImage!=null) {
+                            currentGroup.getPosts().get(0).setImage("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
+                            StorageReference mSref = mStorage.child("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
+                            mSref.putFile(postImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(MainActivity.this, "Image Upload Failed.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -371,12 +390,12 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        if(getIntent()!=null) {
+        if(getIntent()!=null && getIntent().getExtras()!=null) {
             currentUser = (User)getIntent().getSerializableExtra("user");
             if(currentUser!=null)
                 mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
             currentGroup= (Group)getIntent().getSerializableExtra("group");
-            if(currentGroup!=null)
+            if(currentGroup!=null && currentGroup.getGroupId()==null)
                 mDatabase.child("currentGroup").push().setValue(currentGroup);
         }
 
@@ -704,12 +723,7 @@ public class MainActivity extends AppCompatActivity
         Date d =new Date();
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
-        if(postImage==null) {
-            post = new Post(currentGroup.getGroupId(), currentUser, statusText.getText().toString(), null, df.format(d));
-        }
-        else {
-            post = new Post(currentGroup.getGroupId(), currentUser, statusText.getText().toString(), postImage.toString(), df.format(d));
-        }
+        post = new Post(currentGroup.getGroupId(), currentUser, statusText.getText().toString(), null, df.format(d));
 
         currentGroup.getPosts().add(0,post);
         mDatabase.child("Posts").push().setValue(post);

@@ -31,7 +31,10 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
+        android:background="@color/colorPrimary"
+        android:onClick="onClickGroupId"
         android:text="Join Group"
+        android:textColor="@color/cardview_light_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

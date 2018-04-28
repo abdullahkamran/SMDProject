@@ -93,6 +93,13 @@ public class Dummy extends AppCompatActivity {
         finish();
     }
 
+    public void onClickJoin(View v){
+        Intent i = new Intent(this,LoginGroup.class);
+        i.putExtra("user",user);
+        startActivity(i);
+        finish();
+    }
+
     @Override
     public void onBackPressed(){
 
