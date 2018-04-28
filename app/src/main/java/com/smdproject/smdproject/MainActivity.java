@@ -31,6 +31,8 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -121,7 +123,7 @@ public class MainActivity extends AppCompatActivity
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
 
-    private GoogleMap mMap;
+    public GoogleMap mMap;
     ArrayList<Marker> markers=new ArrayList<>();
 
     private static int TAB_COUNT=4;
@@ -936,6 +938,8 @@ public class MainActivity extends AppCompatActivity
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -964,16 +968,31 @@ public class MainActivity extends AppCompatActivity
 
                 }
             }
+            for (int i = 0; i < currentGroup.getEvents().size(); i++) {
+                if (currentGroup.getEvents().get(i).getLocation() != null) {
+
+                        String[] arrOfStr = currentGroup.getEvents().get(i).getLocation().split(",", 2);
+                        Double l1 = Double.parseDouble(arrOfStr[0]);
+                        Double l2 = Double.parseDouble(arrOfStr[1]);
+                        markers.add(
+                                mMap.addMarker(new MarkerOptions().position
+                                        (new LatLng(l1,l2)).title("Event: "+currentGroup.getEvents().get(i).getName() ))
+                        );
+
+
+                }
+            }
 
             mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                 @Override
                 public void onMapLoaded() {
 
+                    Location mlocation=mMap.getMyLocation();
+                    LatLng mlatlng=new LatLng(mlocation.getLatitude(),mlocation.getLongitude());
                     if(markers.isEmpty()){
-                        Location location=mMap.getMyLocation();
                         CameraPosition position=new CameraPosition.Builder()
-                                .target(new LatLng(location.getLatitude(),location.getLongitude()))
-                                .zoom(0).build();
+                                .target(mlatlng)
+                                .zoom(17).build();
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
                         return;
                     }
@@ -982,6 +1001,7 @@ public class MainActivity extends AppCompatActivity
                     for (Marker marker : markers) {
                         builder.include(marker.getPosition());
                     }
+                    builder.include(mlatlng);
 
                     LatLngBounds bounds = builder.build();
 
@@ -992,10 +1012,10 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
-
         }
 
     }
+
 
 
     private void startVoiceInputPost() {
