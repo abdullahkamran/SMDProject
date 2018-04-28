@@ -18,7 +18,6 @@ public class Post implements Serializable{
     private String text;
     private String image;
     private String stamp;
-    private Group group;
     private User postman;
     private List<Comment> comments;
 
@@ -26,14 +25,13 @@ public class Post implements Serializable{
 
     }
 
-    public Post(Group group, User postman, String text, String image, String stamp) {
-        this.group = group;
+    public Post(String group, User postman, String text, String image, String stamp) {
         this.postman = postman;
         this.text = text;
         this.image = image;
         this.stamp = stamp;
         this.uid = postman.getUid();
-        this.gid = group.getGroupId();
+        this.gid = group;
         comments=new ArrayList<>();
     }
 
@@ -83,14 +81,6 @@ public class Post implements Serializable{
 
     public void setStamp(String stamp) {
         this.stamp = stamp;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
     }
 
     public User getPostman() {

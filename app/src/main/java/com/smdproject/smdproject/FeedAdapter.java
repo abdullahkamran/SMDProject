@@ -39,8 +39,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
                 holder.dp.setImageURI(Uri.parse(items.get(position).getPostman().dp));
 
             holder.name.setText(items.get(position).getPostman().getName());
-            if(items.get(position).getGroup().getNicknames().containsKey(items.get(position).getPostman().getUid()))
-                holder.nickname.setText("@"+items.get(position).getGroup().getNicknames().get(items.get(position).getPostman().getUid()));
+//            if(items.get(position).getGroup().getNicknames().containsKey(items.get(position).getPostman().getUid()))
+//                holder.nickname.setText("@"+items.get(position).getGroup().getNicknames().get(items.get(position).getPostman().getUid()));
 
             String timestamp=items.get(position).getStamp();
             Date d =new Date();

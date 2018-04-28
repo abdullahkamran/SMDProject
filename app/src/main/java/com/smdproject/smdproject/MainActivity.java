@@ -210,14 +210,15 @@ public class MainActivity extends AppCompatActivity
                 if(currentGroup != null && currentGroup.getEvents().isEmpty()){
                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                         Event e=ds.getValue(Event.class);
-                        currentGroup.getEvents().add(0,e);
+                        if(e.getGid().equals(currentGroup.getGroupId()))
+                            currentGroup.getEvents().add(0,e);
                     }
                 }
                 else {
                     Event e = dataSnapshot.getValue(Event.class);
                     if (currentGroup != null) {
                         for (int i = 0; i < currentGroup.getEvents().size(); i++)
-                            if (currentGroup.getEvents().get(i).getEid() != e.getEid()) {
+                            if (currentGroup.getEvents().get(i).getEid() != e.getEid() && currentGroup.getGroupId().equals(e.getEid())) {
                                 currentGroup.getEvents().add(e);
                                 break;
                             }
@@ -241,14 +242,15 @@ public class MainActivity extends AppCompatActivity
                 if(currentGroup!=null && currentGroup.getPosts().isEmpty()){
                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                         Post e=ds.getValue(Post.class);
-                        currentGroup.getPosts().add(0,e);
+                        if(e.getGid().equals(currentGroup.getGroupId()))
+                            currentGroup.getPosts().add(0,e);
                     }
                 }
                 else {
                     Post e = dataSnapshot.getValue(Post.class);
                     if (currentGroup != null) {
                         for (int i = 0; i < currentGroup.getPosts().size(); i++)
-                            if (currentGroup.getPosts().get(i).getPid() != e.getPid()) {
+                            if (currentGroup.getPosts().get(i).getPid() != e.getPid() && e.getGid().equals(currentGroup.getGroupId())) {
                                 currentGroup.getPosts().add(e);
                                 break;
                             }
@@ -301,8 +303,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if(currentGroup!=null && !currentGroup.getEvents().isEmpty()) {
-                    currentGroup.getEvents().get(0).setEid(dataSnapshot.getKey());
-                    mDatabase.child("Events").child(dataSnapshot.getKey()).child("eid").setValue(dataSnapshot.getKey());
+                    if (dataSnapshot.child("gid").equals(currentGroup.getGroupId())) {
+                        currentGroup.getEvents().get(0).setEid(dataSnapshot.getKey());
+                        mDatabase.child("Events").child(dataSnapshot.getKey()).child("eid").setValue(dataSnapshot.getKey());
+                    }
                 }
             }
 
@@ -332,8 +336,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if(currentGroup!=null && !currentGroup.getPosts().isEmpty()) {
-                    currentGroup.getPosts().get(0).setPid(dataSnapshot.getKey());
-                    mDatabase.child("Posts").child(dataSnapshot.getKey()).child("pid").setValue(dataSnapshot.getKey());
+                    if (currentGroup.getGroupId().equals(dataSnapshot.child("gid"))) {
+                        currentGroup.getPosts().get(0).setPid(dataSnapshot.getKey());
+                        mDatabase.child("Posts").child(dataSnapshot.getKey()).child("pid").setValue(dataSnapshot.getKey());
+                    }
                 }
             }
 
@@ -418,7 +424,7 @@ public class MainActivity extends AppCompatActivity
         currentGroup.setEvents(gson.fromJson(mPrefs.getString("currentGroupEvent",""), ArrayList.class));
         currentGroup.setMembers(gson.fromJson(mPrefs.getString("currentGroupMembers",""), ArrayList.class));
         currentGroup.setMessages(gson.fromJson(mPrefs.getString("currentGroupMessages",""), ArrayList.class));
-        //currentGroup.setPosts(gson.fromJson(mPrefs.getString("currentGroupPosts",""), ArrayList.class));
+        currentGroup.setPosts(gson.fromJson(mPrefs.getString("currentGroupPosts",""), ArrayList.class));
 
         String hash=mPrefs.getString("hashmap","");
         java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
@@ -450,7 +456,7 @@ public class MainActivity extends AppCompatActivity
         prefsEditor.putString("currentGroupEvents",events);
         prefsEditor.putString("currentGroupMembers",gson.toJson(currentGroup.getMembers()));
         prefsEditor.putString("currentGroupMessages",gson.toJson(currentGroup.getMessages()));
-        //prefsEditor.putString("currentGroupPosts",gson.toJson(currentGroup.getPosts()));
+        prefsEditor.putString("currentGroupPosts",gson.toJson(currentGroup.getPosts()));
 
         String hashMapString = gson.toJson(currentGroup.getNicknames());
         prefsEditor.putString("hashmap",hashMapString);
@@ -685,10 +691,10 @@ public class MainActivity extends AppCompatActivity
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
         if(postImage==null) {
-            post = new Post(currentGroup, currentUser, statusText.getText().toString(), null, df.format(d));
+            post = new Post(currentGroup.getGroupId(), currentUser, statusText.getText().toString(), null, df.format(d));
         }
         else {
-            post = new Post(currentGroup, currentUser, statusText.getText().toString(), postImage.toString(), df.format(d));
+            post = new Post(currentGroup.getGroupId(), currentUser, statusText.getText().toString(), postImage.toString(), df.format(d));
         }
 
         currentGroup.getPosts().add(0,post);
