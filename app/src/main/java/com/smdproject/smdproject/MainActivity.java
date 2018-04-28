@@ -172,17 +172,25 @@ public class MainActivity extends AppCompatActivity
 
 
     public void setNav(){
+        
+        NavigationView navigationView=(NavigationView)findViewById(R.id.nav_view);
+        View v=navigationView.getHeaderView(0);
 
-        ((ImageView)findViewById(R.id.groupPicOnNav)).setImageURI(Uri.parse(currentGroup.getGroupPic()));
-        ((TextView)findViewById(R.id.groupNameOnNav)).setText(currentGroup.getName());
-        ((ImageView)findViewById(R.id.dpOnNav)).setImageURI(Uri.parse(currentUser.dp));
+        if(currentGroup.getGroupPic()!=null)
+            ((ImageView)v.findViewById(R.id.groupPicOnNav)).setImageURI(Uri.parse(currentGroup.getGroupPic()));
+        ((TextView)v.findViewById(R.id.groupNameOnNav)).setText(currentGroup.getName());
+        ((TextView)v.findViewById(R.id.groupidOnNav)).setText("Group ID:"+currentGroup.getGroupId());
+
+        if(currentUser.dp!=null)
+            ((ImageView)v.findViewById(R.id.dpOnNav)).setImageURI(Uri.parse(currentUser.dp));
         String name=currentUser.getName();
 
         if(currentGroup.getNicknames().containsKey(currentUser.getUid()))
             name=name+" @"+currentGroup.getNicknames().get(currentUser.getUid());
 
-        ((TextView)findViewById(R.id.userNameOnNav)).setText(name);
+        ((TextView)v.findViewById(R.id.userNameOnNav)).setText(name);
     }
+
 
     @Override
     protected void onDestroy(){
@@ -540,7 +548,6 @@ public class MainActivity extends AppCompatActivity
             }
             else if(this.currentGroup==null && this.currentUser!=null){
                 Toast.makeText(this, "group is null", Toast.LENGTH_SHORT).show();
-                sendMyLocation();
             }
             else if(this.currentUser==null && this.currentGroup!=null){
                 Toast.makeText(this, "usr is null", Toast.LENGTH_SHORT).show();
@@ -548,6 +555,7 @@ public class MainActivity extends AppCompatActivity
             else if(this.currentGroup!=null && this.currentGroup!=null){
                 Toast.makeText(this, "both are ok", Toast.LENGTH_SHORT).show();
                 sendMyLocation();
+                setNav();
             }
         }
     }
@@ -685,6 +693,7 @@ public class MainActivity extends AppCompatActivity
         currentGroup.getMessages().add(message);
 
         ((RecyclerView)findViewById(R.id.chatRecycler)).getAdapter().notifyDataSetChanged();
+        ((RecyclerView)findViewById(R.id.chatRecycler)).getLayoutManager().scrollToPosition(currentGroup.getMessages().size()-1);
 
         msgText.setText("");
 
@@ -692,9 +701,12 @@ public class MainActivity extends AppCompatActivity
         PendingIntent piDelivered = PendingIntent.getBroadcast(this, 0,new Intent(DELIVERED), 0);
         SmsManager smsManager = SmsManager.getDefault();
 
-        int length = message.getText().length();
+        String msg=message.getText();
+        msg="@squadApp@"+currentGroup.getGroupId()+"\n"+msg;
+
+        int length = msg.length();
         if(length > MAX_SMS_MESSAGE_LENGTH) {
-            ArrayList<String> messagelist = smsManager.divideMessage(message.getText());
+            ArrayList<String> messagelist = smsManager.divideMessage(msg);
 
             for(User u:currentGroup.getMembers())
                 if(u!=currentUser && u.getPhone()!=null)
@@ -703,7 +715,7 @@ public class MainActivity extends AppCompatActivity
         else
             for(User u:currentGroup.getMembers())
                 if(u!=currentUser && u.getPhone()!=null)
-                    smsManager.sendTextMessage(u.getPhone(), null, message.getText(), piSent, piDelivered);
+                    smsManager.sendTextMessage(u.getPhone(), null, msg, piSent, piDelivered);
 
     }
 

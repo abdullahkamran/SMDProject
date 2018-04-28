@@ -31,7 +31,7 @@ public class LoginGroup extends AppCompatActivity {
     public void onClickGroupId(View v){
         EditText ed=findViewById(R.id.editText);
         if(ed.getText().toString().equalsIgnoreCase("")){
-            Toast.makeText(this,"Event name can not be empty.",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Please enter a Group ID.",Toast.LENGTH_SHORT).show();
             return;
         }
         Group g = new Group();

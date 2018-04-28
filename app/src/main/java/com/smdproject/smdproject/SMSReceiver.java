@@ -38,7 +38,15 @@ public class SMSReceiver extends BroadcastReceiver {
             }
 
             if(str.startsWith("@squadApp")){
-                Toast.makeText(context,"SquadApp recieved the message : "+str.substring(9),Toast.LENGTH_LONG).show();
+
+                str=str.substring(9);
+                Toast.makeText(context,"SquadApp recieved the message : "+str,Toast.LENGTH_LONG).show();
+
+                String[] splits=str.split("\n");
+
+                String header=splits[0].substring(1);
+
+
             }
             else return;
 
