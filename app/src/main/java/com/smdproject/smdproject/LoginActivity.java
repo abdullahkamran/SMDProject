@@ -59,8 +59,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();//firebase
         setContentView(R.layout.activity_login);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
         findViewById(R.id.sign_in_button).setOnClickListener(this);//google sign in button
         findViewById(R.id.button4).setOnClickListener(this);
 

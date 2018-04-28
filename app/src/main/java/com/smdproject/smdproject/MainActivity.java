@@ -184,7 +184,9 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy(){
         super.onDestroy();
         ttsManager.shutDown();
+
     }
+
 
     @Override
     protected void onPause() {
@@ -771,10 +773,10 @@ public class MainActivity extends AppCompatActivity
                 }
                 // Continue only if the File was successfully created
                 if (photoFile != null) {
-                    Uri photoURI = FileProvider.getUriForFile(this,
+                    postImage = FileProvider.getUriForFile(this,
                             "com.smdproject.smdproject.fileprovider",
                             photoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, postImage);
                     startActivityForResult(takePictureIntent, 1);
                 }
             }
@@ -803,27 +805,22 @@ public class MainActivity extends AppCompatActivity
 
             ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
 
-            Glide.with(this)
-                    .load(uri)
-                    .into(imageview);
+            imageview.setImageURI(uri);
+
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
         }
-        else if(requestCode==1 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
+        else if(requestCode==1 && resultCode==RESULT_OK){
 
 
-            //Bundle extras = data.getExtras();
-            //Bitmap  bm = (Bitmap) extras.get("data");
+            //Bitmap bm=BitmapFactory.decodeFile(mCurrentPhotoPath,op);
 
-            Uri uri=(Uri)data.getExtras().get(MediaStore.EXTRA_OUTPUT);
+            Uri uri=Uri.parse(mCurrentPhotoPath);
 
             postImage=uri;
 
             ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-            //imageview.setImageBitmap(bm);
+            imageview.setImageURI(uri);
 
-            Glide.with(this)
-                    .load(uri)
-                    .into(imageview);
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
 
 
@@ -842,6 +839,8 @@ public class MainActivity extends AppCompatActivity
             currentGroup.getEvents().add(0,e);
             mDatabase.child("Events").push().setValue(e);
             ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
+            ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
+
         }
         else if (requestCode==100 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
 
@@ -878,10 +877,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-        //savedInstanceState.putParcelable("currentUser",currentUser);
+        savedInstanceState.putSerializable("currentUser",currentUser);
         savedInstanceState.putSerializable("currentGroup",currentGroup);
         if(postImage!=null)savedInstanceState.putString("postImage",postImage.toString());
         else savedInstanceState.putString("postImage","");
+        savedInstanceState.putString("filename",mCurrentPhotoPath);
 
 
         super.onSaveInstanceState(savedInstanceState);
@@ -891,10 +891,11 @@ public class MainActivity extends AppCompatActivity
 
         super.onRestoreInstanceState(savedInstanceState);
 
-        //currentUser=(User)savedInstanceState.getParcelable("currentUser");
+        currentUser=(User)savedInstanceState.getSerializable("currentUser");
         currentGroup=(Group)savedInstanceState.getSerializable("currentGroup");
         if(savedInstanceState.getString("postImage").equalsIgnoreCase(""))postImage=null;
         else postImage=Uri.parse(savedInstanceState.getString("postImage"));
+        mCurrentPhotoPath=savedInstanceState.getString("filename");
 
 
     }

@@ -107,7 +107,7 @@ public class MapFragment extends Fragment {
             adapter=new HorizontalEventAdapter(null,R.layout.horizontal_row_layout,context);
         RecyclerView rc = v.findViewById(R.id.eventHorizontal);
 
-        LinearLayoutManager layoutManager=new LinearLayoutManager((Context)context,LinearLayoutManager.HORIZONTAL,false);
+        LinearLayoutManager layoutManager=new LinearLayoutManager((Context)context);
 
         rc.setLayoutManager(layoutManager);
         rc.setItemAnimator(new DefaultItemAnimator());
@@ -122,7 +122,7 @@ public class MapFragment extends Fragment {
             adapter1=new HorizontalUsersAdapter(null,R.layout.horizontal_row_layout,context);
         RecyclerView rc1 = v.findViewById(R.id.userHorizontal);
 
-        LinearLayoutManager layoutManager1=new LinearLayoutManager((Context)context,LinearLayoutManager.HORIZONTAL,false);
+        LinearLayoutManager layoutManager1=new LinearLayoutManager((Context)context);
 
         rc1.setLayoutManager(layoutManager1);
         rc1.setItemAnimator(new DefaultItemAnimator());
