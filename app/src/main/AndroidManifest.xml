@@ -110,7 +110,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".LoginGroup"></activity>
+        <activity android:name=".LoginGroup" />
     </application>
 
 </manifest>

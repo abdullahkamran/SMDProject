@@ -25,6 +25,8 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
     private GroupRecyclerViewAdapter adapter;
     private RecyclerView.LayoutManager lm;
     private User u;
+    String groupid;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +111,9 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
             Group g = new Group(dataIntent.getExtras().getString("g_name"),u.getUid());
             data.add(g);
             adapter.notifyDataSetChanged();
+        }
+        if(requestCode == 1123 && resultCode==RESULT_OK && dataIntent != null && dataIntent.getExtras() != null){//group join
+            groupid=dataIntent.getExtras().getString("g_id");
         }
     }
 
