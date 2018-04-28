@@ -268,8 +268,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (currentGroup != null) {
-                    currentGroup.setGroupId(dataSnapshot.getKey());
-                    mDatabase.child("currentGroup").child(currentGroup.getGroupId()).child("groupId").setValue(currentGroup.getGroupId());
+                    if (currentGroup.getGroupId() == null) {
+                        currentGroup.setGroupId(dataSnapshot.getKey());
+                        mDatabase.child("currentGroup").child(currentGroup.getGroupId()).child("groupId").setValue(currentGroup.getGroupId());
+                    }
                 }
             }
 
