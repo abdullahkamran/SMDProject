@@ -78,10 +78,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -217,9 +221,9 @@ public class MainActivity extends AppCompatActivity
                 }
                 else {
                     Event e = dataSnapshot.getValue(Event.class);
-                    if (currentGroup != null) {
+                    if (currentGroup != null && e.getEid()!=null) {
                         for (int i = 0; i < currentGroup.getEvents().size(); i++)
-                            if (currentGroup.getEvents().get(i).getEid() != e.getEid() && currentGroup.getGroupId().equals(e.getEid())) {
+                            if (!currentGroup.getEvents().get(i).getEid().equals(e.getEid())  && currentGroup.getGroupId().equals(e.getEid())) {
                                 currentGroup.getEvents().add(e);
                                 break;
                             }
@@ -249,9 +253,9 @@ public class MainActivity extends AppCompatActivity
                 }
                 else {
                     Post e = dataSnapshot.getValue(Post.class);
-                    if (currentGroup != null) {
+                    if (currentGroup != null && e.getPid()!=null) {
                         for (int i = 0; i < currentGroup.getPosts().size(); i++)
-                            if (currentGroup.getPosts().get(i).getPid() != e.getPid() && e.getGid().equals(currentGroup.getGroupId())) {
+                            if (!currentGroup.getPosts().get(i).getPid().equals(e.getPid()) && e.getGid().equals(currentGroup.getGroupId())) {
                                 currentGroup.getPosts().add(e);
                                 break;
                             }
@@ -422,15 +426,22 @@ public class MainActivity extends AppCompatActivity
         currentGroup.setName(mPrefs.getString("currentGroupName",""));
         currentGroup.setAdmin(mPrefs.getString("currentGroupAdmin",""));
 
-        currentGroup.setEvents(gson.fromJson(mPrefs.getString("currentGroupEvent",""), ArrayList.class));
-        currentGroup.setMembers(gson.fromJson(mPrefs.getString("currentGroupMembers",""), ArrayList.class));
-        currentGroup.setMessages(gson.fromJson(mPrefs.getString("currentGroupMessages",""), ArrayList.class));
-        currentGroup.setPosts(gson.fromJson(mPrefs.getString("currentGroupPosts",""), ArrayList.class));
+        currentGroup.setPosts(new ArrayList<Post>());
+        currentGroup.setNicknames(new HashMap<Integer, String>());
+        currentGroup.setEvents(new ArrayList<Event>());
+        currentGroup.setMessages(new ArrayList<Message>());
+        currentGroup.setMembers(new ArrayList<User>());
 
-        String hash=mPrefs.getString("hashmap","");
-        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-        HashMap<Integer,String> testHashMap2 = gson.fromJson(hash, type);
-        currentGroup.setNicknames(testHashMap2);
+//        String hash=mPrefs.getString("hashmap","");
+//        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+//        HashMap<Integer,String> testHashMap2 = gson.fromJson(hash, type);
+//        Type t=new TypeToken<ArrayList<Event>>(){}.getType();
+//        currentGroup.setEvents((ArrayList<Event>) gson.fromJson(mPrefs.getString("currentGroupEvents",""), t));
+//        currentGroup.setMembers(gson.fromJson(mPrefs.getString("currentGroupMembers",""), ArrayList.class));
+//        currentGroup.setMessages(gson.fromJson(mPrefs.getString("currentGroupMessages",""), ArrayList.class));
+//        currentGroup.setPosts(gson.fromJson(mPrefs.getString("currentGroupPosts",""), ArrayList.class));
+//
+//        currentGroup.setNicknames(testHashMap2);
 
         if(mPrefs.getString("currentGroupId","").equals(""))
             currentGroup=null;
@@ -452,15 +463,15 @@ public class MainActivity extends AppCompatActivity
         else
             prefsEditor.putString("currentGroupPic", "");
 
-        List<Event>e=currentGroup.getEvents();
-        String events=gson.toJson(e);
-        prefsEditor.putString("currentGroupEvents",events);
-        prefsEditor.putString("currentGroupMembers",gson.toJson(currentGroup.getMembers()));
-        prefsEditor.putString("currentGroupMessages",gson.toJson(currentGroup.getMessages()));
-        prefsEditor.putString("currentGroupPosts",gson.toJson(currentGroup.getPosts()));
-
-        String hashMapString = gson.toJson(currentGroup.getNicknames());
-        prefsEditor.putString("hashmap",hashMapString);
+//        List<Event>e=currentGroup.getEvents();
+//        String events=gson.toJson(e);
+//        prefsEditor.putString("currentGroupEvents",events);
+//        prefsEditor.putString("currentGroupMembers",gson.toJson(currentGroup.getMembers()));
+//        prefsEditor.putString("currentGroupMessages",gson.toJson(currentGroup.getMessages()));
+//        prefsEditor.putString("currentGroupPosts",gson.toJson(currentGroup.getPosts()));
+//
+//        String hashMapString = gson.toJson(currentGroup.getNicknames());
+//        prefsEditor.putString("hashmap",hashMapString);
 
         prefsEditor.apply();
     }
