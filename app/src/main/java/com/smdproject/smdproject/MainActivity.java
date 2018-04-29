@@ -111,6 +111,13 @@ public class MainActivity extends AppCompatActivity
     private static int MAX_SMS_MESSAGE_LENGTH = 160;
     private ArrayList<Group> joined;
 
+    public void setJoined(ArrayList<Group> joined) {
+        this.joined = joined;
+    }
+
+    public ArrayList<Group> getJoined() {
+        return joined;
+    }
 
     public Group getCurrentGroup() {
         return currentGroup;
@@ -149,7 +156,6 @@ public class MainActivity extends AppCompatActivity
     private DatabaseReference mpost;
 
     TTSManager ttsManager = null;
-
 
     public void setNav(){
         
@@ -212,10 +218,10 @@ public class MainActivity extends AppCompatActivity
                         Event e=ds.getValue(Event.class);
                         if(e.getGid().equals(currentGroup.getGroupId())) {
                             currentGroup.getEvents().add(0, e);
-                            if(((RecyclerView)findViewById(R.id.eventview)).getAdapter()!=null)
+                            if(((RecyclerView)findViewById(R.id.eventview))!=null)
                                 ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
 
-                            if(((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter()!=null)
+                            if(((RecyclerView)findViewById(R.id.eventHorizontal))!=null)
                                 ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
                         }
                     }
@@ -252,7 +258,7 @@ public class MainActivity extends AppCompatActivity
                         Post e=ds.getValue(Post.class);
                         if(e.getGid().equals(currentGroup.getGroupId())) {
                             currentGroup.getPosts().add(0, e);
-                            if(((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter()!=null)
+                            if(((RecyclerView)findViewById(R.id.feedRecycler))!=null)
                                 ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
                         }
                     }
@@ -277,10 +283,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
-
-
-
         mdbu = LoginActivity.getDatabase().getReference("amembers");
         mdbu.addValueEventListener(new ValueEventListener() {
             @Override
@@ -292,8 +294,8 @@ public class MainActivity extends AppCompatActivity
                         Member e=ds.getValue(Member.class);
                         if(e.getGid().equals(currentGroup.getGroupId())) {
                             for(int i=0;i<currentGroup.getMembers().size();i++){
-                                if(currentGroup.getMembers().get(i).getUid()!=e.getUser().getUid()){
-                                    currentGroup.getMembers().add(0, e.getUser());
+                                if(!currentGroup.getMembers().get(i).getUid().equals(e.getUser().getUid()) && e.getGid().equals(currentGroup.getGroupId())){
+                                    currentGroup.getMembers().add(e.getUser());
                                     if(((RecyclerView)findViewById(R.id.eventHorizontal))!=null)
                                         ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
                                 }
@@ -368,7 +370,7 @@ public class MainActivity extends AppCompatActivity
                         Group e=ds.getValue(Group.class);
                         if(e.getGroupId().equals(currentGroup.getGroupId())) {
                             currentGroup.setName(e.getName());
-                            currentGroup.setAdmin(e.getAdmin());
+                            currentGroup.setAdminId(e.getAdminId());
                             currentGroup.setGroupPic(e.getGroupPic());
                         }
                     }
@@ -426,24 +428,20 @@ public class MainActivity extends AppCompatActivity
                     if (currentGroup.getGroupId().equals(dataSnapshot.child("gid"))) {
                         currentGroup.getPosts().get(0).setPid(dataSnapshot.getKey());
                         mDatabase.child("Posts").child(dataSnapshot.getKey()).child("pid").setValue(dataSnapshot.getKey());
+                        mDatabase.child("Posts").child(dataSnapshot.getKey()).child("image").setValue("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
 
-                        ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
-
-                        if(postImage!=null) {
-                            currentGroup.getPosts().get(0).setImage("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
-                            StorageReference mSref = mStorage.child("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
-                            mSref.putFile(postImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(MainActivity.this, "Image Upload Failed.", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
+                        StorageReference mSref = mStorage.child("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
+                        mSref.putFile(postImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Toast.makeText(MainActivity.this, "Image Upload Success.", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MainActivity.this, "Image Upload Failed.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 }
             }
@@ -473,7 +471,13 @@ public class MainActivity extends AppCompatActivity
             currentUser = (User)getIntent().getSerializableExtra("user");
             if(currentUser!=null)
                 mDatabase.child("currentUser").child(currentUser.getUid()).setValue(currentUser);
-            currentGroup= (Group)getIntent().getSerializableExtra("group");
+            currentGroup = (Group)getIntent().getSerializableExtra("group");
+
+            for(int i=0;i<joined.size();i++){
+                if(!joined.get(i).getGroupId().equals(currentGroup.getGroupId()))
+                    joined.add(currentGroup);
+            }
+
             if(currentGroup!=null && currentGroup.getGroupId()==null)
                 mDatabase.child("currentGroup").push().setValue(currentGroup);
             if(currentUser!=null && currentGroup!=null && currentGroup.getGroupId()!=null) {
@@ -519,6 +523,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void retrieveCurrent() {
+
+        //TODO get all groups from database with messages
+
         SharedPreferences mPrefs = getPreferences(Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String user = mPrefs.getString("currentUser", "");
@@ -531,7 +538,7 @@ public class MainActivity extends AppCompatActivity
         else
             currentGroup.setGroupPic(mPrefs.getString("currentGroupPic",""));
         currentGroup.setName(mPrefs.getString("currentGroupName",""));
-        currentGroup.setAdmin(mPrefs.getString("currentGroupAdmin",""));
+        currentGroup.setAdminId(mPrefs.getString("currentGroupAdmin",""));
 
         currentGroup.setPosts(new ArrayList<Post>());
         currentGroup.setNicknames(new HashMap<Integer, String>());
@@ -539,22 +546,19 @@ public class MainActivity extends AppCompatActivity
         currentGroup.setMessages(new ArrayList<Message>());
         currentGroup.setMembers(new ArrayList<User>());
 
-//        String hash=mPrefs.getString("hashmap","");
-//        java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-//        HashMap<Integer,String> testHashMap2 = gson.fromJson(hash, type);
-//        Type t=new TypeToken<ArrayList<Event>>(){}.getType();
-//        currentGroup.setEvents((ArrayList<Event>) gson.fromJson(mPrefs.getString("currentGroupEvents",""), t));
-//        currentGroup.setMembers(gson.fromJson(mPrefs.getString("currentGroupMembers",""), ArrayList.class));
-//        currentGroup.setMessages(gson.fromJson(mPrefs.getString("currentGroupMessages",""), ArrayList.class));
-//        currentGroup.setPosts(gson.fromJson(mPrefs.getString("currentGroupPosts",""), ArrayList.class));
-//
-//        currentGroup.setNicknames(testHashMap2);
-
         if(mPrefs.getString("currentGroupId","").equals(""))
             currentGroup=null;
     }
 
     private void saveCurrent() {
+
+        //TODO save all groups to databse with messages
+
+        for(int i=0;i<joined.size();i++){
+            new GroupSaveAsyncTask(this).execute(joined.get(i));
+        }
+
+
         SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
         Gson gson = new Gson();
@@ -564,7 +568,7 @@ public class MainActivity extends AppCompatActivity
         prefsEditor.putString("currentUser", user);
         prefsEditor.putString("currentGroupId", currentGroup.getGroupId());
         prefsEditor.putString("currentGroupName", currentGroup.getName());
-        prefsEditor.putString("currentGroupAdmin", currentGroup.getAdmin());
+        prefsEditor.putString("currentGroupAdmin", currentGroup.getAdminId());
         if(currentGroup.getGroupPic()!=null)
             prefsEditor.putString("currentGroupPic", currentGroup.getGroupPic().toString());
         else
@@ -813,12 +817,17 @@ public class MainActivity extends AppCompatActivity
         Date d =new Date();
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
+
         post = new Post(currentGroup.getGroupId(), currentUser, statusText.getText().toString(), null, df.format(d));
+
+        if(postImage!=null) {
+            post.setImage(postImage.toString());
+        }
 
         currentGroup.getPosts().add(0,post);
         mDatabase.child("Posts").push().setValue(post);
 
-        //((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
+        ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
 
         statusText.setText("");
 
@@ -942,8 +951,8 @@ public class MainActivity extends AppCompatActivity
             Event e=new Event(currentGroup.getGroupId(), address,data.getExtras().getString("ename"),data.getExtras().getString("edes"),data.getExtras().getString("edate")+" "+data.getExtras().getString("etime")+":00",latlng);
             currentGroup.getEvents().add(0,e);
             mDatabase.child("Events").push().setValue(e);
-//            ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
-//            ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
+            ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
+            ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
 
         }
         else if (requestCode==100 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
