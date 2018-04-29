@@ -289,17 +289,26 @@ public class MainActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                if(currentGroup!=null && !currentGroup.getMembers().isEmpty()){
+                if((currentGroup!=null && !currentGroup.getMembers().isEmpty())){
                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                         Member e=ds.getValue(Member.class);
+                        boolean present=false;
                         if(e.getGid().equals(currentGroup.getGroupId())) {
+                            for(int i=0;i<currentGroup.getMembers().size();i++)
+                                if(currentGroup.getMembers().get(i).getUid().equals(e.getUser().getUid()))
+                                    present=true;
+
                             for(int i=0;i<currentGroup.getMembers().size();i++){
+                                if(present)
+                                    break;
                                 if(!currentGroup.getMembers().get(i).getUid().equals(e.getUser().getUid()) && e.getGid().equals(currentGroup.getGroupId())){
                                     currentGroup.getMembers().add(e.getUser());
                                     if(((RecyclerView)findViewById(R.id.eventHorizontal))!=null)
                                         ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
+                                    break;
                                 }
                             }
+
                         }
                     }
                 }
@@ -545,6 +554,7 @@ public class MainActivity extends AppCompatActivity
         currentGroup.setEvents(new ArrayList<Event>());
         currentGroup.setMessages(new ArrayList<Message>());
         currentGroup.setMembers(new ArrayList<User>());
+        currentGroup.getMembers().add(currentUser);
 
         if(mPrefs.getString("currentGroupId","").equals(""))
             currentGroup=null;
