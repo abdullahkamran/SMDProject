@@ -1,5 +1,9 @@
 package database;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,21 +14,34 @@ import java.util.Map;
  * Created by Ahmad on 28-Mar-18.
  */
 
+@Entity(tableName = "groups")
 public class Group implements Serializable{
+
+    @ColumnInfo(name = "gid")
     private String groupId;
+    @ColumnInfo(name = "name")
     private String name;
+    @ColumnInfo(name = "pic")
     private String groupPic;
+    @ColumnInfo(name = "adminid")
     private String adminId;
+
+    @Ignore
     private List<User> members;
+    @Ignore
     private List<Post> posts;
+    @Ignore
     private List<Event> events;
+    @Ignore
     private List<Message> messages;
+    @Ignore
     private Map<Integer,String> nicknames;
 
     public Group() {
 
     }
 
+    @Ignore
     public Group(String name,String u) {
         this.name = name;
         members=new ArrayList<>();

@@ -117,6 +117,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:drawableLeft="@android:drawable/ic_input_add"
+            android:onClick="onChangeGroup"
             android:text="Log in to another group"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -121,4 +121,8 @@ public class MainGroupActivity extends AppCompatActivity implements RecyclerView
         Intent i = new Intent(this,CreateGroup.class);
         startActivityForResult(i,1122);
     }
+
+    public void onChangeGroup(View v){
+
+    }
 }

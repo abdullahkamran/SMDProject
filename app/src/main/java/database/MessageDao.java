@@ -7,8 +7,8 @@ import java.util.List;
 
 @Dao
 public interface MessageDao {
-    @Query("SELECT * FROM message")
-    List<Message> getAll();
+    @Query("SELECT * FROM message where g_id LIKE  :groupId")
+    List<Message> getAll(String groupId);
 
     @Query("SELECT COUNT(*) from message")
     int count();

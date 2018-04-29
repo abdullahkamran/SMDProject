@@ -1,8 +1,6 @@
 package com.smdproject.smdproject;
 
-import android.*;
 import android.Manifest;
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -10,29 +8,20 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.Address;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.*;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -47,8 +36,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,12 +44,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.ads.MobileAds;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -76,33 +61,24 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URI;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 import database.Event;
 import database.Group;
+import database.Member;
 import database.Message;
 import database.Post;
 import database.User;
@@ -133,7 +109,7 @@ public class MainActivity extends AppCompatActivity
     private static String SENT = "SMS_SENT";
     private static String DELIVERED = "SMS_DELIVERED";
     private static int MAX_SMS_MESSAGE_LENGTH = 160;
-
+    private ArrayList<Group> joined;
 
 
     public Group getCurrentGroup() {
@@ -165,6 +141,8 @@ public class MainActivity extends AppCompatActivity
     private DatabaseReference mDatabase;
     private StorageReference mStorage;
     private DatabaseReference mdb;
+    private DatabaseReference mdbu;
+    private DatabaseReference mdbg;
     private DatabaseReference meventc;
     private DatabaseReference mpostc;
     private DatabaseReference mevent;
@@ -214,6 +192,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        joined=new ArrayList<>();
+
         mAuth = FirebaseAuth.getInstance();//firebase
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -230,8 +210,14 @@ public class MainActivity extends AppCompatActivity
                 if(currentGroup != null && currentGroup.getEvents().isEmpty()){
                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                         Event e=ds.getValue(Event.class);
-                        if(e.getGid().equals(currentGroup.getGroupId()))
-                            currentGroup.getEvents().add(0,e);
+                        if(e.getGid().equals(currentGroup.getGroupId())) {
+                            currentGroup.getEvents().add(0, e);
+                            if(((RecyclerView)findViewById(R.id.eventview)).getAdapter()!=null)
+                                ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
+
+                            if(((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter()!=null)
+                                ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
+                        }
                     }
                 }
                 else {
@@ -240,6 +226,8 @@ public class MainActivity extends AppCompatActivity
                         for (int i = 0; i < currentGroup.getEvents().size(); i++)
                             if (!currentGroup.getEvents().get(i).getEid().equals(e.getEid())  && currentGroup.getGroupId().equals(e.getEid())) {
                                 currentGroup.getEvents().add(e);
+                                ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
+                                ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
                                 break;
                             }
                     }
@@ -262,8 +250,11 @@ public class MainActivity extends AppCompatActivity
                 if(currentGroup!=null && currentGroup.getPosts().isEmpty()){
                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                         Post e=ds.getValue(Post.class);
-                        if(e.getGid().equals(currentGroup.getGroupId()))
-                            currentGroup.getPosts().add(0,e);
+                        if(e.getGid().equals(currentGroup.getGroupId())) {
+                            currentGroup.getPosts().add(0, e);
+                            if(((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter()!=null)
+                                ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
+                        }
                     }
                 }
                 else {
@@ -272,6 +263,51 @@ public class MainActivity extends AppCompatActivity
                         for (int i = 0; i < currentGroup.getPosts().size(); i++)
                             if (!currentGroup.getPosts().get(i).getPid().equals(e.getPid()) && e.getGid().equals(currentGroup.getGroupId())) {
                                 currentGroup.getPosts().add(e);
+                                ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
+                                break;
+                            }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("Database", "Failed to read value.", error.toException());
+            }
+        });
+
+
+
+
+
+        mdbu = LoginActivity.getDatabase().getReference("amembers");
+        mdbu.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                if(currentGroup!=null && !currentGroup.getMembers().isEmpty()){
+                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                        Member e=ds.getValue(Member.class);
+                        if(e.getGid().equals(currentGroup.getGroupId())) {
+                            for(int i=0;i<currentGroup.getMembers().size();i++){
+                                if(currentGroup.getMembers().get(i).getUid()!=e.getUser().getUid()){
+                                    currentGroup.getMembers().add(0, e.getUser());
+                                    if(((RecyclerView)findViewById(R.id.eventHorizontal))!=null)
+                                        ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
+                                }
+                            }
+                        }
+                    }
+                }
+                else {
+                    Member e = dataSnapshot.getValue(Member.class);
+                    if (currentGroup != null && e!=null && e.getGid()!=null) {
+                        for (int i = 0; i < currentGroup.getMembers().size(); i++)
+                            if (!currentGroup.getMembers().get(i).getUid().equals(e.getUser().getUid()) && e.getGid().equals(currentGroup.getGroupId())) {
+                                currentGroup.getMembers().add(e.getUser());
+                                ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
                                 break;
                             }
                     }
@@ -293,6 +329,9 @@ public class MainActivity extends AppCompatActivity
                     if (currentGroup.getGroupId() == null) {
                         currentGroup.setGroupId(dataSnapshot.getKey());
                         mDatabase.child("currentGroup").child(currentGroup.getGroupId()).child("groupId").setValue(currentGroup.getGroupId());
+
+                        Member m=new Member(currentUser,currentGroup.getGroupId());
+                        mDatabase.child("amembers").push().setValue(m);
                     }
                 }
             }
@@ -315,6 +354,31 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+
+        mdbg = LoginActivity.getDatabase().getReference("currentGroup");
+        mdbg.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                if(currentGroup!=null){
+                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                        Group e=ds.getValue(Group.class);
+                        if(e.getGroupId().equals(currentGroup.getGroupId())) {
+                            currentGroup.setName(e.getName());
+                            currentGroup.setAdmin(e.getAdmin());
+                            currentGroup.setGroupPic(e.getGroupPic());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("Database", "Failed to read value.", error.toException());
             }
         });
 
@@ -326,6 +390,9 @@ public class MainActivity extends AppCompatActivity
                     if (dataSnapshot.child("gid").equals(currentGroup.getGroupId())) {
                         currentGroup.getEvents().get(0).setEid(dataSnapshot.getKey());
                         mDatabase.child("Events").child(dataSnapshot.getKey()).child("eid").setValue(dataSnapshot.getKey());
+
+                        ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
+                        ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
                     }
                 }
             }
@@ -351,7 +418,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mpostc=LoginActivity.getDatabase().getReference("Events");
+        mpostc=LoginActivity.getDatabase().getReference("Posts");
         mpostc.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -359,6 +426,8 @@ public class MainActivity extends AppCompatActivity
                     if (currentGroup.getGroupId().equals(dataSnapshot.child("gid"))) {
                         currentGroup.getPosts().get(0).setPid(dataSnapshot.getKey());
                         mDatabase.child("Posts").child(dataSnapshot.getKey()).child("pid").setValue(dataSnapshot.getKey());
+
+                        ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
 
                         if(postImage!=null) {
                             currentGroup.getPosts().get(0).setImage("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
@@ -407,6 +476,13 @@ public class MainActivity extends AppCompatActivity
             currentGroup= (Group)getIntent().getSerializableExtra("group");
             if(currentGroup!=null && currentGroup.getGroupId()==null)
                 mDatabase.child("currentGroup").push().setValue(currentGroup);
+            if(currentUser!=null && currentGroup!=null && currentGroup.getGroupId()!=null) {
+
+                Member m=new Member(currentUser,currentGroup.getGroupId());
+
+                mDatabase.child("amembers").push().setValue(m);
+
+            }
         }
 
         MobileAds.initialize(this, "ca-app-pub-7909585213116372~6827984341");
@@ -515,7 +591,7 @@ public class MainActivity extends AppCompatActivity
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if (location != null) {
                 if (currentUser != null) {
-                    currentUser.setLocation(location.getLatitude()+" "+location.getLongitude());
+                    currentUser.setLocation(location.getLatitude()+","+location.getLongitude());
                     String s = currentUser.getLocation();
                     mDatabase.child("currentUser").child(currentUser.getUid()).child("location").setValue(s);
                 }
@@ -742,7 +818,7 @@ public class MainActivity extends AppCompatActivity
         currentGroup.getPosts().add(0,post);
         mDatabase.child("Posts").push().setValue(post);
 
-        ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
+        //((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
 
         statusText.setText("");
 
@@ -866,8 +942,8 @@ public class MainActivity extends AppCompatActivity
             Event e=new Event(currentGroup.getGroupId(), address,data.getExtras().getString("ename"),data.getExtras().getString("edes"),data.getExtras().getString("edate")+" "+data.getExtras().getString("etime")+":00",latlng);
             currentGroup.getEvents().add(0,e);
             mDatabase.child("Events").push().setValue(e);
-            ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
-            ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
+//            ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
+//            ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
 
         }
         else if (requestCode==100 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){

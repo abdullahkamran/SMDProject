@@ -1,5 +1,6 @@
 package com.smdproject.smdproject;
 
+import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.StorageReference;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,10 +26,12 @@ import database.Post;
 public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
     private List<Post> items;
     private int itemLayout;
+    private MainActivity context;
 
-    public FeedAdapter(List<Post> items, int itemLayout) {
+    public FeedAdapter(List<Post> items, int itemLayout,Context c) {
         this.items = items;
         this.itemLayout = itemLayout;
+        this.context=(MainActivity)c;
     }
 
     @Override

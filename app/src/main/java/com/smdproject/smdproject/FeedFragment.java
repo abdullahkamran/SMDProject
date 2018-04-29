@@ -95,11 +95,11 @@ public class FeedFragment extends Fragment {
 
         FeedAdapter adapter=null;
         if(context.getCurrentGroup()!=null) {
-            adapter = new FeedAdapter(context.getCurrentGroup().getPosts(), R.layout.feed_row_layout);
+            adapter = new FeedAdapter(context.getCurrentGroup().getPosts(), R.layout.feed_row_layout,context);
             //context.setNav();
         }
         else
-            adapter=new FeedAdapter(null,R.layout.feed_row_layout);
+            adapter=new FeedAdapter(null,R.layout.feed_row_layout,context);
 
         RecyclerView rc=(RecyclerView)v.findViewById(R.id.feedRecycler);
 
