@@ -3,6 +3,8 @@ package database;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ import java.util.Map;
 @Entity(tableName = "groups")
 public class Group implements Serializable{
 
+    @PrimaryKey
+    @NonNull
     @ColumnInfo(name = "gid")
     private String groupId;
     @ColumnInfo(name = "name")
@@ -52,11 +56,11 @@ public class Group implements Serializable{
         adminId = u;
     }
 
-    public String getAdmin() {
+    public String getAdminId() {
         return adminId;
     }
 
-    public void setAdmin(String admin) {
+    public void setAdminId(String admin) {
         this.adminId = admin;
     }
 

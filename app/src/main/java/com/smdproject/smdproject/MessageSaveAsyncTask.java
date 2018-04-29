@@ -2,20 +2,20 @@ package com.smdproject.smdproject;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import database.Group;
+import database.Message;
 import database.MyDatabase;
 
-public class GroupSaveAsyncTask extends AsyncTask <Group,Void,Void>{
+public class MessageSaveAsyncTask extends AsyncTask<Message,Void,Void> {
     Context c;
 
-    GroupSaveAsyncTask(Context con) {
+    MessageSaveAsyncTask(Context con) {
         c = con;
     }
 
     @Override
-    protected Void doInBackground(Group... groups) {
+    protected Void doInBackground(Message... messages) {
         MyDatabase myDb = MyDatabase.getAppDatabase(c);
-        myDb.groupDao().insertAll(groups);
+        myDb.messageDao().insertAll(messages);
         return null;
     }
 }
