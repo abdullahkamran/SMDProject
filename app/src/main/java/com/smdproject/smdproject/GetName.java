@@ -61,7 +61,7 @@ public class GetName extends AppCompatActivity {
 
     public void onClickUp(View v){
         EditText e=findViewById(R.id.p_name);
-        if(e.getText().toString().equals("")) {
+        if(!e.getText().toString().equals("")) {
             String s = e.getText().toString();
             Intent i = new Intent();
             i.putExtra("p_name",s);

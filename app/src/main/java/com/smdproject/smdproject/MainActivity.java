@@ -709,10 +709,13 @@ public class MainActivity extends AppCompatActivity
 
      public void sendMyLocation(){
 
+        if(currentUser==null || currentGroup==null)return;
+
+        mMap.setMyLocationEnabled(true);
+
          if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-            LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location = mMap.getMyLocation();
             if (location != null) {
                 if (currentUser != null) {
                     currentUser.setLocation(location.getLatitude()+","+location.getLongitude());
@@ -756,7 +759,6 @@ public class MainActivity extends AppCompatActivity
             }
             else if(this.currentGroup!=null && this.currentGroup!=null){
                 Toast.makeText(this, "both are ok", Toast.LENGTH_SHORT).show();
-                sendMyLocation();
                 setNav();
 
                 Bundle b=getIntent().getExtras();
@@ -1234,6 +1236,8 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        sendMyLocation();
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "You did not give permission to access Location.", Toast.LENGTH_SHORT).show();
@@ -1277,6 +1281,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onMapLoaded() {
 
+                    sendMyLocation();
                     Location mlocation=mMap.getMyLocation();
                     LatLng mlatlng=new LatLng(mlocation.getLatitude(),mlocation.getLongitude());
                     if(markers.isEmpty()){
