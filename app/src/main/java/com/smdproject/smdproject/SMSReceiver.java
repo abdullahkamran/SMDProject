@@ -65,7 +65,6 @@ public class SMSReceiver extends BroadcastReceiver {
 
                 String message=splits[1];
 
-
                 // Create an explicit intent for an Activity in your app
                 Intent intent1 = new Intent(context, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -82,6 +81,10 @@ public class SMSReceiver extends BroadcastReceiver {
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setContentIntent(pendingIntent)
                         .setAutoCancel(true);
+
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+
+                notificationManager.notify(333, mBuilder.build());
 
 
                 abortBroadcast();
