@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity
      */
     private ViewPager mViewPager;
 
-    public Uri postImage=null;
+    private Uri postImage=null;
 
     private DatabaseReference mDatabase;
     private StorageReference mStorage;
@@ -493,12 +493,17 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if(currentGroup!=null && !currentGroup.getEvents().isEmpty()) {
-                    if (dataSnapshot.child("gid").equals(currentGroup.getGroupId())) {
-                        currentGroup.getEvents().get(0).setEid(dataSnapshot.getKey());
-                        mDatabase.child("Events").child(dataSnapshot.getKey()).child("eid").setValue(dataSnapshot.getKey());
+                    Event e=dataSnapshot.getValue(Event.class);
+                    if (currentGroup.getGroupId().equals(e.getGid())) {
+                        if (currentGroup.getEvents().get(0).getEid() != null) {
+                            currentGroup.getEvents().get(0).setEid(dataSnapshot.getKey());
+                            mDatabase.child("Events").child(dataSnapshot.getKey()).child("eid").setValue(dataSnapshot.getKey());
 
-                        ((RecyclerView)findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
-                        ((RecyclerView)findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
+                            if((RecyclerView) findViewById(R.id.eventview)!=null)
+                                ((RecyclerView) findViewById(R.id.eventview)).getAdapter().notifyDataSetChanged();
+                            if((RecyclerView) findViewById(R.id.eventHorizontal)!=null)
+                                ((RecyclerView) findViewById(R.id.eventHorizontal)).getAdapter().notifyDataSetChanged();
+                        }
                     }
                 }
             }
@@ -529,23 +534,28 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if(currentGroup!=null && !currentGroup.getPosts().isEmpty()) {
-                    if (currentGroup.getGroupId().equals(dataSnapshot.child("gid"))) {
-                        currentGroup.getPosts().get(0).setPid(dataSnapshot.getKey());
-                        mDatabase.child("Posts").child(dataSnapshot.getKey()).child("pid").setValue(dataSnapshot.getKey());
-                        mDatabase.child("Posts").child(dataSnapshot.getKey()).child("image").setValue("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
+                    Post e=dataSnapshot.getValue(Post.class);
+                    if (currentGroup.getGroupId().equals(e.getGid())) {
+                        if (currentGroup.getPosts().get(0).getPid() != null) {
+                            currentGroup.getPosts().get(0).setPid(dataSnapshot.getKey());
+                            mDatabase.child("Posts").child(dataSnapshot.getKey()).child("pid").setValue(dataSnapshot.getKey());
+                            mDatabase.child("Posts").child(dataSnapshot.getKey()).child("image").setValue("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
 
-                        StorageReference mSref = mStorage.child("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
-                        mSref.putFile(postImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Toast.makeText(MainActivity.this, "Image Upload Success.", Toast.LENGTH_SHORT).show();
+                            if (e.getImage() != null) {
+                                StorageReference mSref = mStorage.child("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
+                                mSref.putFile(Uri.parse(e.getImage())).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        Toast.makeText(MainActivity.this, "Image Upload Success.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(MainActivity.this, "Image Upload Failed.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(MainActivity.this, "Image Upload Failed.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        }
                     }
                 }
             }
@@ -623,9 +633,6 @@ public class MainActivity extends AppCompatActivity
 
         if(currentGroup==null && currentUser==null)
             retrieveCurrent();
-
-
-
 
     }
 
@@ -721,6 +728,7 @@ public class MainActivity extends AppCompatActivity
 
 
        // saveCurrent();
+
 
 
 
@@ -1016,6 +1024,25 @@ public class MainActivity extends AppCompatActivity
 
         if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    postImage = FileProvider.getUriForFile(this,
+                            "com.smdproject.smdproject.fileprovider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, postImage);
+                    startActivityForResult(takePictureIntent, 1);
+                }
+            }
 
 
         }
@@ -1061,15 +1088,13 @@ public class MainActivity extends AppCompatActivity
 
 
             //Bitmap bm=BitmapFactory.decodeFile(mCurrentPhotoPath,op);
-            Bundle b=data.getExtras();
 
+            Uri uri=Uri.parse(mCurrentPhotoPath);
 
-            //Uri uri=Uri.parse(mCurrentPhotoPath);
-
-            //postImage=uri;
+            postImage=uri;
 
             ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-            imageview.setImageBitmap((Bitmap)b.get("data"));
+            imageview.setImageURI(uri);
 
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
 

@@ -12,6 +12,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,12 +28,30 @@ import database.User;
 
 public class LoginGroup extends AppCompatActivity {
 
+    private DatabaseReference mDatabase;
+    private ArrayList<String> groups;
     User u;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        groups=new ArrayList<>();
         setContentView(R.layout.activity_login_group);
+        mDatabase=LoginActivity.getDatabase().getReference("currentGroup");
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds: dataSnapshot.getChildren()) {
+                    Group g=ds.getValue(Group.class);
+                    groups.add(g.getGroupId());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         u = (User)getIntent().getSerializableExtra("user");
     }
@@ -48,6 +71,17 @@ public class LoginGroup extends AppCompatActivity {
         EditText ed=findViewById(R.id.editText);
         if(ed.getText().toString().equalsIgnoreCase("")){
             Toast.makeText(this,"Please enter a Group ID.",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        boolean exist=false;
+        for(int i=0;i<groups.size();i++){
+            if(groups.get(i).equals(ed.getText().toString())){
+                exist=true;
+            }
+        }
+        if(!exist){
+            Toast.makeText(this, "Wrong GroupId. Please enter again", Toast.LENGTH_SHORT).show();
             return;
         }
         Group g = new Group();

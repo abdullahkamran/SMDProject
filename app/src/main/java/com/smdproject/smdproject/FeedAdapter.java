@@ -77,12 +77,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             if(items.get(position).getImage()==null){
                 holder.image.setVisibility(ImageView.GONE);
             }
-            else{
+            else {
                 holder.image.setVisibility(ImageView.VISIBLE);
-                StorageReference mStorage=LoginActivity.getStorage().getReference().child("Images/" + items.get(position).getUid() + "," + items.get(position).getPid());
-                Glide.with(context)
-                        .load(mStorage)
-                        .into(holder.image);
+                if (items.get(position).getImage() != null) {
+//                StorageReference mStorage=LoginActivity.getStorage().getReference().child("Images/" + items.get(position).getUid() + "," + items.get(position).getPid());
+//                Glide.with(context)
+//                        .load(mStorage)
+//                        .into(holder.image);
+                }
             }
         }
     }
