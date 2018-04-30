@@ -244,6 +244,9 @@ public class MainActivity extends AppCompatActivity
 
         if (sensorMgr != null) {
             sensorMgr.unregisterListener((SensorEventListener)this);
+            sensorMgr.unregisterListener(this,
+                    SensorManager.SENSOR_ACCELEROMETER);
+            sensorMgr.unregisterListener((SensorListener) this);
             sensorMgr = null;
         }
 
