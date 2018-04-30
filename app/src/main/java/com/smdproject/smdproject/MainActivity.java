@@ -934,7 +934,13 @@ public class MainActivity extends AppCompatActivity
         SmsManager smsManager = SmsManager.getDefault();
 
         String msg=message.getText();
-        msg="@squadApp@"+currentGroup.getGroupId()+"\n"+msg;
+
+        String name;
+        if(currentGroup.getNicknames().containsKey(currentUser.getUid()))
+            name=currentGroup.getNicknames().get(currentUser.getUid());
+        else name=currentUser.getName();
+
+        msg="@squadApp@"+name+"@"+currentGroup.getName()+"@"+currentGroup.getGroupId()+"\n"+msg;
 
         int length = msg.length();
         if(length > MAX_SMS_MESSAGE_LENGTH) {
@@ -1428,8 +1434,10 @@ public class MainActivity extends AppCompatActivity
                     v.vibrate(100);
                 }
 
-                TabLayout th=(TabLayout) findViewById(R.id.tabs);
-                th.getTabAt(2).select();
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                }else drawer.openDrawer(GravityCompat.START);
             }
         }
     }

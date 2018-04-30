@@ -41,21 +41,26 @@ public class SMSReceiver extends BroadcastReceiver {
                 }
             }
 
-            if(str.startsWith("@squadApp")){
+            if(str.startsWith("@squadApp@")){
 
-                str=str.substring(9);
-                Toast.makeText(context,"SquadApp recieved the message : "+str,Toast.LENGTH_LONG).show();
+                str=str.substring(10);
 
                 String[] splits=str.split("\n",2);
 
-                String header=splits[0].substring(1);
+                String header=splits[0];
+
+                String[] headers=header.split("@");
+
+                String name=headers[0];
+                String groupname=headers[1];
+                String groupid=headers[2];
 
                 String message=splits[1];
 
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle("SquadApp Message")
-                        .setContentText(message)
+                        .setContentTitle("SquadApp Message @"+groupname)
+                        .setContentText(name+": "+message)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
 
