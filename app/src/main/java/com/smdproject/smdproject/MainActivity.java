@@ -81,6 +81,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -753,6 +754,36 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, "both are ok", Toast.LENGTH_SHORT).show();
                 sendMyLocation();
                 setNav();
+
+                Bundle b=getIntent().getExtras();
+                if(b.containsKey("smsmessage")){
+                    String message=b.getString("smsmessage");
+                    String userid=b.getString("smsuserid");
+                    String groupid=b.getString("smsgroupid");
+                    String date=b.getString("smsdate");
+
+                    Date d=null;
+                    try {
+                        d = new SimpleDateFormat("yyyyMMdd_HHmmss").parse(date);
+                    }catch(ParseException e){e.printStackTrace();}
+
+                    if(d==null)d=new Date();
+
+                    for(Group g:joined){
+                        if(g.getGroupId().equals(groupid)){
+                            for(User u:g.getMembers()){
+                                if(u.getUid().equals(userid)){
+                                    Message m=new Message(g,u,message,d);
+
+                                    g.getMessages().add(m);
+
+
+                                }break;
+                            }
+                        }break;
+                    }
+                }
+
             }
         }
     }
@@ -940,7 +971,9 @@ public class MainActivity extends AppCompatActivity
             name=currentGroup.getNicknames().get(currentUser.getUid());
         else name=currentUser.getName();
 
-        msg="@squadApp@"+name+"@"+currentGroup.getName()+"@"+currentGroup.getGroupId()+"\n"+msg;
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+        msg="@squadApp@"+name+"@"+currentGroup.getName()+"@"+currentGroup.getGroupId()+"@"+currentUser.getUid()+"@"+timeStamp+"\n"+msg;
 
         int length = msg.length();
         if(length > MAX_SMS_MESSAGE_LENGTH) {
@@ -952,7 +985,7 @@ public class MainActivity extends AppCompatActivity
         }
         else
             for(User u:currentGroup.getMembers())
-                if(u!=currentUser && u.getPhone()!=null)
+                if(u!=currentUser && u.getPhone()!=null && !u.getPhone().equals(""))
                     smsManager.sendTextMessage(u.getPhone(), null, msg, piSent, piDelivered);
 
     }

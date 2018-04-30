@@ -1,6 +1,7 @@
 package com.smdproject.smdproject;
 
 import android.app.NotificationChannel;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -47,22 +48,40 @@ public class SMSReceiver extends BroadcastReceiver {
 
                 String[] splits=str.split("\n",2);
 
+                if(splits.length<2)return;
+
                 String header=splits[0];
 
+
                 String[] headers=header.split("@");
+
+                if(headers.length<5)return;
 
                 String name=headers[0];
                 String groupname=headers[1];
                 String groupid=headers[2];
+                String userid=headers[3];
+                String date=headers[4];
 
                 String message=splits[1];
+
+
+                // Create an explicit intent for an Activity in your app
+                Intent intent1 = new Intent(context, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("smsgroupid",groupid);
+                intent.putExtra("smsuserid",userid);
+                intent.putExtra("smsmessage",message);
+                intent.putExtra("smsdate",date);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, 0);
 
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_launcher)
                         .setContentTitle("SquadApp Message @"+groupname)
                         .setContentText(name+": "+message)
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
 
 
                 abortBroadcast();
