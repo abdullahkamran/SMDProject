@@ -540,7 +540,6 @@ public class MainActivity extends AppCompatActivity
                         if (currentGroup.getPosts().get(0).getPid() != null) {
                             currentGroup.getPosts().get(0).setPid(dataSnapshot.getKey());
                             mDatabase.child("Posts").child(dataSnapshot.getKey()).child("pid").setValue(dataSnapshot.getKey());
-                            mDatabase.child("Posts").child(dataSnapshot.getKey()).child("image").setValue("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
 
                             if (e.getImage() != null) {
                                 StorageReference mSref = mStorage.child("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
@@ -555,6 +554,7 @@ public class MainActivity extends AppCompatActivity
                                         Toast.makeText(MainActivity.this, "Image Upload Failed.", Toast.LENGTH_SHORT).show();
                                     }
                                 });
+                                mDatabase.child("Posts").child(dataSnapshot.getKey()).child("image").setValue("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
                             }
                         }
                     }
@@ -592,6 +592,8 @@ public class MainActivity extends AppCompatActivity
                 if(!joined.get(i).getGroupId().equals(currentGroup.getGroupId()))
                     joined.add(currentGroup);
             }
+            if(joined.isEmpty())
+                joined.add(currentGroup);
 
             if(currentGroup!=null && currentGroup.getGroupId()==null)
                 mDatabase.child("currentGroup").push().setValue(currentGroup);
@@ -638,6 +640,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void retrieveCurrent() {
+
+        new GroupGetAsyncTask(this).execute();
 
         //TODO get all groups from database with messages
 

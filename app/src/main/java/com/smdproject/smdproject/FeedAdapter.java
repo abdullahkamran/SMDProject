@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 
@@ -80,10 +81,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             else {
                 holder.image.setVisibility(ImageView.VISIBLE);
                 if (items.get(position).getImage() != null) {
-//                StorageReference mStorage=LoginActivity.getStorage().getReference().child("Images/" + items.get(position).getUid() + "," + items.get(position).getPid());
-//                Glide.with(context)
-//                        .load(mStorage)
-//                        .into(holder.image);
+                StorageReference mStorage= FirebaseStorage.getInstance().getReference().child("Images/q124fIECUuW3pd8LSirYYC80ltg1,-LBK43t_ubKoBpsqLywn");
+                Glide.with(context)
+                        .using(new FirebaseImageLoader())
+                        .load(mStorage)
+                        .into(holder.image);
                 }
             }
         }

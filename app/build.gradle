@@ -40,16 +40,16 @@ dependencies {
     implementation files('libs/activation.jar')
     implementation 'com.google.android.gms:play-services-auth:15.0.0'
     implementation 'com.google.android.gms:play-services-places:15.0.0'
-    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    implementation 'com.github.bumptech.glide:glide:3.8.0'
     implementation 'com.google.firebase:firebase-core:15.0.0'
     implementation 'com.google.firebase:firebase-auth:15.0.0'
     implementation 'com.facebook.android:facebook-android-sdk:4.32.0'
     implementation 'com.google.firebase:firebase-ads:15.0.0'
     implementation 'com.google.code.gson:gson:2.8.0'
     implementation 'com.android.support:multidex:1.0.1'
-    implementation 'com.firebaseui:firebase-ui-storage:3.3.0'
-
+    implementation 'com.firebaseui:firebase-ui-storage:0.6.0'
     implementation 'com.google.firebase:firebase-invites:15.0.0'
+    implementation fileTree(dir:'libs',include:['start.jar'])
 
 
 
