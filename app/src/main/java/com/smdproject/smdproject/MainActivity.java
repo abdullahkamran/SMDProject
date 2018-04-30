@@ -711,6 +711,7 @@ public class MainActivity extends AppCompatActivity
 
         if(currentUser==null || currentGroup==null)return;
 
+
         mMap.setMyLocationEnabled(true);
 
          if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
