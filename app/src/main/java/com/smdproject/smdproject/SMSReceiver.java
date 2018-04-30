@@ -1,12 +1,16 @@
 package com.smdproject.smdproject;
 
+import android.app.NotificationChannel;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
@@ -42,11 +46,21 @@ public class SMSReceiver extends BroadcastReceiver {
                 str=str.substring(9);
                 Toast.makeText(context,"SquadApp recieved the message : "+str,Toast.LENGTH_LONG).show();
 
-                String[] splits=str.split("\n");
+                String[] splits=str.split("\n",2);
 
                 String header=splits[0].substring(1);
 
+                String message=splits[1];
 
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle("SquadApp Message")
+                        .setContentText(message)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+
+
+                abortBroadcast();
             }
             else return;
 

@@ -69,11 +69,16 @@ public class Dummy extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode==103 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
             String s= data.getExtras().getString("p_name");
-            user = new User(mAuth.getCurrentUser().getUid(),null,s,number);
+            String pic= data.getExtras().getString("groupPic");
+
+            user = new User(mAuth.getCurrentUser().getUid(),pic,s,number);
             t.setText("You Signed in with Name : "+s+", Mobile Number : "+number);
         }
         else if(requestCode==1111 && resultCode==RESULT_OK && data!=null && data.getExtras()!=null){
+            String pic= data.getExtras().getString("dp");
+
             group=new Group(data.getExtras().getString("g_name"),user.getUid());
+            group.setGroupPic(pic);
             g.setText("You created Group : "+group.getName());
 
         }

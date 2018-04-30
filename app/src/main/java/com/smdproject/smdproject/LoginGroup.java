@@ -52,7 +52,7 @@ public class LoginGroup extends AppCompatActivity {
         }
         Group g = new Group();
         g.setMembers(new ArrayList<User>());
-        g.setNicknames(new HashMap<Integer, String>());
+        g.setNicknames(new HashMap<String, String>());
         g.setPosts(new ArrayList<Post>());
         g.setMessages(new ArrayList<Message>());
         g.setEvents(new ArrayList<Event>());

@@ -118,6 +118,7 @@ public class FeedFragment extends Fragment {
         AdRequest request=new AdRequest.Builder().build();
         banner.loadAd(request);
 
+
         return v;
 
     }

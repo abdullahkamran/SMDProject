@@ -9,11 +9,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.*;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
@@ -40,10 +48,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.gms.ads.MobileAds;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -55,6 +65,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -89,7 +100,10 @@ public class MainActivity extends AppCompatActivity
         MapFragment.OnFragmentInteractionListener,
         ChatFragment.OnFragmentInteractionListener,
         NavigationView.OnNavigationItemSelectedListener,
-        OnMapReadyCallback {
+        OnMapReadyCallback,
+        SensorListener,
+        SensorEventListener{
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -109,6 +123,9 @@ public class MainActivity extends AppCompatActivity
     private static String SENT = "SMS_SENT";
     private static String DELIVERED = "SMS_DELIVERED";
     private static int MAX_SMS_MESSAGE_LENGTH = 160;
+
+
+
     private ArrayList<Group> joined;
 
     public void setJoined(ArrayList<Group> joined) {
@@ -143,7 +160,7 @@ public class MainActivity extends AppCompatActivity
      */
     private ViewPager mViewPager;
 
-    private Uri postImage=null;
+    public Uri postImage=null;
 
     private DatabaseReference mDatabase;
     private StorageReference mStorage;
@@ -157,15 +174,17 @@ public class MainActivity extends AppCompatActivity
 
     TTSManager ttsManager = null;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     public void setNav(){
-        
+
         NavigationView navigationView=(NavigationView)findViewById(R.id.nav_view);
         View v=navigationView.getHeaderView(0);
 
         if(currentGroup.getGroupPic()!=null)
             ((ImageView)v.findViewById(R.id.groupPicOnNav)).setImageURI(Uri.parse(currentGroup.getGroupPic()));
         ((TextView)v.findViewById(R.id.groupNameOnNav)).setText(currentGroup.getName());
-        ((TextView)v.findViewById(R.id.groupidOnNav)).setText("Group ID:"+currentGroup.getGroupId());
+        ((TextView)v.findViewById(R.id.groupidOnNav)).setText("Group ID: "+currentGroup.getGroupId());
 
         if(currentUser.dp!=null)
             ((ImageView)v.findViewById(R.id.dpOnNav)).setImageURI(Uri.parse(currentUser.dp));
@@ -177,26 +196,102 @@ public class MainActivity extends AppCompatActivity
         ((TextView)v.findViewById(R.id.userNameOnNav)).setText(name);
     }
 
+    @Override
+    protected void onStop(){
+        //if(mMap!=null)mMap.clear();
+        //mMap=null;
+        super.onStop();
+    }
 
     @Override
     protected void onDestroy(){
+
+        //if(mMap!=null)mMap.clear();
+
+        //mMap=null;
+
+        if(ttsManager!=null)ttsManager.shutDown();
+
         super.onDestroy();
-        ttsManager.shutDown();
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        boolean accelSupported = sensorMgr.registerListener(this,
+                SensorManager.SENSOR_ACCELEROMETER,
+                SensorManager.SENSOR_DELAY_GAME);
+
+        if (!accelSupported) {
+            // on accelerometer on this device
+            sensorMgr.unregisterListener(this,
+                    SensorManager.SENSOR_ACCELEROMETER);
+        }
+
+        mProximity = sensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        sensorMgr.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
 
     }
 
 
     @Override
     protected void onPause() {
+
+        if (sensorMgr != null) {
+            sensorMgr.unregisterListener((SensorEventListener)this);
+            sensorMgr = null;
+        }
+
         super.onPause();
 
         saveCurrent();
 
     }
 
+
+    private SensorManager sensorMgr;
+    private long lastUpdate = -1;
+    private float x, y, z;
+    private float last_x, last_y, last_z;
+    private static final int SHAKE_THRESHOLD = 800;
+
+    private Sensor mProximity;
+    private static final int SENSOR_SENSITIVITY = 4;
+
+    @Override
+    public void onAccuracyChanged(int arg0, int arg1) {
+        // TODO Auto-generated method stub
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        sensorMgr = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        mProximity = sensorMgr.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        sensorMgr.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL);
+
+        boolean accelSupported = sensorMgr.registerListener(this,
+                SensorManager.SENSOR_ACCELEROMETER,
+                SensorManager.SENSOR_DELAY_GAME);
+
+        if (!accelSupported) {
+            // on accelerometer on this device
+            sensorMgr.unregisterListener(this,
+                    SensorManager.SENSOR_ACCELEROMETER);
+        }
+
+        sensorMgr.registerListener(this,SensorManager.SENSOR_PROXIMITY,SensorManager.SENSOR_DELAY_GAME);
+
 
         joined=new ArrayList<>();
 
@@ -529,6 +624,9 @@ public class MainActivity extends AppCompatActivity
         if(currentGroup==null && currentUser==null)
             retrieveCurrent();
 
+
+
+
     }
 
     private void retrieveCurrent() {
@@ -550,7 +648,7 @@ public class MainActivity extends AppCompatActivity
         currentGroup.setAdminId(mPrefs.getString("currentGroupAdmin",""));
 
         currentGroup.setPosts(new ArrayList<Post>());
-        currentGroup.setNicknames(new HashMap<Integer, String>());
+        currentGroup.setNicknames(new HashMap<String, String>());
         currentGroup.setEvents(new ArrayList<Event>());
         currentGroup.setMessages(new ArrayList<Message>());
         currentGroup.setMembers(new ArrayList<User>());
@@ -623,7 +721,6 @@ public class MainActivity extends AppCompatActivity
 
 
        // saveCurrent();
-
 
 
 
@@ -714,10 +811,45 @@ public class MainActivity extends AppCompatActivity
         }
         else if (id == R.id.nav_share) {
 
+            Intent i=new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            StringBuilder sb=new StringBuilder();
+            sb.append("Hey, I'm using this awesome application SquadApp and I think you should check it out too!\n\n");
+            sb.append("https://play.google.com/store/apps/details?id="+getPackageName());
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            i.putExtra(Intent.EXTRA_SUBJECT,"Share SquadApp");
+            i.putExtra(Intent.EXTRA_TEXT,sb.toString());
+            startActivity(Intent.createChooser(i,"Share SquadApp"));
+
         }
         else if (id == R.id.nav_send) {
 
+            Intent i=new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            StringBuilder sb=new StringBuilder();
+            sb.append("You have been invited to join the group "
+                    +currentGroup.getName()+" on SquadApp. Use the following Group ID to join: \n\n");
+            sb.append(currentGroup.getGroupId());
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            i.putExtra(Intent.EXTRA_SUBJECT,"Invite SquadApp");
+            i.putExtra(Intent.EXTRA_TEXT,sb.toString());
+            startActivity(Intent.createChooser(i,"Share SquadApp"));
+
         }
+        else if (id == R.id.nav_firebase) {
+
+
+            Intent intent = new AppInviteInvitation.IntentBuilder("SquadApp Invite")
+                    .setMessage("Hey, I'm using this awesome application SquadApp and I think you should check it out too!")
+                    .setDeepLink(Uri.parse("https://play.google.com/store/apps/details?id="+getPackageName()))
+                    .setCallToActionText("Try SquadApp")
+                    .build();
+            startActivityForResult(intent, 666);
+
+
+        }
+
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -884,25 +1016,6 @@ public class MainActivity extends AppCompatActivity
 
         if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            // Ensure that there's a camera activity to handle the intent
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                // Create the File where the photo should go
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                // Continue only if the File was successfully created
-                if (photoFile != null) {
-                    postImage = FileProvider.getUriForFile(this,
-                            "com.smdproject.smdproject.fileprovider",
-                            photoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, postImage);
-                    startActivityForResult(takePictureIntent, 1);
-                }
-            }
 
 
         }
@@ -921,7 +1034,19 @@ public class MainActivity extends AppCompatActivity
 
         super.onActivityResult(requestCode,resultCode,data);
 
-        if(requestCode==0 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
+        if (requestCode == 666) {
+            if (resultCode == RESULT_OK) {
+                // Get the invitation IDs of all sent messages
+                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+                for (String id : ids) {
+                }
+            } else {
+                Toast.makeText(this,"Invitation not sent.",Toast.LENGTH_SHORT).show();
+
+            }
+        }
+
+        else if(requestCode==0 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
             Uri uri=data.getData();
 
             postImage=uri;
@@ -936,13 +1061,15 @@ public class MainActivity extends AppCompatActivity
 
 
             //Bitmap bm=BitmapFactory.decodeFile(mCurrentPhotoPath,op);
+            Bundle b=data.getExtras();
 
-            Uri uri=Uri.parse(mCurrentPhotoPath);
 
-            postImage=uri;
+            //Uri uri=Uri.parse(mCurrentPhotoPath);
+
+            //postImage=uri;
 
             ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-            imageview.setImageURI(uri);
+            imageview.setImageBitmap((Bitmap)b.get("data"));
 
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
 
@@ -1195,5 +1322,96 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
+    public void onSensorChanged(int sensor, float[] values) {
+        if (sensor == SensorManager.SENSOR_ACCELEROMETER) {
+            long curTime = System.currentTimeMillis();
+            // only allow one update every 100ms.
+            if ((curTime - lastUpdate) > 100) {
+                long diffTime = (curTime - lastUpdate);
+                lastUpdate = curTime;
+
+                x = values[SensorManager.DATA_X];
+                y = values[SensorManager.DATA_Y];
+                z = values[SensorManager.DATA_Z];
+
+                if(Round(x,4)>10.0000){
+
+                    TabLayout th=(TabLayout) findViewById(R.id.tabs);
+                    int tt=th.getSelectedTabPosition();
+                    tt++;
+                    if(tt==4)tt=3;
+                    th.getTabAt(tt).select();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "0");
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Swipe Right");
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Shake Sensor");
+                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
+                }
+                else if(Round(x,4)<-10.0000){
+
+                    TabLayout th=(TabLayout) findViewById(R.id.tabs);
+                    int tt=th.getSelectedTabPosition();
+                    tt--;
+                    if(tt==-1)tt=0;
+                    th.getTabAt(tt).select();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Swipe Left");
+                    bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "Shake Sensor");
+                    mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+                }
+
+                float speed = Math.abs(x+y+z - last_x - last_y - last_z) / diffTime * 10000;
+
+                // Log.d("sensor", "diff: " + diffTime + " - speed: " + speed);
+                if (speed > SHAKE_THRESHOLD) {
+                    //Log.d("sensor", "shake detected w/ speed: " + speed);
+                    //Toast.makeText(this, "shake detected w/ speed: " + speed, Toast.LENGTH_SHORT).show();
+                }
+                last_x = x;
+                last_y = y;
+                last_z = z;
+            }
+        }
+
+
+    }
+
+    public static float Round(float Rval, int Rpl) {
+        float p = (float)Math.pow(10,Rpl);
+        Rval = Rval * p;
+        float tmp = Math.round(Rval);
+        return (float)tmp/p;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+            if (event.values[0] >= -SENSOR_SENSITIVITY && event.values[0] <= SENSOR_SENSITIVITY) {
+                //near
+
+                Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                // Vibrate for 500 milliseconds
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createOneShot(100,VibrationEffect.DEFAULT_AMPLITUDE));
+                }else{
+                    //deprecated in API 26
+                    v.vibrate(100);
+                }
+
+                TabLayout th=(TabLayout) findViewById(R.id.tabs);
+                th.getTabAt(2).select();
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
 
 }

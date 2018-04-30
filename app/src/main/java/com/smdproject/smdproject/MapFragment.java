@@ -42,7 +42,6 @@ public class MapFragment extends Fragment implements RecyclerView.OnItemTouchLis
     private String mParam1;
     private String mParam2;
 
-
     private OnFragmentInteractionListener mListener;
 
     public MapFragment() {
@@ -91,6 +90,20 @@ public class MapFragment extends Fragment implements RecyclerView.OnItemTouchLis
 
     }
 
+
+
+
+    @Override
+    public void onDestroyView(){
+
+        //if(mapFragment!=null)mapFragment.onLowMemory();
+        //if(mapFragment!=null)mapFragment.onDestroyView();
+        //if(mapFragment!=null)mapFragment.onDestroy();
+        super.onDestroyView();
+    }
+
+    private SupportMapFragment mapFragment;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -98,7 +111,7 @@ public class MapFragment extends Fragment implements RecyclerView.OnItemTouchLis
         View v=inflater.inflate(R.layout.fragment_map, container, false);
 
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(context);
 
         banner=(AdView)v.findViewById(R.id.adView3);
@@ -143,6 +156,9 @@ public class MapFragment extends Fragment implements RecyclerView.OnItemTouchLis
 
                     //if tap was performed on some recyclerview row item
                     int i = rv.getChildAdapterPosition(child);	//index of item which was clicked
+
+                    if(i<0 || i>context.getCurrentGroup().getEvents().size()-1)return true;
+
 
                     String loc=context.getCurrentGroup().getEvents().get(i).getLocation();
                     String[] locs=loc.split(",");
@@ -210,6 +226,8 @@ public class MapFragment extends Fragment implements RecyclerView.OnItemTouchLis
 
                     //if tap was performed on some recyclerview row item
                     int i = rv1.getChildAdapterPosition(child);	//index of item which was clicked
+
+                    if(i<0 || i>context.getCurrentGroup().getMembers().size()-1)return true;
 
                     String loc=context.getCurrentGroup().getMembers().get(i).getLocation();
                     String[] locs=loc.split(",");

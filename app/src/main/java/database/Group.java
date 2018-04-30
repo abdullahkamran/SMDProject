@@ -39,7 +39,7 @@ public class Group implements Serializable{
     @Ignore
     private List<Message> messages;
     @Ignore
-    private Map<Integer,String> nicknames;
+    private Map<String,String> nicknames;
 
     public Group() {
 
@@ -52,7 +52,7 @@ public class Group implements Serializable{
         posts=new ArrayList<>();
         events=new ArrayList<>();
         messages=new ArrayList<>();
-        nicknames=new HashMap<Integer,String>();
+        nicknames=new HashMap<String,String>();
         adminId = u;
     }
 
@@ -120,11 +120,11 @@ public class Group implements Serializable{
         this.messages = messages;
     }
 
-    public Map<Integer, String> getNicknames() {
+    public Map<String, String> getNicknames() {
         return nicknames;
     }
 
-    public void setNicknames(HashMap<Integer, String> nicknames) {
+    public void setNicknames(HashMap<String, String> nicknames) {
         this.nicknames = nicknames;
     }
 }
