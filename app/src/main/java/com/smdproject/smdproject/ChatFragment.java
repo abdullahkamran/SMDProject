@@ -90,6 +90,12 @@ public class ChatFragment extends Fragment {
         rc.setItemAnimator(new DefaultItemAnimator());
         rc.setAdapter(adapter);
 
+        if(context.getCurrentGroup()!=null)
+            new MessageGetAsyncTask(context).execute(context.getCurrentGroup().getGroupId());
+
+
+        //layoutManager.scrollToPosition(context.getCurrentGroup().getMessages().size()-1);
+
         new MessageGetAsyncTask(context).execute(context.getCurrentGroup().getGroupId());
 
 

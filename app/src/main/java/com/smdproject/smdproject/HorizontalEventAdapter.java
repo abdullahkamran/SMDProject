@@ -19,7 +19,6 @@ import database.User;
 public class HorizontalEventAdapter extends RecyclerView.Adapter<HorizontalViewHolder> {
     private List<Event> items;
     private int itemLayout;
-
     private MainActivity context;
 
 
@@ -37,12 +36,8 @@ public class HorizontalEventAdapter extends RecyclerView.Adapter<HorizontalViewH
 
     @Override
     public void onBindViewHolder(HorizontalViewHolder holder, final int position){
-
-
         if(items!=null && holder!=null){
-
             holder.name.setText(((Event) items.get(position)).getName());
-
         }
     }
 

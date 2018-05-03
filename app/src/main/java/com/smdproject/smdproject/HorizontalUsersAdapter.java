@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -19,7 +22,6 @@ import database.User;
 public class HorizontalUsersAdapter extends RecyclerView.Adapter<HorizontalViewHolder> {
     private List<User> items;
     private int itemLayout;
-
     private MainActivity context;
 
 
@@ -37,25 +39,11 @@ public class HorizontalUsersAdapter extends RecyclerView.Adapter<HorizontalViewH
 
     @Override
     public void onBindViewHolder(HorizontalViewHolder holder, final int position){
-
-
         if(items!=null && holder!=null){
-
             holder.name.setText(((User) items.get(position)).getName());
-            holder.b.setBackgroundColor(Color.TRANSPARENT);
-
             if(((User) items.get(position)).dp!=null) {
-
-                try {
-                    InputStream io = context.getContentResolver().openInputStream(Uri.parse(((User) items.get(position)).dp));
-                    holder.b.setBackground(Drawable.createFromStream(io,((User) items.get(position)).dp));
-
-                } catch (IOException e) {
-                    Toast.makeText(context,"Failed to load image.",Toast.LENGTH_SHORT).show();
-                    //holder.b.setBackground(context.getResources().getDrawable(R.id.defaultdp));
-                }
-            }//else holder.b.setBackground(context.getResources().getDrawable(R.id.defaultdp));
-
+                Glide.with(context).load(Uri.parse(items.get(position).dp)).into(holder.im);
+            }
         }
     }
 
