@@ -81,7 +81,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
             else {
                 holder.image.setVisibility(ImageView.VISIBLE);
                 if (items.get(position).getImage() != null) {
-                    StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("Images/q124fIECUuW3pd8LSirYYC80ltg1,-LBK43t_ubKoBpsqLywn");
+                    StorageReference mStorage = FirebaseStorage.getInstance().getReference().child("Images/"+items.get(position).getUid()+","+items.get(position).getPid());
                     Glide.with(context).load(mStorage).into(holder.image);
                 }
             }

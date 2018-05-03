@@ -476,7 +476,7 @@ public class MainActivity extends AppCompatActivity
                 if(currentGroup!=null){
                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                         Group e=ds.getValue(Group.class);
-                        if(e.getGroupId().equals(currentGroup.getGroupId())) {
+                        if(e!=null && e.getGroupId()!=null && e.getGroupId().equals(currentGroup.getGroupId())) {
                             currentGroup.setName(e.getName());
                             currentGroup.setAdminId(e.getAdminId());
                             currentGroup.setGroupPic(e.getGroupPic());
@@ -499,7 +499,7 @@ public class MainActivity extends AppCompatActivity
                 if(currentGroup!=null && !currentGroup.getEvents().isEmpty()) {
                     Event e=dataSnapshot.getValue(Event.class);
                     if (currentGroup.getGroupId().equals(e.getGid())) {
-                        if (currentGroup.getEvents().get(0).getEid() != null) {
+                        if (currentGroup.getEvents().get(0).getEid() == null) {
                             currentGroup.getEvents().get(0).setEid(dataSnapshot.getKey());
                             mDatabase.child("Events").child(dataSnapshot.getKey()).child("eid").setValue(dataSnapshot.getKey());
 
@@ -540,7 +540,7 @@ public class MainActivity extends AppCompatActivity
                 if(currentGroup!=null && !currentGroup.getPosts().isEmpty()) {
                     Post e=dataSnapshot.getValue(Post.class);
                     if (currentGroup.getGroupId().equals(e.getGid())) {
-                        if (currentGroup.getPosts().get(0).getPid() != null) {
+                        if (currentGroup.getPosts().get(0).getPid() == null) {
                             currentGroup.getPosts().get(0).setPid(dataSnapshot.getKey());
                             mDatabase.child("Posts").child(dataSnapshot.getKey()).child("pid").setValue(dataSnapshot.getKey());
 
@@ -558,6 +558,9 @@ public class MainActivity extends AppCompatActivity
                                     }
                                 });
                                 mDatabase.child("Posts").child(dataSnapshot.getKey()).child("image").setValue("Images/" + currentUser.getUid() + "," + currentGroup.getPosts().get(0).getPid());
+
+                                if(findViewById(R.id.feedRecycler)!=null)
+                                    ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
                             }
                         }
                     }
@@ -696,16 +699,6 @@ public class MainActivity extends AppCompatActivity
             prefsEditor.putString("currentGroupPic", currentGroup.getGroupPic().toString());
         else
             prefsEditor.putString("currentGroupPic", "");
-
-//        List<Event>e=currentGroup.getEvents();
-//        String events=gson.toJson(e);
-//        prefsEditor.putString("currentGroupEvents",events);
-//        prefsEditor.putString("currentGroupMembers",gson.toJson(currentGroup.getMembers()));
-//        prefsEditor.putString("currentGroupMessages",gson.toJson(currentGroup.getMessages()));
-//        prefsEditor.putString("currentGroupPosts",gson.toJson(currentGroup.getPosts()));
-//
-//        String hashMapString = gson.toJson(currentGroup.getNicknames());
-//        prefsEditor.putString("hashmap",hashMapString);
 
         prefsEditor.apply();
     }
