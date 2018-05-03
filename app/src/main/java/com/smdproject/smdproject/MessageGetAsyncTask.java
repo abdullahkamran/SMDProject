@@ -1,6 +1,7 @@
 package com.smdproject.smdproject;
 
 import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -25,11 +26,15 @@ public class MessageGetAsyncTask extends AsyncTask<String,Void,ArrayList<Message
     @Override
     protected void onPostExecute(ArrayList<Message> gg){
         super.onPostExecute(gg);
-        for(int i=0;i<c.getJoined().size();i++){
-            if(c.getJoined().get(i).getGroupId().equals(g)) {
-                c.getJoined().get(i).setMessages(gg);
-                break;
-            }
+
+        if(c.getCurrentGroup().getGroupId().equals(g)) {
+            c.getCurrentGroup().getMessages().clear();
+            for(Message g:gg)
+                c.getCurrentGroup().getMessages().add(g);
+
+
         }
+        c.update();
+
     }
 }

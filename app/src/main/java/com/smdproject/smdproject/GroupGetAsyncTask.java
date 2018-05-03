@@ -1,6 +1,7 @@
 package com.smdproject.smdproject;
 
 import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 

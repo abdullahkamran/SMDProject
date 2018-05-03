@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import database.Group;
 import database.Message;
 import database.Post;
+import database.User;
 
 /**
  * Created by Abdullah on 2/28/2018.
@@ -36,7 +38,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
 
     @Override
     public int getItemViewType(int position){
-        if(items.get(position).getSender().getUid()==context.getCurrentUser().getUid())return 2;
+        if(items.get(position).getSenderid().equals(context.getCurrentUser().getUid()))return 2;
         else return 1;
     }
 
@@ -54,12 +56,26 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     @Override
     public void onBindViewHolder(ChatViewHolder holder,final int position){
         if(items!=null && holder!=null){
-            if(items.get(position).getSender().dp!=null)
-                holder.dp.setImageURI(Uri.parse(items.get(position).getSender().dp));
 
-            if(items.get(position).getGroup().getNicknames().containsKey(items.get(position).getSender().getUid()))
-                holder.nickname.setText(items.get(position).getGroup().getNicknames().get(items.get(position).getSender().getUid()));
-            else holder.nickname.setText(items.get(position).getSender().getName());
+            User sender=null;
+            for(User b:context.getCurrentGroup().getMembers()){
+                if(items.get(position).getSenderid().equals(b.getUid())){
+                    sender=b;
+                    break;
+                }
+
+            }
+            if(sender==null)return;
+
+            Group group=context.getCurrentGroup();
+
+
+            if(sender.dp!=null)
+                holder.dp.setImageURI(Uri.parse(sender.dp));
+
+            if(group.getNicknames().containsKey(sender.getUid()))
+                holder.nickname.setText(group.getNicknames().get(sender.getUid()));
+            else holder.nickname.setText(sender.getName());
 
             String timestamp=items.get(position).getStamp().toString();
             String today=(new Date()).toString();

@@ -80,6 +80,7 @@ public class ChatFragment extends Fragment {
         else
             adapter=new ChatAdapter(null,R.layout.chat_in_row_layout,R.layout.chat_out_row_layout,context.ttsManager,context);
 
+
         RecyclerView rc=(RecyclerView)v.findViewById(R.id.chatRecycler);
 
         LinearLayoutManager layoutManager=new LinearLayoutManager((Context)context);
@@ -89,12 +90,20 @@ public class ChatFragment extends Fragment {
         rc.setItemAnimator(new DefaultItemAnimator());
         rc.setAdapter(adapter);
 
+        new MessageGetAsyncTask(context).execute(context.getCurrentGroup().getGroupId());
+
+
+        //layoutManager.scrollToPosition(context.getCurrentGroup().getMessages().size()-1);
+
         //DividerItemDecoration dividerItemDecoration =
           //      new DividerItemDecoration(rc.getContext(), layoutManager.getOrientation());
         //rc.addItemDecoration(dividerItemDecoration);
 
         return v;
     }
+
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

@@ -766,33 +766,33 @@ public class MainActivity extends AppCompatActivity
                 setNav();
 
                 Bundle b=getIntent().getExtras();
-                if(b.containsKey("smsmessage")){
-                    String message=b.getString("smsmessage");
-                    String userid=b.getString("smsuserid");
-                    String groupid=b.getString("smsgroupid");
-                    String date=b.getString("smsdate");
-
-                    Date d=null;
-                    try {
-                        d = new SimpleDateFormat("yyyyMMdd_HHmmss").parse(date);
-                    }catch(ParseException e){e.printStackTrace();}
-
-                    if(d==null)d=new Date();
-
-                    for(Group g:joined){
-                        if(g.getGroupId().equals(groupid)){
-                            for(User u:g.getMembers()){
-                                if(u.getUid().equals(userid)){
-                                    Message m=new Message(g,u,message,d);
-
-                                    g.getMessages().add(m);
-
-
-                                }break;
-                            }
-                        }break;
-                    }
-                }
+//                if(b.containsKey("smsmessage")){
+//                    String message=b.getString("smsmessage");
+//                    String userid=b.getString("smsuserid");
+//                    String groupid=b.getString("smsgroupid");
+//                    String date=b.getString("smsdate");
+//
+//                    Date d=null;
+//                    try {
+//                        d = new SimpleDateFormat("yyyyMMdd_HHmmss").parse(date);
+//                    }catch(ParseException e){e.printStackTrace();}
+//
+//                    if(d==null)d=new Date();
+//
+//                    for(Group g:joined){
+//                        if(g.getGroupId().equals(groupid)){
+//                            for(User u:g.getMembers()){
+//                                if(u.getUid().equals(userid)){
+//                                    Message m=new Message(g,u,message,d);
+//
+//                                    g.getMessages().add(m);
+//
+//
+//                                }break;
+//                            }
+//                        }break;
+//                    }
+//                }
 
             }
         }
@@ -846,16 +846,11 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        }
-        else if (id == R.id.nav_gallery) {
 
-        }
-        else if (id == R.id.nav_slideshow) {
+        if (id == R.id.nav_manage) {
 
-        }
-        else if (id == R.id.nav_manage) {
+            Intent i=new Intent(this,SettingsActivity.class);
+            startActivity(i);
 
         }
         else if (id == R.id.nav_share) {
@@ -963,9 +958,12 @@ public class MainActivity extends AppCompatActivity
 
         Message message=new Message(currentGroup,currentUser,msgText.getText().toString(), new Date());
 
+
         currentGroup.getMessages().add(message);
 
-        ((RecyclerView)findViewById(R.id.chatRecycler)).getAdapter().notifyDataSetChanged();
+        new MessageSaveAsyncTask(this).execute(message);
+
+        if(findViewById(R.id.chatRecycler)!=null)((RecyclerView)findViewById(R.id.chatRecycler)).getAdapter().notifyDataSetChanged();
         ((RecyclerView)findViewById(R.id.chatRecycler)).getLayoutManager().scrollToPosition(currentGroup.getMessages().size()-1);
 
         msgText.setText("");
@@ -990,15 +988,23 @@ public class MainActivity extends AppCompatActivity
             ArrayList<String> messagelist = smsManager.divideMessage(msg);
 
             for(User u:currentGroup.getMembers())
-                if(u!=currentUser && u.getPhone()!=null)
+                if(u!=currentUser && u.getPhone()!=null && !u.getPhone().equals("") && !u.getPhone().equals(currentUser.getPhone()))
                     smsManager.sendMultipartTextMessage(u.getPhone(), null, messagelist, null, null);
         }
         else
             for(User u:currentGroup.getMembers())
-                if(u!=currentUser && u.getPhone()!=null && !u.getPhone().equals(""))
+                if(u!=currentUser && u.getPhone()!=null && !u.getPhone().equals("") && !u.getPhone().equals(currentUser.getPhone()))
                     smsManager.sendTextMessage(u.getPhone(), null, msg, piSent, piDelivered);
 
+
     }
+
+    public void update(){
+        RecyclerView rc=(RecyclerView)findViewById(R.id.chatRecycler);
+        rc.getAdapter().notifyDataSetChanged();
+
+    }
+
 
 
     public void postStatus(View v){
@@ -1123,7 +1129,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         else if(requestCode==0 && resultCode==RESULT_OK && data!=null && data.getData()!=null){
-            Uri uri=data.getData();
+
+            Uri uri=(Uri) data.getData();
 
             postImage=uri;
 

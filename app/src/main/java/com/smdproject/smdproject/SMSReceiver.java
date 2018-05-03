@@ -16,6 +16,10 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class SMSReceiver extends BroadcastReceiver {
     private final String DEBUG_TAG = getClass().getSimpleName().toString();
@@ -65,13 +69,28 @@ public class SMSReceiver extends BroadcastReceiver {
 
                 String message=splits[1];
 
+
+
+                Date d=null;
+                try {
+                    d = new SimpleDateFormat("yyyyMMdd_HHmmss").parse(date);
+                }catch(ParseException e){e.printStackTrace();}
+
+                if(d==null)d=new Date();
+
+                database.Message mo=new database.Message();
+                mo.setGid(groupid);
+                mo.setText(message);
+                mo.setStamp(d);
+                mo.setSenderid(userid);
+
+                new MessageSaveAsyncTask(context).execute(mo);
+
+
                 // Create an explicit intent for an Activity in your app
                 Intent intent1 = new Intent(context, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.putExtra("smsgroupid",groupid);
-                intent.putExtra("smsuserid",userid);
-                intent.putExtra("smsmessage",message);
-                intent.putExtra("smsdate",date);
+
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, 0);
 
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
@@ -101,6 +120,9 @@ public class SMSReceiver extends BroadcastReceiver {
         }
 
     }
+
+
+
 
     public static SmsMessage[] getMessagesFromIntent(Intent intent) {
         Object[] messages = (Object[]) intent.getSerializableExtra("pdus");

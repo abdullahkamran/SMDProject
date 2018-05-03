@@ -118,13 +118,13 @@
                     <ImageView
                         android:id="@+id/settingsGroupPic"
                         android:layout_width="70dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="70dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:scaleType="centerCrop"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@mipmap/ic_launcher" />
+                        app:srcCompat="@drawable/defaultgroupicon" />
 
                     <TextView
                         android:id="@+id/textView6"
@@ -148,7 +148,7 @@
                         android:scaleType="centerCrop"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@mipmap/ic_launcher" />
+                        app:srcCompat="@drawable/defaultdp" />
 
                     <TextView
                         android:id="@+id/textView8"
