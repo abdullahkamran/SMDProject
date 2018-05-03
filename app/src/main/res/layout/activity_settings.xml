@@ -86,7 +86,7 @@
                         android:backgroundTint="@color/colorPrimary"
                         android:onClick="attachDP"
                         android:textColor="@color/cardview_light_background"
-                        app:layout_constraintBottom_toTopOf="@+id/textView8"
+                        app:layout_constraintBottom_toBottomOf="@+id/settingsDP"
                         app:layout_constraintEnd_toStartOf="@+id/settingsDP" />
 
                     <EditText
@@ -155,11 +155,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
+                        android:layout_marginTop="8dp"
                         android:text="Profile Pic"
                         android:textAppearance="@style/TextAppearance.AppCompat"
                         app:layout_constraintEnd_toEndOf="@+id/settingsDP"
                         app:layout_constraintStart_toStartOf="@+id/settingsDP"
-                        tools:layout_editor_absoluteY="80dp" />
+                        app:layout_constraintTop_toBottomOf="@+id/settingsDP" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/settingsMembers"

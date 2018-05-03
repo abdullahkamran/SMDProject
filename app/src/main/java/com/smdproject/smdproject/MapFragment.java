@@ -100,6 +100,7 @@ public class MapFragment extends Fragment implements RecyclerView.OnItemTouchLis
         //if(mapFragment!=null)mapFragment.onDestroyView();
         //if(mapFragment!=null)mapFragment.onDestroy();
         if(mapFragment!=null)mapFragment.onDetach();
+        mapFragment=null;
 
         super.onDestroyView();
     }

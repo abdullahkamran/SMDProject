@@ -10,6 +10,8 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.telephony.SmsMessage;
@@ -104,6 +106,22 @@ public class SMSReceiver extends BroadcastReceiver {
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
                 notificationManager.notify(333, mBuilder.build());
+
+                Vibrator v = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
+                // Vibrate for 500 milliseconds
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createOneShot(500,VibrationEffect.DEFAULT_AMPLITUDE));
+                    v.vibrate(VibrationEffect.createOneShot(100,VibrationEffect.DEFAULT_AMPLITUDE));
+                    v.vibrate(VibrationEffect.createOneShot(100,VibrationEffect.DEFAULT_AMPLITUDE));
+
+
+                }else{
+                    //deprecated in API 26
+                    v.vibrate(500);
+                    v.vibrate(100);
+                    v.vibrate(100);
+
+                }
 
 
                 abortBroadcast();

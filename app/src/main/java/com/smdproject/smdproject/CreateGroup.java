@@ -38,7 +38,7 @@ public class CreateGroup extends AppCompatActivity {
 
             postImage = uri;
 
-            ImageView imageview = (ImageView) findViewById(R.id.feedAttachThumbnail);
+            ImageView imageview = (ImageView) findViewById(R.id.grouppic);
 
             imageview.setImageURI(uri);
 

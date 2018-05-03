@@ -35,7 +35,7 @@ public class GetName extends AppCompatActivity {
 
             postImage = uri;
 
-            ImageView imageview = (ImageView) findViewById(R.id.feedAttachThumbnail);
+            ImageView imageview = (ImageView) findViewById(R.id.imageView4);
 
             imageview.setImageURI(uri);
 
