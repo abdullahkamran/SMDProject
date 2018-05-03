@@ -44,6 +44,8 @@ public class HorizontalUsersAdapter extends RecyclerView.Adapter<HorizontalViewH
             if(((User) items.get(position)).dp!=null) {
                 Glide.with(context).load(Uri.parse(items.get(position).dp)).into(holder.im);
             }
+
+            holder.im.setColorFilter(Color.TRANSPARENT);
         }
     }
 
