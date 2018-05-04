@@ -41,7 +41,7 @@ public class Message implements Serializable{
     }
 
     @Ignore
-    public Message(Group group, User sender, String text, Date stamp) {
+    public Message(Group group, User sender, String text, Date stamp)  {
         this.group = group;
         this.sender = sender;
         this.text = text;

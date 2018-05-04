@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -86,7 +87,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import database.Event;
 import database.Group;
@@ -201,6 +204,10 @@ public class MainActivity extends AppCompatActivity
     protected void onStop(){
         //if(mMap!=null)mMap.clear();
         //mMap=null;
+
+
+        if(image!=null)image.deleteOnExit();
+
         super.onStop();
     }
 
@@ -210,6 +217,8 @@ public class MainActivity extends AppCompatActivity
         //if(mMap!=null)mMap.clear();
 
         //mMap=null;
+
+        if(image!=null)image.deleteOnExit();
 
         if(ttsManager!=null)ttsManager.shutDown();
 
@@ -827,9 +836,14 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent i=new Intent(this,SettingsActivity.class);
+            startActivity(i);
             return true;
         }
-
+        else if (id == R.id.action_quit) {
+            finish();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -1025,6 +1039,7 @@ public class MainActivity extends AppCompatActivity
         currentGroup.getPosts().add(0,post);
         mDatabase.child("Posts").push().setValue(post);
 
+
         ((RecyclerView)findViewById(R.id.feedRecycler)).getAdapter().notifyDataSetChanged();
 
         statusText.setText("");
@@ -1052,12 +1067,14 @@ public class MainActivity extends AppCompatActivity
 
     String mCurrentPhotoPath;
 
+    File image=null;
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
+        image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
@@ -1136,14 +1153,15 @@ public class MainActivity extends AppCompatActivity
         else if(requestCode==1 && resultCode==RESULT_OK){
 
 
-            //Bitmap bm=BitmapFactory.decodeFile(mCurrentPhotoPath,op);
+            Bitmap bm= BitmapFactory.decodeFile(mCurrentPhotoPath);
 
-            Uri uri=Uri.parse(mCurrentPhotoPath);
+            //Uri uri=Uri.fromFile(image);
 
-            postImage=uri;
+            //postImage=uri;
 
             ImageView imageview=(ImageView)findViewById(R.id.feedAttachThumbnail);
-            imageview.setImageURI(uri);
+            //imageview.setImageURI(uri);
+            imageview.setImageBitmap(bm);
 
             ((Button)findViewById(R.id.deleteAttachment)).setVisibility(Button.VISIBLE);
 
@@ -1207,6 +1225,13 @@ public class MainActivity extends AppCompatActivity
         else savedInstanceState.putString("postImage","");
         savedInstanceState.putString("filename",mCurrentPhotoPath);
 
+        savedInstanceState.putSerializable("posts",new ArrayList<>(currentGroup.getPosts()));
+        savedInstanceState.putSerializable("events",new ArrayList<>(currentGroup.getEvents()));
+        savedInstanceState.putSerializable("members",new ArrayList<>(currentGroup.getMembers()));
+        savedInstanceState.putSerializable("messages",new ArrayList<>(currentGroup.getMessages()));
+        savedInstanceState.putSerializable("nicknames",new HashMap<>(currentGroup.getNicknames()));
+
+
 
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -1220,6 +1245,13 @@ public class MainActivity extends AppCompatActivity
         if(savedInstanceState.getString("postImage").equalsIgnoreCase(""))postImage=null;
         else postImage=Uri.parse(savedInstanceState.getString("postImage"));
         mCurrentPhotoPath=savedInstanceState.getString("filename");
+
+
+        currentGroup.setPosts((ArrayList)savedInstanceState.getSerializable("posts"));
+        currentGroup.setEvents((ArrayList)savedInstanceState.getSerializable("events"));
+        currentGroup.setMembers((ArrayList)savedInstanceState.getSerializable("members"));
+        currentGroup.setMessages((ArrayList)savedInstanceState.getSerializable("messages"));
+        currentGroup.setNicknames((HashMap)savedInstanceState.getSerializable("nicknames"));
 
 
     }

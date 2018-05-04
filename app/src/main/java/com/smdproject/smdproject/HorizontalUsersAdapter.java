@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +49,25 @@ public class HorizontalUsersAdapter extends RecyclerView.Adapter<HorizontalViewH
             }
 
             holder.im.setColorFilter(Color.TRANSPARENT);
+
+            holder.v.setOnClickListener(new View.OnClickListener() {
+               @Override
+                public void onClick(View v){
+
+                   String loc=context.getCurrentGroup().getMembers().get(position).getLocation();
+                   if(loc==null){
+                       Toast.makeText(context,"Location of this member not available at the moment.",Toast.LENGTH_SHORT).show();
+                       return;
+                   }
+                   String[] locs=loc.split(",");
+                   CameraPosition position=new CameraPosition.Builder()
+                           .target(new LatLng(Double.parseDouble(locs[0]),Double.parseDouble(locs[1])))
+                           .zoom(17).build();
+                   context.mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+
+               }
+            });
+
         }
     }
 

@@ -32,7 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment implements RecyclerView.OnItemTouchListener{
+public class MapFragment extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -111,6 +111,10 @@ public class MapFragment extends Fragment implements RecyclerView.OnItemTouchLis
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        if(context==null)context=(MainActivity) getActivity();
+
+
         View v=inflater.inflate(R.layout.fragment_map, container, false);
 
 
@@ -136,62 +140,6 @@ public class MapFragment extends Fragment implements RecyclerView.OnItemTouchLis
         rc.setAdapter(adapter);
 
 
-        final RecyclerView rv=v.findViewById(R.id.eventHorizontal);
-        gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onDown(MotionEvent motionEvent) {
-                return false;
-            }
-
-            @Override
-            public void onShowPress(MotionEvent motionEvent) {
-
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent motionEvent) {
-
-                if(context.getCurrentGroup()==null)return true;
-                if(context.mMap==null)return true;
-
-                View child = rv.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
-                if(child != null){
-
-                    //if tap was performed on some recyclerview row item
-                    int i = rv.getChildAdapterPosition(child);	//index of item which was clicked
-
-                    if(i<0 || i>context.getCurrentGroup().getEvents().size()-1)return true;
-
-
-                    String loc=context.getCurrentGroup().getEvents().get(i).getLocation();
-                    String[] locs=loc.split(",");
-                    CameraPosition position=new CameraPosition.Builder()
-                            .target(new LatLng(Double.parseDouble(locs[0]),Double.parseDouble(locs[1])))
-                            .zoom(17).build();
-                    context.mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-                return false;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent motionEvent) {
-
-            }
-
-            @Override
-            public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-                return false;
-            }
-        });
-        rc.addOnItemTouchListener(this);
-
-
-
         HorizontalUsersAdapter adapter1=null;
         if(context.getCurrentGroup()!=null)
             adapter1=new HorizontalUsersAdapter(context.getCurrentGroup().getMembers(),R.layout.horizontal_row_layout,context);
@@ -206,83 +154,12 @@ public class MapFragment extends Fragment implements RecyclerView.OnItemTouchLis
         rc1.setAdapter(adapter1);
 
 
-        final RecyclerView rv1=v.findViewById(R.id.eventHorizontal);
-        gestureDetector1 = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onDown(MotionEvent motionEvent) {
-                return false;
-            }
-
-            @Override
-            public void onShowPress(MotionEvent motionEvent) {
-
-            }
-
-            @Override
-            public boolean onSingleTapUp(MotionEvent motionEvent) {
-
-                if(context.getCurrentGroup()==null)return true;
-                if(context.mMap==null)return true;
-
-                View child = rv1.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
-                if(child != null){
-
-                    //if tap was performed on some recyclerview row item
-                    int i = rv1.getChildAdapterPosition(child);	//index of item which was clicked
-
-                    if(i<0 || i>context.getCurrentGroup().getMembers().size()-1)return true;
-
-                    String loc=context.getCurrentGroup().getMembers().get(i).getLocation();
-                    String[] locs=loc.split(",");
-                    CameraPosition position=new CameraPosition.Builder()
-                            .target(new LatLng(Double.parseDouble(locs[0]),Double.parseDouble(locs[1])))
-                            .zoom(17).build();
-                    context.mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
-                }
-                return true;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-                return false;
-            }
-
-            @Override
-            public void onLongPress(MotionEvent motionEvent) {
-
-            }
-
-            @Override
-            public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-                return false;
-            }
-        });
-        rc1.addOnItemTouchListener(this);
-
 
 
         return v;
 
     }
 
-
-    @Override
-    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        if(rv==context.findViewById(R.id.eventHorizontal)) gestureDetector.onTouchEvent(e);
-        if(rv==context.findViewById(R.id.userHorizontal)) gestureDetector1.onTouchEvent(e);
-
-        return false;
-    }
-
-    @Override
-    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-    }
-
-    @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-    }
 
 
     // TODO: Rename method, update argument and hook method into UI event

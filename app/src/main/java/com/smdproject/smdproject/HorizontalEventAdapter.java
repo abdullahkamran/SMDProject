@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -38,6 +42,22 @@ public class HorizontalEventAdapter extends RecyclerView.Adapter<HorizontalViewH
     public void onBindViewHolder(HorizontalViewHolder holder, final int position){
         if(items!=null && holder!=null){
             holder.name.setText(((Event) items.get(position)).getName());
+
+
+            holder.v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+
+                    String loc=context.getCurrentGroup().getEvents().get(position).getLocation();
+                    String[] locs=loc.split(",");
+                    CameraPosition position=new CameraPosition.Builder()
+                            .target(new LatLng(Double.parseDouble(locs[0]),Double.parseDouble(locs[1])))
+                            .zoom(17).build();
+                    context.mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+
+                }
+            });
+
         }
     }
 

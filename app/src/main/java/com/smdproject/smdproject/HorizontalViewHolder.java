@@ -10,10 +10,12 @@ public class HorizontalViewHolder extends RecyclerView.ViewHolder {
 
     public TextView name;
     public ImageView im;
+    public Button v;
 
     public HorizontalViewHolder(View view){
         super(view);
         name = view.findViewById(R.id.nameH);
         im=view.findViewById(R.id.testv);
+        v=view.findViewById(R.id.v);
     }
 }

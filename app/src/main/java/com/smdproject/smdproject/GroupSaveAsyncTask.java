@@ -21,6 +21,8 @@ public class GroupSaveAsyncTask extends AsyncTask <Group,Void,Void>{
 
         ArrayList<Group> gg= (ArrayList<Group>) myDb.groupDao().getAll();
         for(int i=0;i<gg.size();i++){
+            if(gg==null)return null;
+            if(gg.get(i)==null)return null;
             if(gg.get(i).getGroupId().equals(groups[0].getGroupId()))
                 return null;
         }
