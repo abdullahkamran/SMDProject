@@ -39,11 +39,17 @@ public class Dummy extends AppCompatActivity {
         btn.setEnabled(false);
         t=findViewById(R.id.textView);
         g=findViewById(R.id.textView13);
-        TelephonyManager tMgr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        number = tMgr.getLine1Number();
+
+        if(getIntent()!=null && getIntent().getExtras()!=null)
+            number=getIntent().getExtras().getString("mobileno");
+
+//        TelephonyManager tMgr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+//        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
+//        number = tMgr.getLine1Number();
+
+
         if(mAuth.getCurrentUser().getPhotoUrl() != null && mAuth.getCurrentUser().getDisplayName() != null && number!=null){
             user=new User(mAuth.getCurrentUser().getUid(),mAuth.getCurrentUser().getPhotoUrl().toString(),mAuth.getCurrentUser().getDisplayName(),number);
             t.setText("You Signed in with Name : "+mAuth.getCurrentUser().getDisplayName()+", Mobile No. : "+number);

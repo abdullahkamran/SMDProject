@@ -992,15 +992,16 @@ public class MainActivity extends AppCompatActivity
 
         int length = msg.length();
         if(length > MAX_SMS_MESSAGE_LENGTH) {
+
             ArrayList<String> messagelist = smsManager.divideMessage(msg);
 
             for(User u:currentGroup.getMembers())
-                if(u!=currentUser && u.getPhone()!=null && !u.getPhone().equals("") && !u.getPhone().equals(currentUser.getPhone()))
+                if(u.getUid()!=currentUser.getUid() && u.getPhone()!=null && !u.getPhone().equals(""))
                     smsManager.sendMultipartTextMessage(u.getPhone(), null, messagelist, null, null);
         }
         else
             for(User u:currentGroup.getMembers())
-                if(u!=currentUser && u.getPhone()!=null && !u.getPhone().equals("") && !u.getPhone().equals(currentUser.getPhone()))
+                if(u.getUid()!=currentUser.getUid() && u.getPhone()!=null && !u.getPhone().equals(""))
                     smsManager.sendTextMessage(u.getPhone(), null, msg, piSent, piDelivered);
 
 
@@ -1009,7 +1010,6 @@ public class MainActivity extends AppCompatActivity
     public void update(){
         RecyclerView rc=(RecyclerView)findViewById(R.id.chatRecycler);
         rc.getAdapter().notifyDataSetChanged();
-
     }
 
 

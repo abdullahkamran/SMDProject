@@ -133,6 +133,7 @@ public class MobileAuth extends AppCompatActivity implements View.OnClickListene
                     Log.d("PhoneAuth", "signInWithCredential:success");
                     FirebaseUser user = task.getResult().getUser();
                     Intent dummy=new Intent(MobileAuth.this,Dummy.class);
+                    dummy.putExtra("mobileno",mPhoneNumberField.getText().toString());
                     startActivity(dummy);
                     finish();
                 }

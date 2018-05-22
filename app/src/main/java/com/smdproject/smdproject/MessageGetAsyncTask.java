@@ -1,11 +1,7 @@
 package com.smdproject.smdproject;
 
 import android.os.AsyncTask;
-import android.support.v7.widget.RecyclerView;
-
 import java.util.ArrayList;
-
-import database.Group;
 import database.Message;
 import database.MyDatabase;
 
@@ -31,10 +27,7 @@ public class MessageGetAsyncTask extends AsyncTask<String,Void,ArrayList<Message
             c.getCurrentGroup().getMessages().clear();
             for(Message g:gg)
                 c.getCurrentGroup().getMessages().add(g);
-
-
         }
         c.update();
-
     }
 }
